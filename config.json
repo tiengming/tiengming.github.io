@@ -2,5 +2,11 @@
     "title":"Tiengming",
     "subTitle":"发现世界上所有美好的事物，分享有趣的东西",
     "avatarUrl":"https://buxiantang.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fa845a04b-d140-4ee9-933e-86358e364583%2Fc4c3b308-626f-4e5b-912f-3a4cc2998019%2Ffavicon.svg?table=block&id=0a562be0-0259-4d02-9832-857ee7a9d6d5&spaceId=a845a04b-d140-4ee9-933e-86358e364583&userId=&cache=v2",
-    "GMEEK_VERSION":"last"
+    "GMEEK_VERSION":"last",
+    "homeUrl":"https://code.buxiantang.top",
+    "email":"mail@buxiantang.top",
+    "onePageListNum":15,
+    "iconList":{"网址导航":"M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z},
+    "exlink":{"网址导航":"https://nav.buxiantang.top/"},
+    "allHead":"<script type="text/javascript">!function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)}(window,document,"clarity","script","na4qnk47pl");</script>",
 }
