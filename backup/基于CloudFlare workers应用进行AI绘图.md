@@ -1,4 +1,3 @@
-# 基于CloudFlare workers应用进行AI绘图
 
 ## 演示
 
