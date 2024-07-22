@@ -92,6 +92,9 @@ gantt
 ### 7. 支持图表
 > [!TIP]
 > 可能在博客内无法正常预览
+
+显示效果应该是这样：
+![显示效果](https://imghosting.buxiantang.top/file/f8b53f9eab882aaf72288.png)
 ```echarts
 {
   "backgroundColor": "#212121",
