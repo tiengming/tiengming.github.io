@@ -12,5 +12,6 @@
     "bottomText":"🤞转载请注明出处🤞",
     "allHead":"<script src='https://blog.meekdai.com/assets/GmeekBSZ.js'></script>",
     "script":"<script src='https://blog.liyifan.xyz/assets/backtotop.js'></script>",
-    "script":"<script src='https://blog.meekdai.com/assets/GmeekTOC.js'></script>"
+    "script":"<script src='https://blog.meekdai.com/assets/GmeekTOC.js'></script>",
+    "allHead":"<script src='https://blog.meekdai.com/assets/GmeekVercount.js'></script>"
 }
