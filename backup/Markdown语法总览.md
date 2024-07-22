@@ -1,7 +1,7 @@
 ## 在线 Markdown 编辑器
-- 地址：[点击前往](https://markdown.buxiantang.top/)。
-- 这是我本使用[Arya](https://markdown.lovejade.cn/?utm_source=markdown.lovejad------e.cn)开源项目自行部署，这是一款基于 `Vue`、`Vditor`，为未来而构建的在线 Markdown 编辑器；轻量且强大：内置粘贴 HTML 自动转换为 Markdown，支持流程图、甘特图、时序图、任务列表，可导出携带样式的图片、PDF、微信公众号特制的 HTML 等等。
-- 我的所有markdown文件都是在这里编写，好的一点是只要不强制刷新或者删除内容，贝蒂内容不会丢失。
+- 地址：[点击前往](https://markdown.buxiantang.top/)。url：`https://markdown.buxiantang.top/`
+- 这是我使用[Arya](https://markdown.lovejade.cn/?utm_source=markdown.lovejad------e.cn)开源项目自行部署，这是一款基于 `Vue`、`Vditor`，为未来而构建的在线 Markdown 编辑器；轻量且强大：内置粘贴 HTML 自动转换为 Markdown，支持流程图、甘特图、时序图、任务列表，可导出携带样式的图片、PDF、微信公众号特制的 HTML 等等。
+- 我的所有markdown文件都是在这里编写，好的一点是只要不强制刷新或者删除内容，本地内容不会丢失。
 ## 什么是 Markdown
 
 [Markdown](https://markdown.buxiantang.top/) 是一种方便记忆、书写的纯文本标记语言，用户可以使用这些标记符号，以最小的输入代价，生成极富表现力的文档：譬如您正在阅读的这份文档。它使用简单的符号标记不同的标题，分割不同的段落，**粗体**、*斜体* 或者[超文本链接](https://nav.buxiantang.top/)，更棒的是，它还可以：
