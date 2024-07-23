@@ -33,15 +33,10 @@ function createTOC() {
 function toggleTOC() {
     var tocElement = document.querySelector('.toc');
     var tocIcon = document.querySelector('.toc-icon');
-    if (tocElement.style.display === 'none') {
-        tocElement.style.display = 'block';
-        tocElement.style.transition = 'display 0.3s ease'; // 添加过渡动画
-        tocIcon.textContent = '✖'; // 改变图标
-        document.addEventListener('click', outsideClick);
-    } else {
-        tocElement.style.display = 'none';
-        tocIcon.textContent = '☰'; // 还原图标
-        document.removeEventListener('click', outsideClick);
+    if (tocElement) {
+        tocElement.style.display = tocElement.style.display === 'block' ? 'none' : 'block';
+        tocElement.style.transition = 'display 0.3s ease';
+        tocIcon.textContent = tocElement.style.display === 'block' ? '✖' : '☰';
     }
 }
 
@@ -107,4 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
     tocIcon.textContent = '☰'; // 使用 Unicode 字符作为图标
     tocIcon.onclick = toggleTOC;
     document.body.appendChild(tocIcon);
+
+    // 监听点击事件，点击非目录区域关闭目录
+    document.addEventListener('click', outsideClick);
 });
