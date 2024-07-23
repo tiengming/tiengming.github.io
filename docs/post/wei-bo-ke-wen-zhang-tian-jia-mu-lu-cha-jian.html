@@ -118,14 +118,10 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-k">function</span> <span class="pl-en">toggleTOC</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
    <span class="pl-k">var</span> <span class="pl-s1">tocElement</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.toc'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
    <span class="pl-k">var</span> <span class="pl-s1">tocIcon</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.toc-icon'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-   <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">tocElement</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">display</span> <span class="pl-c1">===</span> <span class="pl-s">'none'</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
-       <span class="pl-s1">tocElement</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">display</span> <span class="pl-c1">=</span> <span class="pl-s">'block'</span><span class="pl-kos">;</span>
-       <span class="pl-s1">tocIcon</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s">'✖'</span><span class="pl-kos">;</span> <span class="pl-c">// 改变图标</span>
-       <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'click'</span><span class="pl-kos">,</span> <span class="pl-s1">outsideClick</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-   <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
-       <span class="pl-s1">tocElement</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">display</span> <span class="pl-c1">=</span> <span class="pl-s">'none'</span><span class="pl-kos">;</span>
-       <span class="pl-s1">tocIcon</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s">'☰'</span><span class="pl-kos">;</span> <span class="pl-c">// 还原图标</span>
-       <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">removeEventListener</span><span class="pl-kos">(</span><span class="pl-s">'click'</span><span class="pl-kos">,</span> <span class="pl-s1">outsideClick</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+   <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">tocElement</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+       <span class="pl-s1">tocElement</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">display</span> <span class="pl-c1">=</span> <span class="pl-s1">tocElement</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">display</span> <span class="pl-c1">===</span> <span class="pl-s">'block'</span> ? <span class="pl-s">'none'</span> : <span class="pl-s">'block'</span><span class="pl-kos">;</span>
+       <span class="pl-s1">tocElement</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">transition</span> <span class="pl-c1">=</span> <span class="pl-s">'display 0.3s ease'</span><span class="pl-kos">;</span>
+       <span class="pl-s1">tocIcon</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s1">tocElement</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">display</span> <span class="pl-c1">===</span> <span class="pl-s">'block'</span> ? <span class="pl-s">'✖'</span> : <span class="pl-s">'☰'</span><span class="pl-kos">;</span>
    <span class="pl-kos">}</span>
 <span class="pl-kos">}</span>
 
@@ -154,6 +150,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-s">           overflow-y: auto;</span>
 <span class="pl-s">           z-index: 1000;</span>
 <span class="pl-s">           display: none; /* 默认不显示 */</span>
+<span class="pl-s">           transition: display 0.3s ease; /* 添加过渡动画 */</span>
 <span class="pl-s">       }</span>
 <span class="pl-s">       .toc a {</span>
 <span class="pl-s">           display: block;</span>
@@ -190,6 +187,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
    <span class="pl-s1">tocIcon</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s">'☰'</span><span class="pl-kos">;</span> <span class="pl-c">// 使用 Unicode 字符作为图标</span>
    <span class="pl-s1">tocIcon</span><span class="pl-kos">.</span><span class="pl-c1">onclick</span> <span class="pl-c1">=</span> <span class="pl-s1">toggleTOC</span><span class="pl-kos">;</span>
    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">tocIcon</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+   <span class="pl-c">// 监听点击事件，点击非目录区域关闭目录</span>
+   <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'click'</span><span class="pl-kos">,</span> <span class="pl-s1">outsideClick</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
 <p>js文件地址：<code class="notranslate">https://code.buxiantang.top/assets/articletoc.js</code>，可以直接引用</p></details></div>
 <div style="font-size:small;margin-top:8px;float:right;">🤞转载请注明出处🤞</div>
