@@ -9,7 +9,25 @@ function loadResource(type, attributes) {
 }
 
 function createTOC() {
-    // ... 保持不变
+    var tocElement = document.createElement('div');
+    tocElement.className = 'toc';
+    var contentContainer = document.getElementById('content');
+    contentContainer.appendChild(tocElement);
+
+    // 生成目录项
+    var headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+    headings.forEach(function(heading) {
+        if (!heading.id) {
+            heading.id = heading.textContent.trim().replace(/\s+/g, '-').toLowerCase();
+        }
+        var link = document.createElement('a');
+        link.href = '#' + heading.id;
+        link.textContent = heading.textContent;
+        link.className = 'toc-link';
+        var level = parseInt(heading.tagName.replace('H', ''), 10);
+        link.style.marginLeft = (level - 1) * 20 + 'px';
+        tocElement.appendChild(link);
+    });
 }
 
 function toggleTOC() {
