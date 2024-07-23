@@ -35,6 +35,7 @@ function toggleTOC() {
     var tocIcon = document.querySelector('.toc-icon');
     if (tocElement.style.display === 'none') {
         tocElement.style.display = 'block';
+        tocElement.style.transition = 'display 0.3s ease'; // 添加过渡动画
         tocIcon.textContent = '✖'; // 改变图标
         document.addEventListener('click', outsideClick);
     } else {
@@ -69,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
             overflow-y: auto;
             z-index: 1000;
             display: none; /* 默认不显示 */
+            transition: display 0.3s ease; /* 添加过渡动画 */
         }
         .toc a {
             display: block;
