@@ -11,11 +11,11 @@ function loadResource(type, attributes) {
 function createTOC() {
     var tocElement = document.createElement('div');
     tocElement.className = 'toc';
-    var contentContainer = document.getElementById('content');
+    var contentContainer = document.querySelector('.markdown-body');
     contentContainer.appendChild(tocElement);
 
     // 生成目录项
-    var headings = document.querySelectorAll('.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6');
+    var headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
     headings.forEach(function(heading) {
         if (!heading.id) {
             heading.id = heading.textContent.trim().replace(/\s+/g, '-').toLowerCase();
