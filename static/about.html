@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - Creative Designer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            animation: fadeInUp 1s ease-out 0.5s backwards;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-text {
+            max-width: 500px;
+            animation: fadeInRight 1s ease-out;
+        }
+
+        .skills {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .skill {
+            text-align: center;
+            width: 120px;
+            margin: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .skill-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #4a4a4a;
+        }
+
+        .contact {
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #555;
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Jane Doe</h1>
+            <p class="subtitle">Creative Designer & Web Developer</p>
+        </header>
+
+        <section class="profile">
+            <div class="profile-image">
+                <img src="https://via.placeholder.com/200" alt="Jane Doe">
+            </div>
+            <div class="profile-text">
+                <p>Hello! I'm Jane, a passionate designer and developer with over 5 years of experience creating beautiful and functional digital experiences. I love turning complex problems into simple, elegant solutions.</p>
+            </div>
+        </section>
+
+        <section class="skills">
+            <div class="skill">
+                <div class="skill-icon">🎨</div>
+                <p>UI/UX Design</p>
+            </div>
+            <div class="skill">
+                <div class="skill-icon">💻</div>
+                <p>Web Development</p>
+            </div>
+            <div class="skill">
+                <div class="skill-icon">📱</div>
+                <p>Mobile Apps</p>
+            </div>
+            <div class="skill">
+                <div class="skill-icon">🚀</div>
+                <p>SEO Optimization</p>
+            </div>
+        </section>
+
+        <section class="contact">
+            <a href="#" class="btn">Get in Touch</a>
+        </section>
+    </div>
+</body>
+</html>
