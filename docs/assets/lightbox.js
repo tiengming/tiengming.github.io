@@ -41,9 +41,20 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          z-index: 10000;
           opacity: 0;
           transition: opacity ${this.options.animationDuration}ms ease;
+          pointer-events: none;
+        }
+        .lb-lightbox-overlay.active {
+          pointer-events: auto;
+        }
+        .lb-lightbox-content-wrapper {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
         }
         .lb-lightbox-container {
           max-width: 90%;
@@ -151,6 +162,10 @@
     createLightbox() {
       this.overlay = document.createElement('div');
       this.overlay.className = 'lb-lightbox-overlay';
+      this.overlay.style.zIndex = '-1';
+
+      this.contentWrapper = document.createElement('div');
+      this.contentWrapper.className = 'lb-lightbox-content-wrapper';
 
       this.container = document.createElement('div');
       this.container.className = 'lb-lightbox-container';
@@ -171,10 +186,12 @@
       this.closeButton.innerHTML = '&times;';
 
       this.container.appendChild(this.image);
-      this.overlay.appendChild(this.container);
-      this.overlay.appendChild(this.prevButton);
-      this.overlay.appendChild(this.nextButton);
-      this.overlay.appendChild(this.closeButton);
+      this.contentWrapper.appendChild(this.container);
+      this.contentWrapper.appendChild(this.prevButton);
+      this.contentWrapper.appendChild(this.nextButton);
+      this.contentWrapper.appendChild(this.closeButton);
+
+      this.overlay.appendChild(this.contentWrapper);
 
       document.body.appendChild(this.overlay);
     }
@@ -204,6 +221,11 @@
     handleOverlayClick(event) {
       if (event.target === this.overlay && this.options.closeOnOverlayClick) {
         this.close();
+      } else if (!event.target.closest('.lb-lightbox-container')) {
+        const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
+        if (elementBelow) {
+          elementBelow.click();
+        }
       }
     }
 
@@ -250,6 +272,8 @@
 
     open() {
       this.isOpen = true;
+      this.overlay.style.zIndex = '10000';
+      this.overlay.classList.add('active');
       this.showImage();
       this.overlay.style.opacity = '1';
       document.body.style.overflow = 'hidden';
@@ -261,11 +285,13 @@
     close() {
       this.isOpen = false;
       this.overlay.style.opacity = '0';
+      this.overlay.classList.remove('active');
       document.body.style.overflow = '';
       setTimeout(() => {
         this.image.style.transform = '';
         this.zoomLevel = 1;
         this.isZoomed = false;
+        this.overlay.style.zIndex = '-1';
       }, this.options.animationDuration);
       if (typeof this.options.onClose === 'function') {
         this.options.onClose();
