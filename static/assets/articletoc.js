@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
             --toc-hover: #f6f8fa;
             --toc-icon-bg: #fff;
             --toc-icon-color: #ad6598;
-            --toc-icon-active-bg: #ad6598;
+            --toc-icon-active-bg: #6940a5;
             --toc-icon-active-color: #fff;
         }
 
@@ -58,8 +58,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 --toc-hover: #373e47;
                 --toc-icon-bg: #22272e;
                 --toc-icon-color: #ad6598;
-                --toc-icon-active-bg: #ad6598;
-                --toc-icon-active-color: #22272e;
+                --toc-icon-active-bg: #6940a5;
+                --toc-icon-active-color: #adbac7;
             }
         }
 
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function() {
             font-size: 24px;
             background-color: var(--toc-icon-bg);
             color: var(--toc-icon-color);
-            border: 1px solid var(--toc-border);
+            border: 2px solid var(--toc-icon-color);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -120,21 +120,22 @@ document.addEventListener("DOMContentLoaded", function() {
             justify-content: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.12);
             z-index: 1001;
-            transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+            transition: all 0.3s ease;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             outline: none;
         }
         .toc-icon:hover {
-            background-color: var(--toc-hover);
+            transform: scale(1.1);
         }
         .toc-icon:active {
-            transform: scale(0.95);
+            transform: scale(0.9);
         }
         .toc-icon.active {
-            transform: rotate(90deg);
             background-color: var(--toc-icon-active-bg);
             color: var(--toc-icon-active-color);
+            border-color: var(--toc-icon-active-bg);
+            transform: rotate(90deg);
         }
     `;
     loadResource('style', {css: css});
