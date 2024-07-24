@@ -1,7 +1,6 @@
 (function() {
-  // 创建CSS样式
-  var style = document.createElement('style');
-  style.innerHTML = `
+  // 使用const定义样式字符串，提高代码的可读性和可维护性
+  const lightboxStyles = `
     #lightbox {
       position: fixed;
       top: 50%;
@@ -54,22 +53,26 @@
       width: 100%;
     }
   `;
+
+  // 创建CSS样式并添加到文档中
+  let style = document.createElement('style');
+  style.innerHTML = lightboxStyles;
   document.head.appendChild(style);
 
-  // 创建灯箱容器
-  var lightboxContainer = document.createElement('div');
+  // 创建灯箱容器及相关元素
+  let lightboxContainer = document.createElement('div');
   lightboxContainer.id = 'lightbox';
 
-  var lightboxImage = document.createElement('img');
-  var closeButton = document.createElement('div');
+  let lightboxImage = document.createElement('img');
+  let closeButton = document.createElement('div');
   closeButton.innerHTML = '&times;';
   closeButton.className = 'close-btn';
 
-  var loadingIndicator = document.createElement('div');
+  let loadingIndicator = document.createElement('div');
   loadingIndicator.innerHTML = 'Loading...';
   loadingIndicator.className = 'loading';
 
-  var caption = document.createElement('div');
+  let caption = document.createElement('div');
   caption.className = 'caption';
 
   lightboxContainer.appendChild(lightboxImage);
@@ -78,8 +81,8 @@
   lightboxContainer.appendChild(caption);
   document.body.appendChild(lightboxContainer);
 
-  var currentImageIndex;
-  var images = document.querySelectorAll('img');
+  let currentImageIndex;
+  let images = document.querySelectorAll('img');
 
   // 显示灯箱
   function showLightbox(index) {
@@ -89,7 +92,7 @@
     lightboxImage.src = images[index].src;
     caption.innerHTML = images[index].alt || '';
     lightboxContainer.style.display = 'flex';
-    setTimeout(function() {
+    setTimeout(() => {
       lightboxContainer.classList.add('show');
     }, 10);
   }
@@ -97,41 +100,48 @@
   // 关闭灯箱
   function closeLightbox() {
     lightboxContainer.classList.remove('show');
-    setTimeout(function() {
+    setTimeout(() => {
       lightboxContainer.style.display = 'none';
     }, 500);
   }
 
   // 图片加载完成事件
-  lightboxImage.addEventListener('load', function() {
+  lightboxImage.addEventListener('load', () => {
     loadingIndicator.style.display = 'none';
     lightboxImage.style.display = 'block';
   });
 
-  // 图片点击事件
-  images.forEach(function(image, index) {
-    image.style.cursor = 'pointer';
-    image.addEventListener('click', function(event) {
+  // 图片加载失败事件
+  lightboxImage.addEventListener('error', () => {
+    console.error('Failed to load image');
+    loadingIndicator.style.display = 'none';
+    lightboxImage.style.display = 'block';
+    lightboxImage.src = 'error-image.png'; // 显示占位图或错误提示图片
+  });
+
+  // 事件委托，处理图片点击事件
+  document.addEventListener('click', event => {
+    if (event.target.tagName === 'IMG') {
       event.preventDefault();
-      showLightbox(index);
-    });
+      showLightbox(Array.from(images).indexOf(event.target));
+    }
   });
 
   // 关闭按钮点击事件
-  closeButton.addEventListener('click', function() {
+  closeButton.addEventListener('click', () => {
     closeLightbox();
   });
 
-  // 灯箱点击事件
-  lightboxContainer.addEventListener('click', function(e) {
-    if (e.target === lightboxContainer) {
+  // 灯箱点击事件，关闭灯箱
+  lightboxContainer.addEventListener('click', event => {
+    if (event.target === lightboxContainer) {
       closeLightbox();
     }
   });
 
-  // 键盘事件
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
+  // 键盘事件，按下esc键关闭灯箱
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
       closeLightbox();
     }
   });
