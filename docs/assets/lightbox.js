@@ -1,70 +1,105 @@
 (function() {
     // 创建并插入 CSS 样式
-    const style = document.createElement('style');
-    style.textContent = `
+    const css = `
         #lightbox {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.8);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 9999;
             opacity: 0;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
+            backdrop-filter: blur(20px);
         }
         #lightbox.show {
             opacity: 1;
         }
         #lightbox-content {
             position: relative;
-            max-width: 80%;
-            max-height: 80%;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         #lightbox img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transition: opacity 0.3s ease-out;
+            transition: transform 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
         }
         #lightbox-info {
             position: absolute;
-            bottom: -40px;
+            bottom: 20px;
             left: 0;
             right: 0;
-            color: white;
+            color: #fff;
             text-align: center;
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
         }
         #lightbox-nav {
             position: absolute;
-            right: -30px;
-            top: 50%;
-            transform: translateY(-50%);
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
         }
         .nav-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            margin: 5px 0;
+            margin: 0 5px;
             background-color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.3s ease;
         }
         .nav-dot.active {
-            background-color: white;
+            background-color: #fff;
         }
         .close-btn {
             position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
+            top: 20px;
+            right: 20px;
+            color: #fff;
             font-size: 30px;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        /* 白天模式下的样式 */
+        @media (prefers-color-scheme: light) {
+            #lightbox {
+                background-color: rgba(255, 255, 255, 0.9);
+            }
+            .nav-dot, .close-btn {
+                color: #333;
+            }
+        }
+
+        /* 暗黑模式下的样式 */
+        @media (prefers-color-scheme: dark) {
+            #lightbox {
+                background-color: rgba(0, 0, 0, 0.8);
+            }
+            .nav-dot, .close-btn {
+                color: #fff;
+            }
         }
     `;
+    const style = document.createElement('style');
+    style.textContent = css;
     document.head.appendChild(style);
 
     // 创建灯箱容器
@@ -97,8 +132,8 @@
 
     // 更新导航圆点状态
     const updateNavDots = () => {
-        navContainer.querySelectorAll('.nav-dot').forEach((dot, index) => 
-            dot.classList.toggle('active', index === currentImageIndex)
+        navContainer.querySelectorAll('.nav-dot').forEach(dot => 
+            dot.classList.toggle('active', parseInt(dot.dataset.index) === currentImageIndex)
         );
     };
 
@@ -114,10 +149,12 @@
     // 更新灯箱内容
     const updateLightboxContent = () => {
         lightboxImage.style.opacity = '0';
+        lightboxInfo.style.opacity = '0';
         setTimeout(() => {
             lightboxImage.src = images[currentImageIndex].src;
             lightboxInfo.textContent = images[currentImageIndex].alt || '';
             lightboxImage.style.opacity = '1';
+            lightboxInfo.style.opacity = '1';
         }, 300);
     };
 
@@ -126,7 +163,7 @@
         lightboxContainer.classList.remove('show');
         setTimeout(() => {
             lightboxContainer.style.display = 'none';
-        }, 300);
+        }, 500);
     };
 
     // 切换到上一张图片
@@ -173,7 +210,6 @@
                 showLightbox(parseInt(e.target.dataset.index));
             }
         });
-
         // 关闭按钮点击事件
         closeBtn.addEventListener('click', closeLightbox);
 
@@ -210,7 +246,7 @@
         let touchEndX = 0;
 
         lightboxContainer.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
+            touchStartX = e.touches[0].screenX;
         }, { passive: true });
 
         lightboxContainer.addEventListener('touchend', (e) => {
