@@ -197,7 +197,7 @@
     }
 
     bindEvents() {
-      document.addEventListener('click', this.handleImageClick.bind(this));
+      document.addEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.addEventListener('click', this.handleOverlayClick.bind(this));
       this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
       this.nextButton.addEventListener('click', this.showNextImage.bind(this));
@@ -212,6 +212,8 @@
     handleImageClick(event) {
       const clickedImage = event.target.closest('img');
       if (clickedImage && !this.isOpen) {
+        event.preventDefault(); // 阻止默认行为
+        event.stopPropagation(); // 阻止事件冒泡
         this.images = Array.from(document.querySelectorAll('.markdown-body img'));
         this.currentIndex = this.images.indexOf(clickedImage);
         this.open();
