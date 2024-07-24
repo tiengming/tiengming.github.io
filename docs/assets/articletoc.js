@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
             --toc-hover: #f6f8fa;
             --toc-icon-bg: #fff;
             --toc-icon-color: #ad6598;
-            --toc-icon-active-bg: #6940a5;
+            --toc-icon-active-bg: #813c85;
             --toc-icon-active-color: #fff;
         }
 
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 --toc-hover: #373e47;
                 --toc-icon-bg: #22272e;
                 --toc-icon-color: #ad6598;
-                --toc-icon-active-bg: #6940a5;
+                --toc-icon-active-bg: #813c85;
                 --toc-icon-active-color: #adbac7;
             }
         }
