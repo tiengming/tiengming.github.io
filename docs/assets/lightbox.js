@@ -30,7 +30,7 @@
     createStyles() {
       const style = document.createElement('style');
       style.textContent = `
-        .lightbox-overlay {
+        .lb-lightbox-overlay {
           position: fixed;
           top: 0;
           left: 0;
@@ -41,17 +41,17 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          z-index: 9999;
+          z-index: 10000;
           opacity: 0;
           transition: opacity ${this.options.animationDuration}ms ease;
         }
-        .lightbox-container {
+        .lb-lightbox-container {
           max-width: 90%;
           max-height: 90%;
           position: relative;
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
         }
-        .lightbox-image {
+        .lb-lightbox-image {
           max-width: 100%;
           max-height: 100%;
           object-fit: contain;
@@ -59,7 +59,7 @@
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
         }
-        .lightbox-nav {
+        .lb-lightbox-nav {
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
@@ -77,20 +77,20 @@
           transition: all 0.3s ease;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .lightbox-nav:hover {
+        .lb-lightbox-nav:hover {
           background-color: rgba(255, 255, 255, 1);
           transform: translateY(-50%) scale(1.1);
         }
-        .lightbox-nav:active {
+        .lb-lightbox-nav:active {
           transform: translateY(-50%) scale(0.9);
         }
-        .lightbox-prev {
+        .lb-lightbox-prev {
           left: 20px;
         }
-        .lightbox-next {
+        .lb-lightbox-next {
           right: 20px;
         }
-        .lightbox-close {
+        .lb-lightbox-close {
           position: absolute;
           top: 20px;
           right: 20px;
@@ -108,39 +108,39 @@
           transition: all 0.3s ease;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .lightbox-close:hover {
+        .lb-lightbox-close:hover {
           background-color: rgba(255, 255, 255, 1);
           transform: scale(1.1);
         }
-        .lightbox-close:active {
+        .lb-lightbox-close:active {
           transform: scale(0.9);
         }
         @media (max-width: 768px) {
-          .lightbox-nav {
+          .lb-lightbox-nav {
             width: 40px;
             height: 40px;
             font-size: 20px;
           }
-          .lightbox-close {
+          .lb-lightbox-close {
             width: 35px;
             height: 35px;
             font-size: 20px;
           }
         }
         @media (prefers-color-scheme: dark) {
-          .lightbox-overlay {
+          .lb-lightbox-overlay {
             background-color: rgba(0, 0, 0, 0.9);
           }
-          .lightbox-nav,
-          .lightbox-close {
+          .lb-lightbox-nav,
+          .lb-lightbox-close {
             background-color: rgba(50, 50, 50, 0.8);
             color: #fff;
           }
-          .lightbox-nav:hover,
-          .lightbox-close:hover {
+          .lb-lightbox-nav:hover,
+          .lb-lightbox-close:hover {
             background-color: rgba(70, 70, 70, 1);
           }
-          .lightbox-image {
+          .lb-lightbox-image {
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
           }
         }
@@ -150,24 +150,24 @@
 
     createLightbox() {
       this.overlay = document.createElement('div');
-      this.overlay.className = 'lightbox-overlay';
+      this.overlay.className = 'lb-lightbox-overlay';
 
       this.container = document.createElement('div');
-      this.container.className = 'lightbox-container';
+      this.container.className = 'lb-lightbox-container';
 
       this.image = document.createElement('img');
-      this.image.className = 'lightbox-image';
+      this.image.className = 'lb-lightbox-image';
 
       this.prevButton = document.createElement('button');
-      this.prevButton.className = 'lightbox-nav lightbox-prev';
+      this.prevButton.className = 'lb-lightbox-nav lb-lightbox-prev';
       this.prevButton.innerHTML = '&#10094;';
 
       this.nextButton = document.createElement('button');
-      this.nextButton.className = 'lightbox-nav lightbox-next';
+      this.nextButton.className = 'lb-lightbox-nav lb-lightbox-next';
       this.nextButton.innerHTML = '&#10095;';
 
       this.closeButton = document.createElement('button');
-      this.closeButton.className = 'lightbox-close';
+      this.closeButton.className = 'lb-lightbox-close';
       this.closeButton.innerHTML = '&times;';
 
       this.container.appendChild(this.image);
@@ -195,7 +195,7 @@
     handleImageClick(event) {
       const clickedImage = event.target.closest('img');
       if (clickedImage && !this.isOpen) {
-        this.images = Array.from(document.querySelectorAll('img'));
+        this.images = Array.from(document.querySelectorAll('.markdown-body img'));
         this.currentIndex = this.images.indexOf(clickedImage);
         this.open();
       }
