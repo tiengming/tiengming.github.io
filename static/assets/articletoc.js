@@ -96,9 +96,15 @@ document.addEventListener("DOMContentLoaded", function() {
             box-shadow: 0 1px 3px rgba(0,0,0,0.12);
             z-index: 1001;
             transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
         .toc-icon:hover {
             background-color: #f6f8fa;
+        }
+        .toc-icon:active {
+            transform: scale(0.95);
         }
         .toc-icon.active {
             transform: rotate(90deg);
