@@ -10,8 +10,7 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="
-## 演示
+<meta name="description" content="## 演示
 
 |   |   |   |
 | :---: | :---: | :---: |
@@ -24,8 +23,7 @@
 
 本项目基于：[cloudflare workers应用系列之6:AI 生成图片 Text to Image App](https://51xmi.com/post0715203336)完成二次开发。">
 <meta property="og:title" content="基于CloudFlare workers应用进行AI绘图">
-<meta property="og:description" content="
-## 演示
+<meta property="og:description" content="## 演示
 
 |   |   |   |
 | :---: | :---: | :---: |
@@ -133,7 +131,10 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>创建workers。</li>
 <li>编辑代码，将下方的代码覆盖添加到workers中。</li>
 </ol>
-<pre class="notranslate"><code class="notranslate">// worker.ts
+<details>
+  <summary>点击查看代码</summary>
+<pre class="notranslate"><code class="notranslate">```
+// worker.ts
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -554,7 +555,9 @@ export default {
     });
   },
 };
+```
 </code></pre>
+</details>
 <ol start="5">
 <li>添加自定义域，你的自定义域就是访问地址</li>
 </ol>
@@ -564,6 +567,8 @@ export default {
 <li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox"> 可选上传图床，分享图片</li>
 <li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox"> ...</li>
 </ul>
+<p>另外，我也提供AI绘图服务。详见咸鱼店铺：<br>
+<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/a5558484db6f38ad2bb470e42eb8398dc9c4367921e02b93c43a6d0cb39cc06b/68747470733a2f2f696d67686f7374696e672e62757869616e74616e672e746f702f66696c652f3865666639643366633533386264316463386530312e6a7067"><img src="https://camo.githubusercontent.com/a5558484db6f38ad2bb470e42eb8398dc9c4367921e02b93c43a6d0cb39cc06b/68747470733a2f2f696d67686f7374696e672e62757869616e74616e672e746f702f66696c652f3865666639643366633533386264316463386530312e6a7067" alt="8eff9d3fc538bd1dc8e01.jpg" data-canonical-src="https://imghosting.buxiantang.top/file/8eff9d3fc538bd1dc8e01.jpg" style="max-width: 100%;"></a></p>
 <h3>许可证</h3>
 <p>本项目遵循<a href="https://www.apache.org/licenses/LICENSE-2.0" rel="nofollow">Apache-2.0</a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;">🤞转载请注明出处🤞</div>
