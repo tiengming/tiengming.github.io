@@ -47,9 +47,8 @@
         }
         #lightbox-nav {
             position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 10px; /* 固定在右边 */
+            bottom: 10px; /* 固定在底部 */
             display: flex;
             justify-content: center;
         }
@@ -68,7 +67,7 @@
         .close-btn {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 10px; /* 固定在右边 */
             color: #fff;
             font-size: 30px;
             cursor: pointer;
@@ -81,7 +80,7 @@
         /* 白天模式下的样式 */
         @media (prefers-color-scheme: light) {
             #lightbox {
-                background-color: rgba(255, 255, 255, 0.9);
+                background-color: rgba(0, 0, 0, 0.8);
             }
             .nav-dot, .close-btn {
                 color: #333;
@@ -91,7 +90,7 @@
         /* 暗黑模式下的样式 */
         @media (prefers-color-scheme: dark) {
             #lightbox {
-                background-color: rgba(0, 0, 0, 0.8);
+                background-color: rgba(255, 255, 255, 0.8);
             }
             .nav-dot, .close-btn {
                 color: #fff;
@@ -210,6 +209,7 @@
                 showLightbox(parseInt(e.target.dataset.index));
             }
         });
+
         // 关闭按钮点击事件
         closeBtn.addEventListener('click', closeLightbox);
 
