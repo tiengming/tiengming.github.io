@@ -39,14 +39,38 @@ function toggleTOC() {
 document.addEventListener("DOMContentLoaded", function() {
     createTOC();
     const css = `
+        :root {
+            --toc-bg: #fff;
+            --toc-border: #e1e4e8;
+            --toc-text: #24292e;
+            --toc-hover: #f6f8fa;
+            --toc-icon-bg: #fff;
+            --toc-icon-color: #ad6598;
+            --toc-icon-active-bg: #ad6598;
+            --toc-icon-active-color: #fff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --toc-bg: #2d333b;
+                --toc-border: #444c56;
+                --toc-text: #adbac7;
+                --toc-hover: #373e47;
+                --toc-icon-bg: #22272e;
+                --toc-icon-color: #ad6598;
+                --toc-icon-active-bg: #ad6598;
+                --toc-icon-active-color: #22272e;
+            }
+        }
+
         .toc {
             position: fixed;
             bottom: 60px;
             right: 20px;
             width: 250px;
             max-height: 70vh;
-            background-color: #fff;
-            border: 1px solid #e1e4e8;
+            background-color: var(--toc-bg);
+            border: 1px solid var(--toc-border);
             border-radius: 6px;
             padding: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -64,19 +88,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         .toc a {
             display: block;
-            color: #24292e;
+            color: var(--toc-text);
             text-decoration: none;
             padding: 5px 0;
             font-size: 14px;
             line-height: 1.5;
-            border-bottom: 1px solid #e1e4e8;
+            border-bottom: 1px solid var(--toc-border);
             transition: background-color 0.2s ease, padding-left 0.2s ease;
         }
         .toc a:last-child {
             border-bottom: none;
         }
         .toc a:hover {
-            background-color: #f6f8fa;
+            background-color: var(--toc-hover);
             padding-left: 5px;
         }
         .toc-icon {
@@ -85,8 +109,9 @@ document.addEventListener("DOMContentLoaded", function() {
             right: 20px;
             cursor: pointer;
             font-size: 24px;
-            background-color: #fff;
-            border: 1px solid #e1e4e8;
+            background-color: var(--toc-icon-bg);
+            color: var(--toc-icon-color);
+            border: 1px solid var(--toc-border);
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -101,15 +126,15 @@ document.addEventListener("DOMContentLoaded", function() {
             outline: none;
         }
         .toc-icon:hover {
-            background-color: #f6f8fa;
+            background-color: var(--toc-hover);
         }
         .toc-icon:active {
             transform: scale(0.95);
         }
         .toc-icon.active {
             transform: rotate(90deg);
-            background-color: #6940a5;
-            color: #fff;
+            background-color: var(--toc-icon-active-bg);
+            color: var(--toc-icon-active-color);
         }
     `;
     loadResource('style', {css: css});
