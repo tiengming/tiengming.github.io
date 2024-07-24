@@ -86,7 +86,7 @@
                 color: #333;
             }
         }
-
+        
         /* 暗黑模式下的样式 */
         @media (prefers-color-scheme: dark) {
             #lightbox {
@@ -96,119 +96,6 @@
                 color: #fff;
             }
         }
-    `;
-    const style = document.createElement('style');
-    style.textContent = css;
-    document.head.appendChild(style);
-
-    // 创建灯箱容器
-    const lightboxContainer = document.createElement('div');
-    lightboxContainer.id = 'lightbox';
-    lightboxContainer.innerHTML = `
-        <div id="lightbox-content">
-            <img src="" alt="">
-            <div id="lightbox-info"></div>
-            <div id="lightbox-nav"></div>
-            <div class="close-btn">&times;</div>
-        </div>
-    `;
-    document.body.appendChild(lightboxContainer);
-
-    const lightboxImage = lightboxContainer.querySelector('img');
-    const lightboxInfo = lightboxContainer.querySelector('#lightbox-info');
-    const navContainer = lightboxContainer.querySelector('#lightbox-nav');
-    const closeBtn = lightboxContainer.querySelector('.close-btn');
-
-    let currentImageIndex;
-    const images = document.querySelectorAll('img');
-
-    // 创建导航圆点
-    const createNavDots = () => {
-        navContainer.innerHTML = Array.from(images).map((_, index) => 
-            `<div class="nav-dot" data-index="${index}"></div>`
-        ).join('');
-    };
-
-    // 更新导航圆点状态
-    const updateNavDots = () => {
-        navContainer.querySelectorAll('.nav-dot').forEach(dot => 
-            dot.classList.toggle('active', parseInt(dot.dataset.index) === currentImageIndex)
-        );
-    };
-
-    // 显示灯箱
-    const showLightbox = (index) => {
-        currentImageIndex = index;
-        updateLightboxContent();
-        lightboxContainer.style.display = 'flex';
-        requestAnimationFrame(() => lightboxContainer.classList.add('show'));
-        updateNavDots();
-    };
-
-    // 更新灯箱内容
-    const updateLightboxContent = () => {
-        lightboxImage.style.opacity = '0';
-        lightboxInfo.style.opacity = '0';
-        setTimeout(() => {
-            lightboxImage.src = images[currentImageIndex].src;
-            lightboxInfo.textContent = images[currentImageIndex].alt || '';
-            lightboxImage.style.opacity = '1';
-            lightboxInfo.style.opacity = '1';
-        }, 300);
-    };
-
-    // 关闭灯箱
-    const closeLightbox = () => {
-        lightboxContainer.classList.remove('show');
-        setTimeout(() => {
-            lightboxContainer.style.display = 'none';
-        }, 500);
-    };
-
-    // 切换到上一张图片
-    const showPreviousImage = () => {
-        if (currentImageIndex > 0) {
-            currentImageIndex--;
-            updateLightboxContent();
-            updateNavDots();
-        }
-    };
-
-    // 切换到下一张图片
-    const showNextImage = () => {
-        if (currentImageIndex < images.length - 1) {
-            currentImageIndex++;
-            updateLightboxContent();
-            updateNavDots();
-        }
-    };
-
-    // 防抖函数
-    const debounce = (func, delay) => {
-        let timeoutId;
-        return (...args) => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => func.apply(this, args), delay);
-        };
-    };
-
-    // 事件监听器
-    const addEventListeners = () => {
-        // 图片点击事件
-        images.forEach((image, index) => {
-            image.style.cursor = 'pointer';
-            image.addEventListener('click', (e) => {
-                e.preventDefault();
-                showLightbox(index);
-            });
-        });
-
-        // 导航圆点点击事件（使用事件委托）
-        navContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('nav-dot')) {
-                showLightbox(parseInt(e.target.dataset.index));
-            }
-        });
 
         // 关闭按钮点击事件
         closeBtn.addEventListener('click', closeLightbox);
