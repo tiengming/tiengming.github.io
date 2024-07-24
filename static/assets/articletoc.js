@@ -95,13 +95,15 @@ document.addEventListener("DOMContentLoaded", function() {
             justify-content: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.12);
             z-index: 1001;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
         }
         .toc-icon:hover {
             background-color: #f6f8fa;
         }
         .toc-icon.active {
             transform: rotate(90deg);
+            background-color: #6940a5;
+            color: #fff;
         }
     `;
     loadResource('style', {css: css});
