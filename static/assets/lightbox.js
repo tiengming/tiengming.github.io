@@ -160,15 +160,15 @@
       this.overlay.appendChild(this.contentWrapper);
       document.body.appendChild(this.overlay);
 
+      // 添加事件监听器
       this.closeButton.addEventListener('click', this.close.bind(this));
+      this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
+      this.nextButton.addEventListener('click', this.showNextImage.bind(this));
     }
 
     bindEvents() {
       document.addEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.addEventListener('click', this.handleOverlayClick.bind(this));
-      this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
-      this.nextButton.addEventListener('click', this.showNextImage.bind(this));
-      this.closeButton.addEventListener('click', this.close.bind(this));
       document.addEventListener('keydown', this.handleKeyDown.bind(this));
       this.overlay.addEventListener('wheel', this.handleWheel.bind(this));
       this.overlay.addEventListener('touchstart', this.handleTouchStart.bind(this));
@@ -338,9 +338,6 @@
     unbindEvents() {
       document.removeEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.removeEventListener('click', this.handleOverlayClick.bind(this));
-      this.prevButton.removeEventListener('click', this.showPreviousImage.bind(this));
-      this.nextButton.removeEventListener('click', this.showNextImage.bind(this));
-      this.closeButton.removeEventListener('click', this.close.bind(this));
       document.removeEventListener('keydown', this.handleKeyDown.bind(this));
       this.overlay.removeEventListener('wheel', this.handleWheel.bind(this));
       this.overlay.removeEventListener('touchstart', this.handleTouchStart.bind(this));
