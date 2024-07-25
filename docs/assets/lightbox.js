@@ -13,11 +13,9 @@
       this.images = [];
       this.currentIndex = 0;
       this.isOpen = false;
-      this.isZoomed = false;
       this.zoomLevel = 1;
       this.touchStartX = 0;
       this.touchEndX = 0;
-      this.touchStartY = 0;
       this.wheelTimer = null;
       this.preloadedImages = {}; // 存储预加载的图片对象
 
@@ -68,14 +66,14 @@
         }
         .lb-lightbox-image-wrapper {
           max-height: 100%;
-          overflow-y: auto;
-          overflow-x: hidden;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
         .lb-lightbox-image {
           max-width: 100%;
+          max-height: 100%;
           height: auto;
           object-fit: contain;
           border-radius: 8px;
@@ -115,7 +113,7 @@
     createLightbox() {
       this.overlay = document.createElement('div');
       this.overlay.className = 'lb-lightbox-overlay';
-      this.overlay.style.zIndex = '-1';
+      this.overlay.style.zIndex = '10000';
 
       this.contentWrapper = document.createElement('div');
       this.contentWrapper.className = 'lb-lightbox-content-wrapper';
@@ -200,25 +198,25 @@
     }
 
     handleWheel(event) {
-        event.preventDefault();
-    
-        if (event.ctrlKey) {
-            // 如果按住 Ctrl 键，执行缩放
-            this.zoomLevel += event.deltaY > 0 ? -0.1 : 0.1; // 负值表示缩小，正值表示放大
-            this.zoomLevel = Math.max(1, this.zoomLevel); // 确保缩放级别不小于 1
-            this.image.style.transform = `scale(${this.zoomLevel})`; // 应用缩放
-        } else {
-            // 不按 Ctrl 键，切换图片
-            clearTimeout(this.wheelTimer);
-            this.wheelTimer = setTimeout(() => {
-                const delta = Math.sign(event.deltaY);
-                if (delta > 0) {
-                    this.showNextImage();
-                } else {
-                    this.showPreviousImage();
-                }
-            }, 50);
-        }
+      event.preventDefault();
+
+      if (event.ctrlKey) {
+        // 如果按住 Ctrl 键，执行缩放
+        this.zoomLevel += event.deltaY > 0 ? -0.1 : 0.1; // 负值表示缩小，正值表示放大
+        this.zoomLevel = Math.max(1, this.zoomLevel); // 确保缩放级别不小于 1
+        this.image.style.transform = `scale(${this.zoomLevel})`; // 应用缩放
+      } else {
+        // 不按 Ctrl 键，切换图片
+        clearTimeout(this.wheelTimer);
+        this.wheelTimer = setTimeout(() => {
+          const delta = Math.sign(event.deltaY);
+          if (delta > 0) {
+            this.showNextImage();
+          } else {
+            this.showPreviousImage();
+          }
+        }, 50);
+      }
     }
 
     handleTouchStart(event) {
@@ -238,7 +236,6 @@
 
     open() {
       this.isOpen = true;
-      this.overlay.style.zIndex = '10000';
       this.overlay.classList.add('active');
       this.showImage(this.images[this.currentIndex].src);
       this.overlay.style.opacity = '1';
@@ -275,26 +272,24 @@
     }
 
     showImage(imgSrc) {
-        this.image.style.opacity = '0'; // 开始时设为透明
-    
-        const newImage = new Image();
-        newImage.src = imgSrc;
-    
-        newImage.onload = () => {
-            this.image.src = imgSrc;
-            this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
-            this.image.style.opacity = '1'; // 显示新图片
-    
-            // 确保图片完全显示
-            this.image.style.maxWidth = '100%';
-            this.image.style.maxHeight = '100%';
-    
-            this.preloadImages(); // 预加载前后图片
-        };
-    
-        newImage.onerror = () => {
-            console.error('Failed to load image:', imgSrc);
-        };
+      this.image.style.opacity = '0'; // 开始时设为透明
+
+      const newImage = new Image();
+      newImage.src = imgSrc;
+
+      newImage.onload = () => {
+        this.image.src = imgSrc;
+        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
+        this.image.style.opacity = '1'; // 显示新图片
+
+        // 确保图片完全显示
+        this.image.style.transform = 'scale(1)'; // 重置缩放
+        this.preloadImages(); // 预加载前后图片
+      };
+
+      newImage.onerror = () => {
+        console.error('Failed to load image:', imgSrc);
+      };
     }
 
     preloadImages() {
