@@ -65,11 +65,11 @@
           overflow: hidden;
         }
         .lb-lightbox-image-wrapper {
-          max-height: 100%;
-          overflow: hidden;
           display: flex;
           justify-content: center;
           align-items: center;
+          max-height: 100%;
+          overflow: hidden; /* 确保不超出容器 */
         }
         .lb-lightbox-image {
           max-width: 100%;
@@ -284,31 +284,37 @@
 
         // 确保图片完全显示
         this.image.style.transform = 'scale(1)'; // 重置缩放
-        this.preloadImages(); // 预加载前后图片
+
+        // 预加载前后图片
+        this.preloadImages(); 
       };
 
       newImage.onerror = () => {
         console.error('Failed to load image:', imgSrc);
+        // 处理预加载失败的情况
       };
     }
 
     preloadImages() {
-      const preloadNext = (this.currentIndex + 1) % this.images.length;
-      const preloadPrev = (this.currentIndex - 1 + this.images.length) % this.images.length;
+      const preloadNext = this.currentIndex + 1;
+      const preloadPrev = this.currentIndex - 1;
 
-      this.preloadedImages[preloadNext] = new Image();
-      this.preloadedImages[preloadPrev] = new Image();
+      // 仅当索引有效时才进行预加载
+      if (preloadNext < this.images.length) {
+        this.preloadedImages[preloadNext] = new Image();
+        this.preloadedImages[preloadNext].src = this.images[preloadNext].src;
+        this.preloadedImages[preloadNext].onerror = () => {
+          console.error('Failed to preload next image');
+        };
+      }
 
-      this.preloadedImages[preloadNext].src = this.images[preloadNext].src;
-      this.preloadedImages[preloadPrev].src = this.images[preloadPrev].src;
-
-      // 错误处理
-      this.preloadedImages[preloadNext].onerror = () => {
-        console.error('Failed to preload next image');
-      };
-      this.preloadedImages[preloadPrev].onerror = () => {
-        console.error('Failed to preload previous image');
-      };
+      if (preloadPrev >= 0) {
+        this.preloadedImages[preloadPrev] = new Image();
+        this.preloadedImages[preloadPrev].src = this.images[preloadPrev].src;
+        this.preloadedImages[preloadPrev].onerror = () => {
+          console.error('Failed to preload previous image');
+        };
+      }
     }
 
     clearPreloadedImages() {
