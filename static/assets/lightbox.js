@@ -397,34 +397,33 @@
     }
 
     showImage(imgSrc) {
-
-    // 隐藏页面滚动条
+      // 隐藏页面滚动条
       document.body.style.overflow = 'hidden';
-
+    
       // 获取当前窗口的高度并设置灯箱容器的最大高度
       const windowHeight = window.innerHeight;
       this.container.style.maxHeight = `${windowHeight * 0.9}px`; // 调整系数以留出顶部导航等空间
-
+    
       // 设置图片容器的样式以适应内容
       this.image.style.objectFit = 'contain'; // 保持图片宽高比
       this.image.style.opacity = '0'; // 初始化透明度便于淡入效果
-
+    
       // 如果之前有加载图片，先清除
       if (this.currentImage) {
         this.image.src = ''; // 清除现有图片
       }
-
-      // 动态加载新图片
+    
+      // 创建一个新的Image对象来加载图片
       const newImage = new Image();
       newImage.onload = () => {
-        // 更新当前显示的图片源
+        // 图片加载完成后，更新当前显示的图片源
         this.image.src = imgSrc;
-
-        // 图片加载完成后，应用淡入效果
-        setTimeout(() => {
-          this.image.style.opacity = '1';
-        }, 50); // 小延迟确保图片加载完成再淡入
-
+        this.currentImage = imgSrc;
+    
+        // 应用淡入效果
+        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
+        this.image.style.opacity = '1';
+    
         // 根据图片实际尺寸调整滚动条
         if (newImage.height > this.container.clientHeight) {
           this.imageWrapper.style.overflowY = 'auto'; // 显示滚动条
@@ -432,16 +431,45 @@
           this.imageWrapper.style.overflowY = 'hidden'; // 隐藏滚动条
         }
       };
-
-      newImage.src = imgSrc; // 开始加载图片
-      this.currentImage = imgSrc; // 记录当前显示的图片
+    
+      newImage.onerror = () => {
+        // 图片加载失败时的处理
+        console.error('Failed to load image:', imgSrc);
+        // 可以在这里添加更多的错误处理逻辑，例如显示一个错误消息
+      };
+    
+      // 开始加载图片
+      newImage.src = imgSrc;
+    
+      // 预加载前后图片
+      this.preloadImages();
     }
+    
     preloadImages() {
+      // 计算前后图片的索引
       const preloadNext = (this.currentIndex + 1) % this.images.length;
       const preloadPrev = (this.currentIndex - 1 + this.images.length) % this.images.length;
-      new Image().src = this.images[preloadNext].src;
-      new Image().src = this.images[preloadPrev].src;
+    
+      // 创建新的Image对象来预加载图片
+      const preloadImageNext = new Image();
+      const preloadImagePrev = new Image();
+    
+      // 添加错误处理
+      preloadImageNext.onerror = preloadImagePrev.onerror = () => {
+        console.error('Failed to preload image');
+      };
+    
+      // 开始预加载前后图片
+      preloadImageNext.src = this.images[preloadNext].src;
+      preloadImagePrev.src = this.images[preloadPrev].src;
+    
+      // 当图片不再需要时，可以考虑清除预加载的图片以释放内存
+      // 例如，在灯箱关闭时清除预加载的图片
+      // this.clearPreloadedImages = () => {
+      //   preloadImageNext.src = preloadImagePrev.src = '';
+      // };
     }
+    
   }
 
   // 将 Lightbox 类添加到全局对象
