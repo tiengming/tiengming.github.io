@@ -18,7 +18,6 @@
       this.touchStartX = 0;
       this.touchEndX = 0;
       this.wheelTimer = null;
-      this.initialPinchDistance = 0;
 
       this.init();
     }
@@ -63,12 +62,11 @@
           max-height: 90%;
           position: relative;
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
+          overflow: auto;
         }
         .lb-lightbox-image {
           max-width: 100%;
-          max-height: 100%;
-          width: auto;
-          height: auto;
+          max-height: none;
           object-fit: contain;
           border-radius: 8px;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -91,7 +89,6 @@
           cursor: pointer;
           transition: all 0.3s ease;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
         }
         .lb-lightbox-nav:hover {
           background-color: rgba(255, 255, 255, 1);
@@ -99,20 +96,6 @@
         }
         .lb-lightbox-nav:active {
           transform: translateY(-50%) scale(0.9);
-        }
-        .lb-lightbox-nav::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: currentColor;
-          opacity: 0.2;
-          transition: opacity 0.3s ease;
-        }
-        .lb-lightbox-nav:hover::before {
-          opacity: 0.3;
         }
         .lb-lightbox-prev {
           left: 20px;
@@ -137,7 +120,6 @@
           cursor: pointer;
           transition: all 0.3s ease;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
         }
         .lb-lightbox-close:hover {
           background-color: rgba(255, 255, 255, 1);
@@ -145,36 +127,6 @@
         }
         .lb-lightbox-close:active {
           transform: scale(0.9);
-        }
-        .lb-lightbox-close::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: currentColor;
-          opacity: 0.2;
-          transition: opacity 0.3s ease;
-        }
-        .lb-lightbox-close:hover::before {
-          opacity: 0.3;
-        }
-        .lb-lightbox-loading {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 40px;
-          height: 40px;
-          border: 4px solid rgba(255, 255, 255, 0.3);
-          border-radius: 50%;
-          border-top: 4px solid #fff;
-          animation: lb-spin 1s linear infinite;
-        }
-        @keyframes lb-spin {
-          0% { transform: translate(-50%, -50%) rotate(0deg); }
-          100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
         @media (max-width: 768px) {
           .lb-lightbox-nav {
@@ -213,8 +165,6 @@
       this.overlay = document.createElement('div');
       this.overlay.className = 'lb-lightbox-overlay';
       this.overlay.style.zIndex = '-1';
-      this.overlay.setAttribute('role', 'dialog');
-      this.overlay.setAttribute('aria-label', 'Image lightbox');
 
       this.contentWrapper = document.createElement('div');
       this.contentWrapper.className = 'lb-lightbox-content-wrapper';
@@ -228,28 +178,20 @@
       this.prevButton = document.createElement('button');
       this.prevButton.className = 'lb-lightbox-nav lb-lightbox-prev';
       this.prevButton.innerHTML = '&#10094;';
-      this.prevButton.setAttribute('aria-label', 'Previous image');
 
       this.nextButton = document.createElement('button');
       this.nextButton.className = 'lb-lightbox-nav lb-lightbox-next';
       this.nextButton.innerHTML = '&#10095;';
-      this.nextButton.setAttribute('aria-label', 'Next image');
 
       this.closeButton = document.createElement('button');
       this.closeButton.className = 'lb-lightbox-close';
       this.closeButton.innerHTML = '&times;';
-      this.closeButton.setAttribute('aria-label', 'Close lightbox');
-
-      this.loadingIndicator = document.createElement('div');
-      this.loadingIndicator.className = 'lb-lightbox-loading';
-      this.loadingIndicator.style.display = 'none';
 
       this.container.appendChild(this.image);
       this.contentWrapper.appendChild(this.container);
       this.contentWrapper.appendChild(this.prevButton);
       this.contentWrapper.appendChild(this.nextButton);
       this.contentWrapper.appendChild(this.closeButton);
-      this.contentWrapper.appendChild(this.loadingIndicator);
 
       this.overlay.appendChild(this.contentWrapper);
 
@@ -304,25 +246,6 @@
         case 'Escape':
           this.close();
           break;
-        case 'Tab':
-          event.preventDefault();
-          const focusableElements = this.overlay.querySelectorAll('button');
-          const firstElement = focusableElements[0];
-          const lastElement = focusableElements[focusableElements.length - 1];
-          if (event.shiftKey) {
-            if (document.activeElement === firstElement) {
-              lastElement.focus();
-            } else {
-              (document.activeElement.previousElementSibling || lastElement).focus();
-            }
-          } else {
-            if (document.activeElement === lastElement) {
-              firstElement.focus();
-            } else {
-              (document.activeElement.nextElementSibling || firstElement).focus();
-            }
-          }
-          break;
       }
     }
 
@@ -341,43 +264,22 @@
     }
 
     handleTouchStart(event) {
-      if (event.touches.length === 2) {
-        this.initialPinchDistance = this.getPinchDistance(event);
-      } else {
-        this.touchStartX = event.touches[0].clientX;
-      }
+      this.touchStartX = event.touches[0].clientX;
     }
 
     handleTouchMove(event) {
-      if (event.touches.length === 2) {
-        const currentPinchDistance = this.getPinchDistance(event);
-        const scale = currentPinchDistance / this.initialPinchDistance;
-        this.zoom(scale - 1);
-      } else {
-        this.touchEndX = event.touches[0].clientX;
-      }
+      this.touchEndX = event.touches[0].clientX;
     }
 
     handleTouchEnd() {
-      if (this.touchStartX && this.touchEndX) {
-        const difference = this.touchStartX - this.touchEndX;
-        if (Math.abs(difference) > 50) {
-          if (difference > 0) {
-            this.showNextImage();
-          } else {
-            this.showPreviousImage();
-          }
+      const difference = this.touchStartX - this.touchEndX;
+      if (Math.abs(difference) > 50) {
+        if (difference > 0) {
+          this.showNextImage();
+        } else {
+          this.showPreviousImage();
         }
       }
-      this.touchStartX = 0;
-      this.touchEndX = 0;
-    }
-
-    getPinchDistance(event) {
-      return Math.hypot(
-        event.touches[0].clientX - event.touches[1].clientX,
-        event.touches[0].clientY - event.touches[1].clientY
-      );
     }
 
     open() {
@@ -401,9 +303,7 @@
         this.image.style.transform = '';
         this.zoomLevel = 1;
         this.isZoomed = false;
-        setTimeout(() => {
-          this.overlay.style.zIndex = '-1';
-        }, 50);
+        this.overlay.style.zIndex = '-1';
       }, this.options.animationDuration);
       if (typeof this.options.onClose === 'function') {
         this.options.onClose();
@@ -423,17 +323,17 @@
         this.showImage();
       }
     }
+
     showImage() {
       const imgSrc = this.images[this.currentIndex].src;
       this.image.style.opacity = '0';
-      this.showLoadingIndicator();
       
       const newImage = new Image();
       newImage.src = imgSrc;
       newImage.onload = () => {
-        this.hideLoadingIndicator();
         this.image.src = imgSrc;
         this.image.style.opacity = '1';
+        this.container.scrollTop = 0;
       };
 
       this.prevButton.style.display = this.currentIndex > 0 ? '' : 'none';
@@ -446,35 +346,11 @@
       this.preloadImages();
     }
 
-    zoom(factor) {
-      const targetZoom = Math.max(1, Math.min(this.zoomLevel + factor, 3));
-      const animate = () => {
-        this.zoomLevel += (targetZoom - this.zoomLevel) * 0.1;
-        this.image.style.transform = `scale(${this.zoomLevel})`;
-        if (Math.abs(targetZoom - this.zoomLevel) > 0.01) {
-          requestAnimationFrame(animate);
-        } else {
-          this.zoomLevel = targetZoom;
-          this.image.style.transform = `scale(${this.zoomLevel})`;
-        }
-      };
-      requestAnimationFrame(animate);
-      this.isZoomed = this.zoomLevel !== 1;
-    }
-
     preloadImages() {
       const preloadNext = (this.currentIndex + 1) % this.images.length;
       const preloadPrev = (this.currentIndex - 1 + this.images.length) % this.images.length;
       new Image().src = this.images[preloadNext].src;
       new Image().src = this.images[preloadPrev].src;
-    }
-
-    showLoadingIndicator() {
-      this.loadingIndicator.style.display = 'block';
-    }
-
-    hideLoadingIndicator() {
-      this.loadingIndicator.style.display = 'none';
     }
   }
 
