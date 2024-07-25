@@ -117,6 +117,7 @@
         }
         .lb-lightbox-nav:active {
           transform: translateY(-50%) scale(0.9);
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .lb-lightbox-prev {
           left: 20px;
@@ -254,7 +255,7 @@
       if (clickedImage && !this.isOpen) {
         event.preventDefault();
         event.stopPropagation();
-        this.images = Array.from(document.querySelectorAll('.markdown-body img'));
+        this.images = Array.from(document.querySelectorAll('.markdown-body img, table img'));
 
         this.currentIndex = this.images.indexOf(clickedImage);
         this.open();
@@ -357,6 +358,8 @@
     }
 
     close() {
+      document.body.style.overflow = ''; // 恢复页面滚动
+      this.container.style.display = 'none'; // 隐藏灯箱
       // Remove all event listeners before closing
       document.removeEventListener('click', this.handleImageClick, true);
       this.overlay.removeEventListener('click', this.handleOverlayClick);
@@ -403,6 +406,7 @@
         // 获取当前窗口的高度并设置灯箱容器的最大高度
         const windowHeight = window.innerHeight;
         this.container.style.maxHeight = `${windowHeight * 0.9}px`;
+        this.container.style.maxWidth = `${windowWidth * 0.9}px`;
         this.image.style.objectFit = 'contain';
         this.image.style.opacity = '0'; // 开始时设为透明
     
@@ -416,13 +420,31 @@
             this.image.style.opacity = '1'; // 设置为可见
     
             // 根据新加载的图片实际尺寸调整滚动条
-            if (newImage.height > this.container.clientHeight) {
-                this.imageWrapper.style.overflowY = 'auto';
+            const aspectRatio = newImage.width / newImage.height;
+            if (windowWidth / windowHeight > aspectRatio) {
+                this.image.style.maxHeight = '90%';
+                this.image.style.maxWidth = 'auto'; // 根据高度自适应宽度
             } else {
-                this.imageWrapper.style.overflowY = 'hidden';
+                this.image.style.maxHeight = 'auto'; // 根据宽度自适应高度
+                this.image.style.maxWidth = '90%';
             }
+            // 添加滚轮缩放功能
+            this.image.addEventListener('wheel', (event) => {
+                event.preventDefault();
+                const scale = event.deltaY > 0 ? 0.9 : 1.1; // 根据滚轮方向设置缩放比例
+                const currentScale = this.image.style.transform.match(/scale\(([^)]+)\)/);
+                const newScale = currentScale ? parseFloat(currentScale[1]) * scale : scale;
+                this.image.style.transform = `scale(${newScale})`;
+            });
+            const closeOnEscape = (event) => {
+                if (event.key === 'Escape') {
+                    this.close(); // 关闭灯箱
+                    document.removeEventListener('keydown', closeOnEscape); // 移除事件监听器
+                }
+            };
+            document.addEventListener('keydown', closeOnEscape);
         };
-    
+
         newImage.onerror = () => {
             console.error('Failed to load image:', imgSrc);
         };
