@@ -304,7 +304,6 @@
     handleTouchStart(event) {
       this.touchStartX = event.touches[0].clientX;
     }
-
     handleTouchMove(event) {
       this.touchEndX = event.touches[0].clientX;
     }
@@ -348,7 +347,7 @@
       this.isOpen = true;
       this.overlay.style.zIndex = '10000';
       this.overlay.classList.add('active');
-      this.showImage();
+      this.showImage(this.images[this.currentIndex].src);
       this.overlay.style.opacity = '1';
       document.body.style.overflow = 'hidden';
       if (typeof this.options.onOpen === 'function') {
@@ -397,53 +396,40 @@
     }
 
     showImage(imgSrc) {
-      // 隐藏页面滚动条
-      document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
     
-      // 获取当前窗口的高度并设置灯箱容器的最大高度
-      const windowHeight = window.innerHeight;
-      this.container.style.maxHeight = `${windowHeight * 0.9}px`; // 调整系数以留出顶部导航等空间
+        // 获取当前窗口的高度并设置灯箱容器的最大高度
+        const windowHeight = window.innerHeight;
+        this.container.style.maxHeight = `${windowHeight * 0.9}px`;
+        this.image.style.objectFit = 'contain';
+        this.image.style.opacity = '0'; // 开始时设为透明
     
-      // 设置图片容器的样式以适应内容
-      this.image.style.objectFit = 'contain'; // 保持图片宽高比
-      this.image.style.opacity = '0'; // 初始化透明度便于淡入效果
+        const newImage = new Image();
+        newImage.onload = () => {
+            this.image.src = imgSrc; // 设置新图片的 src
+            this.currentImage = imgSrc;
     
-      // 如果之前有加载图片，先清除
-      if (this.currentImage) {
-        this.image.src = ''; // 清除现有图片
-      }
+            // 应用淡入效果
+            this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
+            this.image.style.opacity = '1'; // 设置为可见
     
-      // 创建一个新的Image对象来加载图片
-      const newImage = new Image();
-      newImage.onload = () => {
-        // 图片加载完成后，更新当前显示的图片源
-        this.image.src = imgSrc;
-        this.currentImage = imgSrc;
+            // 根据新加载的图片实际尺寸调整滚动条
+            if (newImage.height > this.container.clientHeight) {
+                this.imageWrapper.style.overflowY = 'auto';
+            } else {
+                this.imageWrapper.style.overflowY = 'hidden';
+            }
+        };
     
-        // 应用淡入效果
-        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
-        this.image.style.opacity = '1';
+        newImage.onerror = () => {
+            console.error('Failed to load image:', imgSrc);
+        };
     
-        // 根据图片实际尺寸调整滚动条
-        if (newImage.height > this.container.clientHeight) {
-          this.imageWrapper.style.overflowY = 'auto'; // 显示滚动条
-        } else {
-          this.imageWrapper.style.overflowY = 'hidden'; // 隐藏滚动条
-        }
-      };
-    
-      newImage.onerror = () => {
-        // 图片加载失败时的处理
-        console.error('Failed to load image:', imgSrc);
-        // 可以在这里添加更多的错误处理逻辑，例如显示一个错误消息
-      };
-    
-      // 开始加载图片
-      newImage.src = imgSrc;
-    
-      // 预加载前后图片
-      this.preloadImages();
+        newImage.src = imgSrc; // 开始加载新图片
+        // 预加载前后图片
+        this.preloadImages();
     }
+
     
     preloadImages() {
       // 计算前后图片的索引
@@ -462,6 +448,7 @@
       // 开始预加载前后图片
       preloadImageNext.src = this.images[preloadNext].src;
       preloadImagePrev.src = this.images[preloadPrev].src;
+
     
       // 当图片不再需要时，可以考虑清除预加载的图片以释放内存
       // 例如，在灯箱关闭时清除预加载的图片
