@@ -403,11 +403,13 @@
     showImage(imgSrc) {
         document.body.style.overflow = 'hidden';
     
-        // 获取当前窗口的高度并设置灯箱容器的最大高度
+        // 确保在这里正确声明并初始化窗口宽度和高度
         const windowHeight = window.innerHeight;
+        const windowWidth = window.innerWidth;
+    
         this.container.style.maxHeight = `${windowHeight * 0.9}px`;
         this.container.style.maxWidth = `${windowWidth * 0.9}px`;
-        this.image.style.objectFit = 'contain';
+    
         this.image.style.opacity = '0'; // 开始时设为透明
     
         const newImage = new Image();
@@ -415,12 +417,11 @@
             this.image.src = imgSrc; // 设置新图片的 src
             this.currentImage = imgSrc;
     
-            // 应用淡入效果
             this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
             this.image.style.opacity = '1'; // 设置为可见
     
-            // 根据新加载的图片实际尺寸调整滚动条
             const aspectRatio = newImage.width / newImage.height;
+    
             if (windowWidth / windowHeight > aspectRatio) {
                 this.image.style.maxHeight = '90%';
                 this.image.style.maxWidth = 'auto'; // 根据高度自适应宽度
@@ -428,6 +429,7 @@
                 this.image.style.maxHeight = 'auto'; // 根据宽度自适应高度
                 this.image.style.maxWidth = '90%';
             }
+    
             // 添加滚轮缩放功能
             this.image.addEventListener('wheel', (event) => {
                 event.preventDefault();
@@ -436,6 +438,8 @@
                 const newScale = currentScale ? parseFloat(currentScale[1]) * scale : scale;
                 this.image.style.transform = `scale(${newScale})`;
             });
+    
+            // 添加键盘事件监听器
             const closeOnEscape = (event) => {
                 if (event.key === 'Escape') {
                     this.close(); // 关闭灯箱
@@ -444,15 +448,14 @@
             };
             document.addEventListener('keydown', closeOnEscape);
         };
-
+    
         newImage.onerror = () => {
             console.error('Failed to load image:', imgSrc);
         };
     
         newImage.src = imgSrc; // 开始加载新图片
-        // 预加载前后图片
-        this.preloadImages();
     }
+
 
     
     preloadImages() {
