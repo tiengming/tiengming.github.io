@@ -19,6 +19,7 @@
       this.touchEndX = 0;
       this.touchStartY = 0;
       this.wheelTimer = null;
+      this.preloadedImages = {}; // 存储预加载的图片对象
 
       this.init();
     }
@@ -73,18 +74,6 @@
           scrollbar-width: thin;
           scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
         }
-        .lb-lightbox-image-wrapper::-webkit-scrollbar {
-          width: 6px;
-        }
-        .lb-lightbox-image-wrapper::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .lb-lightbox-image-wrapper::-webkit-scrollbar-thumb {
-          background-color: rgba(150, 150, 150, 0.5);
-          border-radius: 3px;
-          border: 2px solid transparent;
-          background-clip: content-box;
-        }
         .lb-lightbox-image {
           max-width: 100%;
           height: auto;
@@ -93,31 +82,14 @@
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity ${this.options.animationDuration}ms ease;
         }
-        .lb-lightbox-nav {
+        .lb-lightbox-nav, .lb-lightbox-close {
           position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
           background-color: rgba(255, 255, 255, 0.8);
           color: #333;
           border: none;
           border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          font-size: 24px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
           cursor: pointer;
-          transition: all 0.3s ease;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .lb-lightbox-nav:hover {
-          background-color: rgba(255, 255, 255, 1);
-          transform: translateY(-50%) scale(1.1);
-        }
-        .lb-lightbox-nav:active {
-          transform: translateY(-50%) scale(0.9);
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .lb-lightbox-prev {
           left: 20px;
@@ -126,60 +98,14 @@
           right: 20px;
         }
         .lb-lightbox-close {
-          position: absolute;
           top: 20px;
           right: 20px;
-          background-color: rgba(255, 255, 255, 0.8);
-          color: #333;
-          border: none;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          font-size: 24px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .lb-lightbox-close:hover {
-          background-color: rgba(255, 255, 255, 1);
-          transform: scale(1.1);
-        }
-        .lb-lightbox-close:active {
-          transform: scale(0.9);
         }
         @media (max-width: 768px) {
-          .lb-lightbox-nav {
+          .lb-lightbox-nav, .lb-lightbox-close {
             width: 40px;
             height: 40px;
             font-size: 20px;
-          }
-          .lb-lightbox-close {
-            width: 35px;
-            height: 35px;
-            font-size: 20px;
-          }
-        }
-        @media (prefers-color-scheme: dark) {
-          .lb-lightbox-overlay {
-            background-color: rgba(0, 0, 0, 0.9);
-          }
-          .lb-lightbox-nav,
-          .lb-lightbox-close {
-            background-color: rgba(50, 50, 50, 0.8);
-            color: #fff;
-          }
-          .lb-lightbox-nav:hover,
-          .lb-lightbox-close:hover {
-            background-color: rgba(70, 70, 70, 1);
-          }
-          .lb-lightbox-image {
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
-          }
-          .lb-lightbox-image-wrapper::-webkit-scrollbar-thumb {
-            background-color: rgba(200, 200, 200, 0.5);
           }
         }
       `;
@@ -223,13 +149,12 @@
       this.contentWrapper.appendChild(this.closeButton);
 
       this.overlay.appendChild(this.contentWrapper);
-
       document.body.appendChild(this.overlay);
+
       this.closeButton.addEventListener('click', this.close.bind(this));
     }
 
     bindEvents() {
-      // 使用箭头函数简化this绑定
       document.addEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.addEventListener('click', this.handleOverlayClick.bind(this));
       this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
@@ -237,17 +162,9 @@
       this.closeButton.addEventListener('click', this.close.bind(this));
       document.addEventListener('keydown', this.handleKeyDown.bind(this));
       this.overlay.addEventListener('wheel', this.handleWheel.bind(this));
-      // 触摸事件优化和解绑将在handleTouchEnd中实现
       this.overlay.addEventListener('touchstart', this.handleTouchStart.bind(this));
       this.overlay.addEventListener('touchmove', this.handleTouchMove.bind(this));
       this.overlay.addEventListener('touchend', this.handleTouchEnd.bind(this));
-      // 无障碍性改进：设置按钮类型
-      this.prevButton.setAttribute('type', 'button');
-      this.nextButton.setAttribute('type', 'button');
-      this.closeButton.setAttribute('type', 'button');
-      this.rebindEvents = () => {
-        this.bindEvents();
-      };
     }
 
     handleImageClick(event) {
@@ -256,7 +173,6 @@
         event.preventDefault();
         event.stopPropagation();
         this.images = Array.from(document.querySelectorAll('.markdown-body img, table img'));
-
         this.currentIndex = this.images.indexOf(clickedImage);
         this.open();
       }
@@ -265,17 +181,11 @@
     handleOverlayClick(event) {
       if (event.target === this.overlay && this.options.closeOnOverlayClick) {
         this.close();
-      } else if (!event.target.closest('.lb-lightbox-container')) {
-        const elementBelow = document.elementFromPoint(event.clientX, event.clientY);
-        if (elementBelow) {
-          elementBelow.click();
-        }
       }
     }
 
     handleKeyDown(event) {
       if (!this.isOpen) return;
-
       switch (event.key) {
         case 'ArrowLeft':
           this.showPreviousImage();
@@ -292,7 +202,6 @@
     handleWheel(event) {
       event.preventDefault();
       clearTimeout(this.wheelTimer);
-
       this.wheelTimer = setTimeout(() => {
         const delta = Math.sign(event.deltaY);
         if (delta > 0) {
@@ -306,43 +215,16 @@
     handleTouchStart(event) {
       this.touchStartX = event.touches[0].clientX;
     }
+
     handleTouchMove(event) {
       this.touchEndX = event.touches[0].clientX;
     }
 
     handleTouchEnd() {
-      document.removeEventListener('touchmove', this.handleTouchMove);
       const difference = this.touchStartX - this.touchEndX;
       if (Math.abs(difference) > 50) {
-        if (difference > 0) {
-          this.showNextImage();
-        } else {
-          this.showPreviousImage();
-        }
+        difference > 0 ? this.showNextImage() : this.showPreviousImage();
       }
-    }
-
-    handleImageScroll(event) {
-      event.stopPropagation();
-    }
-
-    handleImageTouchStart(event) {
-      this.touchStartY = event.touches[0].clientY;
-    }
-
-    handleImageTouchMove(event) {
-      const touchEndY = event.touches[0].clientY;
-      const deltaY = this.touchStartY - touchEndY;
-
-      if (Math.abs(deltaY) > 5) {
-        event.preventDefault();
-        this.imageWrapper.scrollTop += deltaY;
-        this.touchStartY = touchEndY;
-      }
-    }
-
-    handleImageTouchEnd() {
-      this.touchStartY = null;
     }
 
     open() {
@@ -359,145 +241,87 @@
 
     close() {
       document.body.style.overflow = ''; // 恢复页面滚动
-      this.container.style.display = 'none'; // 隐藏灯箱
-      // Remove all event listeners before closing
-      document.removeEventListener('click', this.handleImageClick, true);
-      this.overlay.removeEventListener('click', this.handleOverlayClick);
-      this.prevButton.removeEventListener('click', this.showPreviousImage);
-      this.nextButton.removeEventListener('click', this.showNextImage);
-      this.closeButton.removeEventListener('click', this.close);
-      document.removeEventListener('keydown', this.handleKeyDown);
-      this.overlay.removeEventListener('wheel', this.handleWheel);
-      this.overlay.removeEventListener('touchstart', this.handleTouchStart);
-  
-      // Close logic...
-      this.isOpen = false;
-      this.overlay.style.zIndex = '-1';
       this.overlay.classList.remove('active');
       this.overlay.style.opacity = '0';
-      document.body.style.overflow = '';
-  
-      // Call rebindEvents after closing to prepare for next opening
-      this.rebindEvents();
-  
+      this.isOpen = false;
+      this.clearPreloadedImages(); // 清除预加载的图片
       if (typeof this.options.onClose === 'function') {
         this.options.onClose();
       }
+      this.unbindEvents(); // 解绑事件
     }
 
     showPreviousImage() {
-        if (this.currentIndex > 0) {
-            this.currentIndex--;
-            this.showImage(this.images[this.currentIndex].src); // 确保传递当前图片的 src
-        }
-    }
-    
-    showNextImage() {
-        if (this.currentIndex < this.images.length - 1) {
-            this.currentIndex++;
-            this.showImage(this.images[this.currentIndex].src); // 确保传递当前图片的 src
-        }
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.showImage(this.images[this.currentIndex].src);
+      }
     }
 
+    showNextImage() {
+      if (this.currentIndex < this.images.length - 1) {
+        this.currentIndex++;
+        this.showImage(this.images[this.currentIndex].src);
+      }
+    }
 
     showImage(imgSrc) {
-        document.body.style.overflow = 'hidden';
-    
-        const windowHeight = window.innerHeight;
-        const windowWidth = window.innerWidth;
-    
-        this.container.style.maxHeight = `${windowHeight * 0.9}px`;
-        this.container.style.maxWidth = `${windowWidth * 0.9}px`;
-    
-        this.image.style.opacity = '0'; // 开始时设为透明
-    
-        const newImage = new Image();
-    
-        // 定义滚轮缩放处理函数
-        const wheelZoom = (event) => {
-            if (event.ctrlKey) { // 检查是否按住CTRL
-                event.preventDefault();
-                const scale = event.deltaY > 0 ? 0.9 : 1.1; // 根据滚轮方向设置缩放比例
-                const currentScale = this.image.style.transform.match(/scale\(([^)]+)\)/);
-                const newScale = currentScale ? parseFloat(currentScale[1]) * scale : scale;
-                this.image.style.transform = `scale(${newScale})`;
-            }
-        };
-    
-        newImage.onload = () => {
-            this.image.src = imgSrc; // 设置新图片的 src
-            this.currentImage = imgSrc;
-    
-            this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
-            this.image.style.opacity = '1'; // 设置为可见
-    
-            const aspectRatio = newImage.width / newImage.height;
-    
-            if (windowWidth / windowHeight > aspectRatio) {
-                this.image.style.maxHeight = '90%';
-                this.image.style.maxWidth = 'auto'; // 根据高度自适应宽度
-            } else {
-                this.image.style.maxHeight = 'auto'; // 根据宽度自适应高度
-                this.image.style.maxWidth = '90%';
-            }
-    
-            // 添加滚轮缩放功能
-            this.image.addEventListener('wheel', wheelZoom);
-        };
-    
-        newImage.onerror = () => {
-            console.error('Failed to load image:', imgSrc);
-        };
-    
-        // 在加载新图片之前移除滚轮缩放功能，避免冲突
-        this.image.removeEventListener('wheel', wheelZoom);
-    
-        newImage.src = imgSrc; // 开始加载新图片
-    
-        // 添加键盘事件监听器
-        const closeOnEscape = (event) => {
-            if (event.key === 'Escape') {
-                this.close(); // 关闭灯箱
-                document.removeEventListener('keydown', closeOnEscape); // 移除事件监听器
-            }
-        };
-        document.addEventListener('keydown', closeOnEscape);
-    }
-    
-    close() {
-        document.body.style.overflow = ''; // 恢复页面滚动
-        this.container.style.display = 'none'; // 隐藏灯箱
-        // 其他关闭灯箱的逻辑...
+      this.image.style.opacity = '0'; // 开始时设为透明
+
+      const newImage = new Image();
+      newImage.src = imgSrc;
+
+      newImage.onload = () => {
+        this.image.src = imgSrc;
+        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
+        this.image.style.opacity = '1'; // 显示新图片
+        this.preloadImages(); // 预加载前后图片
+      };
+
+      newImage.onerror = () => {
+        console.error('Failed to load image:', imgSrc);
+        this.image.src = 'path/to/placeholder.png'; // 设置占位图
+      };
     }
 
-
-    
     preloadImages() {
-      // 计算前后图片的索引
       const preloadNext = (this.currentIndex + 1) % this.images.length;
       const preloadPrev = (this.currentIndex - 1 + this.images.length) % this.images.length;
-    
-      // 创建新的Image对象来预加载图片
-      const preloadImageNext = new Image();
-      const preloadImagePrev = new Image();
-    
-      // 添加错误处理
-      preloadImageNext.onerror = preloadImagePrev.onerror = () => {
-        console.error('Failed to preload image');
-      };
-    
-      // 开始预加载前后图片
-      preloadImageNext.src = this.images[preloadNext].src;
-      preloadImagePrev.src = this.images[preloadPrev].src;
 
-    
-      // 当图片不再需要时，可以考虑清除预加载的图片以释放内存
-      // 例如，在灯箱关闭时清除预加载的图片
-      // this.clearPreloadedImages = () => {
-      //   preloadImageNext.src = preloadImagePrev.src = '';
-      // };
+      this.preloadedImages[preloadNext] = new Image();
+      this.preloadedImages[preloadPrev] = new Image();
+
+      this.preloadedImages[preloadNext].src = this.images[preloadNext].src;
+      this.preloadedImages[preloadPrev].src = this.images[preloadPrev].src;
+
+      // 错误处理
+      this.preloadedImages[preloadNext].onerror = () => {
+        console.error('Failed to preload next image');
+      };
+      this.preloadedImages[preloadPrev].onerror = () => {
+        console.error('Failed to preload previous image');
+      };
     }
-    
+
+    clearPreloadedImages() {
+      Object.keys(this.preloadedImages).forEach(key => {
+        this.preloadedImages[key].src = '';
+      });
+      this.preloadedImages = {}; // 清空预加载的图片对象
+    }
+
+    unbindEvents() {
+      document.removeEventListener('click', this.handleImageClick.bind(this), true);
+      this.overlay.removeEventListener('click', this.handleOverlayClick.bind(this));
+      this.prevButton.removeEventListener('click', this.showPreviousImage.bind(this));
+      this.nextButton.removeEventListener('click', this.showNextImage.bind(this));
+      this.closeButton.removeEventListener('click', this.close.bind(this));
+      document.removeEventListener('keydown', this.handleKeyDown.bind(this));
+      this.overlay.removeEventListener('wheel', this.handleWheel.bind(this));
+      this.overlay.removeEventListener('touchstart', this.handleTouchStart.bind(this));
+      this.overlay.removeEventListener('touchmove', this.handleTouchMove.bind(this));
+      this.overlay.removeEventListener('touchend', this.handleTouchEnd.bind(this));
+    }
   }
 
   // 将 Lightbox 类添加到全局对象
