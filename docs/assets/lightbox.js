@@ -255,6 +255,7 @@
         event.preventDefault();
         event.stopPropagation();
         this.images = Array.from(document.querySelectorAll('.markdown-body img'));
+
         this.currentIndex = this.images.indexOf(clickedImage);
         this.open();
       }
@@ -382,18 +383,19 @@
     }
 
     showPreviousImage() {
-      if (this.currentIndex > 0) {
-        this.currentIndex--;
-        this.showImage();
-      }
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.showImage(this.images[this.currentIndex].src); // 确保传递当前图片的 src
+        }
+    }
+    
+    showNextImage() {
+        if (this.currentIndex < this.images.length - 1) {
+            this.currentIndex++;
+            this.showImage(this.images[this.currentIndex].src); // 确保传递当前图片的 src
+        }
     }
 
-    showNextImage() {
-      if (this.currentIndex < this.images.length - 1) {
-        this.currentIndex++;
-        this.showImage();
-      }
-    }
 
     showImage(imgSrc) {
         document.body.style.overflow = 'hidden';
