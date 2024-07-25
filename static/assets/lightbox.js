@@ -1,5 +1,5 @@
 (function() {
-  // 灯箱插件
+  //灯箱插件
   class Lightbox {
     constructor(options = {}) {
       this.options = Object.assign({
@@ -17,7 +17,7 @@
       this.touchStartX = 0;
       this.touchEndX = 0;
       this.wheelTimer = null;
-      this.preloadedImages = {}; // 存储预加载的图片对象
+      this.preloadedImages = {};
 
       this.init();
     }
@@ -45,9 +45,11 @@
           opacity: 0;
           transition: opacity ${this.options.animationDuration}ms ease;
           pointer-events: none;
+          z-index: 10000;
         }
         .lb-lightbox-overlay.active {
           pointer-events: auto;
+          opacity: 1;
         }
         .lb-lightbox-content-wrapper {
           position: relative;
@@ -58,8 +60,8 @@
           height: 100%;
         }
         .lb-lightbox-container {
-          width: 100%; /* 宽度调整为100% */
-          height: 919px; /* 高度固定为919px */
+          width: 100%;
+          height: 919px;
           position: relative;
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
           overflow: hidden;
@@ -68,22 +70,22 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 100%; /* 确保wrapper的高度为100% */
-          overflow: hidden; /* 确保不超出容器 */
-          position: absolute; /* 将wrapper设置为绝对定位 */
-          top: 0; /* 设置top */
-          left: 0; /* 设置left */
-          right: 0; /* 设置right */
-          bottom: 0; /* 设置bottom */
-          z-index: 1; /* 确保图片在容器的上层 */
+          height: 100%;
+          overflow: hidden;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 1;
         }
         .lb-lightbox-image {
           max-width: 100%;
           max-height: 100%;
           height: auto;
           object-fit: contain;
-          border-radius: 16px; /* 外部圆角 */
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* 陰影 */
+          border-radius: 16px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity ${this.options.animationDuration}ms ease;
         }
         .lb-lightbox-nav, .lb-lightbox-close {
@@ -94,17 +96,18 @@
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-          width: 50px; /* 增大导航按钮的尺寸 */
-          height: 50px; /* 增大导航按钮的尺寸 */
-          font-size: 30px; /* 增大字体 */
+          width: 50px;
+          height: 50px;
+          font-size: 30px;
+          z-index: 2;
         }
         .lb-lightbox-prev {
           left: 20px;
-          top: calc(50% - 25px); /* 垂直居中 */
+          top: calc(50% - 25px);
         }
         .lb-lightbox-next {
           right: 20px;
-          top: calc(50% - 25px); /* 垂直居中 */
+          top: calc(50% - 25px);
         }
         .lb-lightbox-close {
           top: 20px;
@@ -124,7 +127,6 @@
     createLightbox() {
       this.overlay = document.createElement('div');
       this.overlay.className = 'lb-lightbox-overlay';
-      this.overlay.style.zIndex = '10000';
 
       this.contentWrapper = document.createElement('div');
       this.contentWrapper.className = 'lb-lightbox-content-wrapper';
@@ -160,15 +162,15 @@
       this.overlay.appendChild(this.contentWrapper);
       document.body.appendChild(this.overlay);
 
-      // 添加事件监听器
       this.closeButton.addEventListener('click', this.close.bind(this));
-      this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
-      this.nextButton.addEventListener('click', this.showNextImage.bind(this));
     }
 
     bindEvents() {
       document.addEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.addEventListener('click', this.handleOverlayClick.bind(this));
+      this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
+      this.nextButton.addEventListener('click', this.showNextImage.bind(this));
+      this.closeButton.addEventListener('click', this.close.bind(this));
       document.addEventListener('keydown', this.handleKeyDown.bind(this));
       this.overlay.addEventListener('wheel', this.handleWheel.bind(this));
       this.overlay.addEventListener('touchstart', this.handleTouchStart.bind(this));
@@ -212,12 +214,10 @@
       event.preventDefault();
 
       if (event.ctrlKey) {
-        // 如果按住 Ctrl 键，执行缩放
-        this.zoomLevel += event.deltaY > 0 ? -0.1 : 0.1; // 负值表示缩小，正值表示放大
-        this.zoomLevel = Math.max(1, this.zoomLevel); // 确保缩放级别不小于 1
-        this.image.style.transform = `scale(${this.zoomLevel})`; // 应用缩放
+        this.zoomLevel += event.deltaY > 0 ? -0.1 : 0.1;
+        this.zoomLevel = Math.max(1, this.zoomLevel);
+        this.image.style.transform = `scale(${this.zoomLevel})`;
       } else {
-        // 不按 Ctrl 键，切换图片
         clearTimeout(this.wheelTimer);
         this.wheelTimer = setTimeout(() => {
           const delta = Math.sign(event.deltaY);
@@ -249,7 +249,6 @@
       this.isOpen = true;
       this.overlay.classList.add('active');
       this.showImage(this.images[this.currentIndex].src);
-      this.overlay.style.opacity = '1';
       document.body.style.overflow = 'hidden';
       if (typeof this.options.onOpen === 'function') {
         this.options.onOpen();
@@ -257,15 +256,14 @@
     }
 
     close() {
-      document.body.style.overflow = ''; // 恢复页面滚动
+      document.body.style.overflow = '';
       this.overlay.classList.remove('active');
-      this.overlay.style.opacity = '0';
       this.isOpen = false;
-      this.clearPreloadedImages(); // 清除预加载的图片
+      this.clearPreloadedImages();
       if (typeof this.options.onClose === 'function') {
         this.options.onClose();
       }
-      this.unbindEvents(); // 解绑事件
+      this.unbindEvents();
     }
 
     showPreviousImage() {
@@ -283,7 +281,7 @@
     }
 
     showImage(imgSrc) {
-      this.image.style.opacity = '0'; // 开始时设为透明
+      this.image.style.opacity = '0';
 
       const newImage = new Image();
       newImage.src = imgSrc;
@@ -291,18 +289,15 @@
       newImage.onload = () => {
         this.image.src = imgSrc;
         this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
-        this.image.style.opacity = '1'; // 显示新图片
+        this.image.style.opacity = '1';
 
-        // 确保图片完全显示
-        this.image.style.transform = 'scale(1)'; // 重置缩放
+        this.image.style.transform = 'scale(1)';
 
-        // 预加载前后图片
         this.preloadImages(); 
       };
 
       newImage.onerror = () => {
         console.error('Failed to load image:', imgSrc);
-        // 处理预加载失败的情况
       };
     }
 
@@ -310,7 +305,6 @@
       const preloadNext = this.currentIndex + 1;
       const preloadPrev = this.currentIndex - 1;
 
-      // 仅当索引有效时才进行预加载
       if (preloadNext < this.images.length) {
         this.preloadedImages[preloadNext] = new Image();
         this.preloadedImages[preloadNext].src = this.images[preloadNext].src;
@@ -332,12 +326,15 @@
       Object.keys(this.preloadedImages).forEach(key => {
         this.preloadedImages[key].src = '';
       });
-      this.preloadedImages = {}; // 清空预加载的图片对象
+      this.preloadedImages = {};
     }
 
     unbindEvents() {
       document.removeEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.removeEventListener('click', this.handleOverlayClick.bind(this));
+      this.prevButton.removeEventListener('click', this.showPreviousImage.bind(this));
+      this.nextButton.removeEventListener('click', this.showNextImage.bind(this));
+      this.closeButton.removeEventListener('click', this.close.bind(this));
       document.removeEventListener('keydown', this.handleKeyDown.bind(this));
       this.overlay.removeEventListener('wheel', this.handleWheel.bind(this));
       this.overlay.removeEventListener('touchstart', this.handleTouchStart.bind(this));
@@ -346,10 +343,8 @@
     }
   }
 
-  // 将 Lightbox 类添加到全局对象
   window.Lightbox = Lightbox;
 
-  // 自动初始化
   document.addEventListener('DOMContentLoaded', () => {
     new Lightbox();
   });
