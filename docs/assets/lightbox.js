@@ -13,13 +13,11 @@
       this.images = [];
       this.currentIndex = 0;
       this.isOpen = false;
-      this.isZoomed = false;
-      this.zoomLevel = 1;
       this.touchStartX = 0;
       this.touchEndX = 0;
-      this.touchStartY = 0;
       this.wheelTimer = null;
       this.preloadedImages = {}; // 存储预加载的图片对象
+      this.originalDimensions = {}; // 存储原始图片尺寸
 
       this.init();
     }
@@ -51,28 +49,12 @@
         .lb-lightbox-overlay.active {
           pointer-events: auto;
         }
-        .lb-lightbox-content-wrapper {
-          position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          height: 100%;
-        }
         .lb-lightbox-container {
           max-width: 90%;
           max-height: 90%;
           position: relative;
-          transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
           overflow: hidden;
-        }
-        .lb-lightbox-image-wrapper {
-          max-height: 100%;
-          overflow-y: auto;
-          overflow-x: hidden;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
+          transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
         }
         .lb-lightbox-image {
           max-width: 100%;
@@ -80,33 +62,7 @@
           object-fit: contain;
           border-radius: 8px;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-          transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity ${this.options.animationDuration}ms ease;
-        }
-        .lb-lightbox-nav, .lb-lightbox-close {
-          position: absolute;
-          background-color: rgba(255, 255, 255, 0.8);
-          color: #333;
-          border: none;
-          border-radius: 50%;
-          cursor: pointer;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .lb-lightbox-prev {
-          left: 20px;
-        }
-        .lb-lightbox-next {
-          right: 20px;
-        }
-        .lb-lightbox-close {
-          top: 20px;
-          right: 20px;
-        }
-        @media (max-width: 768px) {
-          .lb-lightbox-nav, .lb-lightbox-close {
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
-          }
+          transition: transform ${this.options.animationDuration}ms ease, opacity ${this.options.animationDuration}ms ease;
         }
       `;
       document.head.appendChild(style);
@@ -115,40 +71,20 @@
     createLightbox() {
       this.overlay = document.createElement('div');
       this.overlay.className = 'lb-lightbox-overlay';
-      this.overlay.style.zIndex = '-1';
-
-      this.contentWrapper = document.createElement('div');
-      this.contentWrapper.className = 'lb-lightbox-content-wrapper';
 
       this.container = document.createElement('div');
       this.container.className = 'lb-lightbox-container';
 
-      this.imageWrapper = document.createElement('div');
-      this.imageWrapper.className = 'lb-lightbox-image-wrapper';
-
       this.image = document.createElement('img');
       this.image.className = 'lb-lightbox-image';
-
-      this.prevButton = document.createElement('button');
-      this.prevButton.className = 'lb-lightbox-nav lb-lightbox-prev';
-      this.prevButton.innerHTML = '&#10094;';
-
-      this.nextButton = document.createElement('button');
-      this.nextButton.className = 'lb-lightbox-nav lb-lightbox-next';
-      this.nextButton.innerHTML = '&#10095;';
 
       this.closeButton = document.createElement('button');
       this.closeButton.className = 'lb-lightbox-close';
       this.closeButton.innerHTML = '&times;';
 
-      this.imageWrapper.appendChild(this.image);
-      this.container.appendChild(this.imageWrapper);
-      this.contentWrapper.appendChild(this.container);
-      this.contentWrapper.appendChild(this.prevButton);
-      this.contentWrapper.appendChild(this.nextButton);
-      this.contentWrapper.appendChild(this.closeButton);
-
-      this.overlay.appendChild(this.contentWrapper);
+      this.container.appendChild(this.image);
+      this.overlay.appendChild(this.container);
+      this.overlay.appendChild(this.closeButton);
       document.body.appendChild(this.overlay);
 
       this.closeButton.addEventListener('click', this.close.bind(this));
@@ -157,11 +93,9 @@
     bindEvents() {
       document.addEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.addEventListener('click', this.handleOverlayClick.bind(this));
-      this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
-      this.nextButton.addEventListener('click', this.showNextImage.bind(this));
       this.closeButton.addEventListener('click', this.close.bind(this));
       document.addEventListener('keydown', this.handleKeyDown.bind(this));
-      this.overlay.addEventListener('wheel', this.handleWheel.bind(this));
+      this.overlay.addEventListener('wheel', this.handleWheel.bind(this)); // 处理滚轮事件
       this.overlay.addEventListener('touchstart', this.handleTouchStart.bind(this));
       this.overlay.addEventListener('touchmove', this.handleTouchMove.bind(this));
       this.overlay.addEventListener('touchend', this.handleTouchEnd.bind(this));
@@ -171,7 +105,6 @@
       const clickedImage = event.target.closest('img');
       if (clickedImage && !this.isOpen) {
         event.preventDefault();
-        event.stopPropagation();
         this.images = Array.from(document.querySelectorAll('.markdown-body img, table img'));
         this.currentIndex = this.images.indexOf(clickedImage);
         this.open();
@@ -187,12 +120,6 @@
     handleKeyDown(event) {
       if (!this.isOpen) return;
       switch (event.key) {
-        case 'ArrowLeft':
-          this.showPreviousImage();
-          break;
-        case 'ArrowRight':
-          this.showNextImage();
-          break;
         case 'Escape':
           this.close();
           break;
@@ -201,15 +128,11 @@
 
     handleWheel(event) {
       event.preventDefault();
-      clearTimeout(this.wheelTimer);
-      this.wheelTimer = setTimeout(() => {
-        const delta = Math.sign(event.deltaY);
-        if (delta > 0) {
-          this.showNextImage();
-        } else {
-          this.showPreviousImage();
-        }
-      }, 50);
+      if (event.ctrlKey) {
+        // 如果按住Ctrl键，进行缩放
+        const scale = event.deltaY > 0 ? 0.9 : 1.1; // 根据滚轮方向设置缩放比例
+        this.zoomImage(scale);
+      }
     }
 
     handleTouchStart(event) {
@@ -229,59 +152,53 @@
 
     open() {
       this.isOpen = true;
-      this.overlay.style.zIndex = '10000';
       this.overlay.classList.add('active');
       this.showImage(this.images[this.currentIndex].src);
       this.overlay.style.opacity = '1';
       document.body.style.overflow = 'hidden';
-      if (typeof this.options.onOpen === 'function') {
-        this.options.onOpen();
-      }
     }
 
     close() {
-      document.body.style.overflow = ''; // 恢复页面滚动
+      document.body.style.overflow = '';
       this.overlay.classList.remove('active');
       this.overlay.style.opacity = '0';
       this.isOpen = false;
       this.clearPreloadedImages(); // 清除预加载的图片
-      if (typeof this.options.onClose === 'function') {
-        this.options.onClose();
-      }
-      this.unbindEvents(); // 解绑事件
-    }
-
-    showPreviousImage() {
-      if (this.currentIndex > 0) {
-        this.currentIndex--;
-        this.showImage(this.images[this.currentIndex].src);
-      }
-    }
-
-    showNextImage() {
-      if (this.currentIndex < this.images.length - 1) {
-        this.currentIndex++;
-        this.showImage(this.images[this.currentIndex].src);
-      }
     }
 
     showImage(imgSrc) {
-      this.image.style.opacity = '0'; // 开始时设为透明
-
       const newImage = new Image();
       newImage.src = imgSrc;
 
       newImage.onload = () => {
+        this.originalDimensions[imgSrc] = { width: newImage.width, height: newImage.height }; // 存储原始尺寸
         this.image.src = imgSrc;
-        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
-        this.image.style.opacity = '1'; // 显示新图片
-        this.preloadImages(); // 预加载前后图片
+        // 创建容器为原始尺寸
+        this.createContainerWithOriginalSize(newImage.width, newImage.height);
       };
 
       newImage.onerror = () => {
         console.error('Failed to load image:', imgSrc);
         this.image.src = 'path/to/placeholder.png'; // 设置占位图
       };
+    }
+
+    createContainerWithOriginalSize(width, height) {
+      const aspectRatio = width / height;
+
+      // 根据原始尺寸调整容器大小
+      if (aspectRatio > 1) {
+        this.container.style.maxWidth = '90%';
+        this.container.style.maxHeight = `${(window.innerWidth * 0.9) / aspectRatio}px`; // 根据宽度计算高度
+      } else {
+        this.container.style.maxHeight = '90%';
+        this.container.style.maxWidth = `${(window.innerHeight * 0.9) * aspectRatio}px`; // 根据高度计算宽度
+      }
+    }
+
+    zoomImage(scale) {
+      const currentScale = parseFloat(this.image.style.transform.replace(/scale\(([^)]+)\)/, '\$1')) || 1;
+      this.image.style.transform = `scale(${(currentScale * scale).toFixed(2)})`;
     }
 
     preloadImages() {
@@ -308,19 +225,6 @@
         this.preloadedImages[key].src = '';
       });
       this.preloadedImages = {}; // 清空预加载的图片对象
-    }
-
-    unbindEvents() {
-      document.removeEventListener('click', this.handleImageClick.bind(this), true);
-      this.overlay.removeEventListener('click', this.handleOverlayClick.bind(this));
-      this.prevButton.removeEventListener('click', this.showPreviousImage.bind(this));
-      this.nextButton.removeEventListener('click', this.showNextImage.bind(this));
-      this.closeButton.removeEventListener('click', this.close.bind(this));
-      document.removeEventListener('keydown', this.handleKeyDown.bind(this));
-      this.overlay.removeEventListener('wheel', this.handleWheel.bind(this));
-      this.overlay.removeEventListener('touchstart', this.handleTouchStart.bind(this));
-      this.overlay.removeEventListener('touchmove', this.handleTouchMove.bind(this));
-      this.overlay.removeEventListener('touchend', this.handleTouchEnd.bind(this));
     }
   }
 
