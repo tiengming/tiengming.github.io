@@ -403,7 +403,6 @@
     showImage(imgSrc) {
         document.body.style.overflow = 'hidden';
     
-        // 确保在这里正确声明并初始化窗口宽度和高度
         const windowHeight = window.innerHeight;
         const windowWidth = window.innerWidth;
     
@@ -413,6 +412,18 @@
         this.image.style.opacity = '0'; // 开始时设为透明
     
         const newImage = new Image();
+    
+        // 定义滚轮缩放处理函数
+        const wheelZoom = (event) => {
+            if (event.ctrlKey) { // 检查是否按住CTRL
+                event.preventDefault();
+                const scale = event.deltaY > 0 ? 0.9 : 1.1; // 根据滚轮方向设置缩放比例
+                const currentScale = this.image.style.transform.match(/scale\(([^)]+)\)/);
+                const newScale = currentScale ? parseFloat(currentScale[1]) * scale : scale;
+                this.image.style.transform = `scale(${newScale})`;
+            }
+        };
+    
         newImage.onload = () => {
             this.image.src = imgSrc; // 设置新图片的 src
             this.currentImage = imgSrc;
@@ -431,29 +442,32 @@
             }
     
             // 添加滚轮缩放功能
-            this.image.addEventListener('wheel', (event) => {
-                event.preventDefault();
-                const scale = event.deltaY > 0 ? 0.9 : 1.1; // 根据滚轮方向设置缩放比例
-                const currentScale = this.image.style.transform.match(/scale\(([^)]+)\)/);
-                const newScale = currentScale ? parseFloat(currentScale[1]) * scale : scale;
-                this.image.style.transform = `scale(${newScale})`;
-            });
-    
-            // 添加键盘事件监听器
-            const closeOnEscape = (event) => {
-                if (event.key === 'Escape') {
-                    this.close(); // 关闭灯箱
-                    document.removeEventListener('keydown', closeOnEscape); // 移除事件监听器
-                }
-            };
-            document.addEventListener('keydown', closeOnEscape);
+            this.image.addEventListener('wheel', wheelZoom);
         };
     
         newImage.onerror = () => {
             console.error('Failed to load image:', imgSrc);
         };
     
+        // 在加载新图片之前移除滚轮缩放功能，避免冲突
+        this.image.removeEventListener('wheel', wheelZoom);
+    
         newImage.src = imgSrc; // 开始加载新图片
+    
+        // 添加键盘事件监听器
+        const closeOnEscape = (event) => {
+            if (event.key === 'Escape') {
+                this.close(); // 关闭灯箱
+                document.removeEventListener('keydown', closeOnEscape); // 移除事件监听器
+            }
+        };
+        document.addEventListener('keydown', closeOnEscape);
+    }
+    
+    close() {
+        document.body.style.overflow = ''; // 恢复页面滚动
+        this.container.style.display = 'none'; // 隐藏灯箱
+        // 其他关闭灯箱的逻辑...
     }
 
 
