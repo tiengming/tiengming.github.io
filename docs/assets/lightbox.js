@@ -7,16 +7,19 @@
         closeOnOverlayClick: true,
         onOpen: null,
         onClose: null,
-        onNavigate: null,
-        placeholderImage: 'path/to/placeholder.png' // 设置占位图的路径
+        onNavigate: null
       }, options);
 
       this.images = [];
       this.currentIndex = 0;
       this.isOpen = false;
+      this.isZoomed = false;
+      this.zoomLevel = 1;
       this.touchStartX = 0;
       this.touchEndX = 0;
+      this.touchStartY = 0;
       this.wheelTimer = null;
+      this.preloadedImages = {}; // 存储预加载的图片对象
 
       this.init();
     }
@@ -30,7 +33,81 @@
     createStyles() {
       const style = document.createElement('style');
       style.textContent = `
-        /* 样式与之前相同 */
+        .lb-lightbox-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(255, 255, 255, 0.9);
+          backdrop-filter: blur(5px);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          opacity: 0;
+          transition: opacity ${this.options.animationDuration}ms ease;
+          pointer-events: none;
+        }
+        .lb-lightbox-overlay.active {
+          pointer-events: auto;
+        }
+        .lb-lightbox-content-wrapper {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+        }
+        .lb-lightbox-container {
+          max-width: 90%;
+          max-height: 90%;
+          position: relative;
+          transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
+          overflow: hidden;
+        }
+        .lb-lightbox-image-wrapper {
+          max-height: 100%;
+          overflow-y: auto;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
+        }
+        .lb-lightbox-image {
+          max-width: 100%;
+          height: auto;
+          object-fit: contain;
+          border-radius: 8px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity ${this.options.animationDuration}ms ease;
+        }
+        .lb-lightbox-nav, .lb-lightbox-close {
+          position: absolute;
+          background-color: rgba(255, 255, 255, 0.8);
+          color: #333;
+          border: none;
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .lb-lightbox-prev {
+          left: 20px;
+        }
+        .lb-lightbox-next {
+          right: 20px;
+        }
+        .lb-lightbox-close {
+          top: 20px;
+          right: 20px;
+        }
+        @media (max-width: 768px) {
+          .lb-lightbox-nav, .lb-lightbox-close {
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+          }
+        }
       `;
       document.head.appendChild(style);
     }
@@ -51,11 +128,18 @@
 
       this.image = document.createElement('img');
       this.image.className = 'lb-lightbox-image';
-      this.image.onerror = this.handleImageError.bind(this); // 绑定错误处理事件
 
-      this.prevButton = this.createNavButton('lb-lightbox-prev', '&#10094;');
-      this.nextButton = this.createNavButton('lb-lightbox-next', '&#10095;');
-      this.closeButton = this.createNavButton('lb-lightbox-close', '&times;');
+      this.prevButton = document.createElement('button');
+      this.prevButton.className = 'lb-lightbox-nav lb-lightbox-prev';
+      this.prevButton.innerHTML = '&#10094;';
+
+      this.nextButton = document.createElement('button');
+      this.nextButton.className = 'lb-lightbox-nav lb-lightbox-next';
+      this.nextButton.innerHTML = '&#10095;';
+
+      this.closeButton = document.createElement('button');
+      this.closeButton.className = 'lb-lightbox-close';
+      this.closeButton.innerHTML = '&times;';
 
       this.imageWrapper.appendChild(this.image);
       this.container.appendChild(this.imageWrapper);
@@ -70,19 +154,12 @@
       this.closeButton.addEventListener('click', this.close.bind(this));
     }
 
-    createNavButton(className, innerHTML) {
-      const button = document.createElement('button');
-      button.className = `lb-lightbox-nav ${className}`;
-      button.innerHTML = innerHTML;
-      button.setAttribute('type', 'button');
-      return button;
-    }
-
     bindEvents() {
       document.addEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.addEventListener('click', this.handleOverlayClick.bind(this));
       this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
       this.nextButton.addEventListener('click', this.showNextImage.bind(this));
+      this.closeButton.addEventListener('click', this.close.bind(this));
       document.addEventListener('keydown', this.handleKeyDown.bind(this));
       this.overlay.addEventListener('wheel', this.handleWheel.bind(this));
       this.overlay.addEventListener('touchstart', this.handleTouchStart.bind(this));
@@ -94,6 +171,7 @@
       const clickedImage = event.target.closest('img');
       if (clickedImage && !this.isOpen) {
         event.preventDefault();
+        event.stopPropagation();
         this.images = Array.from(document.querySelectorAll('.markdown-body img, table img'));
         this.currentIndex = this.images.indexOf(clickedImage);
         this.open();
@@ -125,7 +203,12 @@
       event.preventDefault();
       clearTimeout(this.wheelTimer);
       this.wheelTimer = setTimeout(() => {
-        event.deltaY > 0 ? this.showNextImage() : this.showPreviousImage();
+        const delta = Math.sign(event.deltaY);
+        if (delta > 0) {
+          this.showNextImage();
+        } else {
+          this.showPreviousImage();
+        }
       }, 50);
     }
 
@@ -157,14 +240,15 @@
     }
 
     close() {
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // 恢复页面滚动
       this.overlay.classList.remove('active');
       this.overlay.style.opacity = '0';
       this.isOpen = false;
-      this.overlay.style.zIndex = '-1';
+      this.clearPreloadedImages(); // 清除预加载的图片
       if (typeof this.options.onClose === 'function') {
         this.options.onClose();
       }
+      this.unbindEvents(); // 解绑事件
     }
 
     showPreviousImage() {
@@ -182,40 +266,61 @@
     }
 
     showImage(imgSrc) {
+      this.image.style.opacity = '0'; // 开始时设为透明
+
       const newImage = new Image();
+      newImage.src = imgSrc;
+
       newImage.onload = () => {
         this.image.src = imgSrc;
-        this.setImageSize(newImage);
+        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
+        this.image.style.opacity = '1'; // 显示新图片
+        this.preloadImages(); // 预加载前后图片
       };
 
-      newImage.onerror = this.handleImageError.bind(this);
-      newImage.src = imgSrc;
-      this.image.style.opacity = '0';
+      newImage.onerror = () => {
+        console.error('Failed to load image:', imgSrc);
+        this.image.src = 'path/to/placeholder.png'; // 设置占位图
+      };
     }
 
-    handleImageError() {
-      console.error('Failed to load image.');
-      this.image.src = this.options.placeholderImage; // 加载占位图
-      this.image.style.opacity = '1';
+    preloadImages() {
+      const preloadNext = (this.currentIndex + 1) % this.images.length;
+      const preloadPrev = (this.currentIndex - 1 + this.images.length) % this.images.length;
+
+      this.preloadedImages[preloadNext] = new Image();
+      this.preloadedImages[preloadPrev] = new Image();
+
+      this.preloadedImages[preloadNext].src = this.images[preloadNext].src;
+      this.preloadedImages[preloadPrev].src = this.images[preloadPrev].src;
+
+      // 错误处理
+      this.preloadedImages[preloadNext].onerror = () => {
+        console.error('Failed to preload next image');
+      };
+      this.preloadedImages[preloadPrev].onerror = () => {
+        console.error('Failed to preload previous image');
+      };
     }
 
-    setImageSize(image) {
-      const windowHeight = window.innerHeight;
-      const windowWidth = window.innerWidth;
-      const aspectRatio = image.width / image.height;
+    clearPreloadedImages() {
+      Object.keys(this.preloadedImages).forEach(key => {
+        this.preloadedImages[key].src = '';
+      });
+      this.preloadedImages = {}; // 清空预加载的图片对象
+    }
 
-      this.container.style.maxHeight = `${windowHeight * 0.9}px`;
-      this.container.style.maxWidth = `${windowWidth * 0.9}px`;
-
-      if (windowWidth / windowHeight > aspectRatio) {
-        this.image.style.maxHeight = '90%';
-        this.image.style.maxWidth = 'auto';
-      } else {
-        this.image.style.maxHeight = 'auto';
-        this.image.style.maxWidth = '90%';
-      }
-
-      this.image.style.opacity = '1'; // 设置为可见
+    unbindEvents() {
+      document.removeEventListener('click', this.handleImageClick.bind(this), true);
+      this.overlay.removeEventListener('click', this.handleOverlayClick.bind(this));
+      this.prevButton.removeEventListener('click', this.showPreviousImage.bind(this));
+      this.nextButton.removeEventListener('click', this.showNextImage.bind(this));
+      this.closeButton.removeEventListener('click', this.close.bind(this));
+      document.removeEventListener('keydown', this.handleKeyDown.bind(this));
+      this.overlay.removeEventListener('wheel', this.handleWheel.bind(this));
+      this.overlay.removeEventListener('touchstart', this.handleTouchStart.bind(this));
+      this.overlay.removeEventListener('touchmove', this.handleTouchMove.bind(this));
+      this.overlay.removeEventListener('touchend', this.handleTouchEnd.bind(this));
     }
   }
 
