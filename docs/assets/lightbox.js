@@ -244,6 +244,9 @@
       this.prevButton.setAttribute('type', 'button');
       this.nextButton.setAttribute('type', 'button');
       this.closeButton.setAttribute('type', 'button');
+      this.rebindEvents = () => {
+        this.bindEvents();
+      };
     }
 
     handleImageClick(event) {
@@ -354,7 +357,7 @@
     }
 
     close() {
-      // 在关闭时解绑事件处理器以避免内存泄漏
+      // Remove all event listeners before closing
       document.removeEventListener('click', this.handleImageClick, true);
       this.overlay.removeEventListener('click', this.handleOverlayClick);
       this.prevButton.removeEventListener('click', this.showPreviousImage);
@@ -363,7 +366,20 @@
       document.removeEventListener('keydown', this.handleKeyDown);
       this.overlay.removeEventListener('wheel', this.handleWheel);
       this.overlay.removeEventListener('touchstart', this.handleTouchStart);
-
+  
+      // Close logic...
+      this.isOpen = false;
+      this.overlay.style.zIndex = '-1';
+      this.overlay.classList.remove('active');
+      this.overlay.style.opacity = '0';
+      document.body.style.overflow = '';
+  
+      // Call rebindEvents after closing to prepare for next opening
+      this.rebindEvents();
+  
+      if (typeof this.options.onClose === 'function') {
+        this.options.onClose();
+      }
     }
 
     showPreviousImage() {
@@ -390,8 +406,7 @@
         this.image.src = imgSrc;
         this.image.style.opacity = '1';
         this.imageWrapper.scrollTop = 0;
-        
-        // 检查图片是否需要滚动
+ 
         setTimeout(() => {
           if (this.image.offsetHeight > this.imageWrapper.offsetHeight) {
             this.imageWrapper.style.overflowY = 'auto';
