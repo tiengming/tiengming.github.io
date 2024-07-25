@@ -200,16 +200,25 @@
     }
 
     handleWheel(event) {
-      event.preventDefault();
-      clearTimeout(this.wheelTimer);
-      this.wheelTimer = setTimeout(() => {
-        const delta = Math.sign(event.deltaY);
-        if (delta > 0) {
-          this.showNextImage();
+        event.preventDefault();
+    
+        if (event.ctrlKey) {
+            // 如果按住 Ctrl 键，执行缩放
+            this.zoomLevel += event.deltaY > 0 ? -0.1 : 0.1; // 负值表示缩小，正值表示放大
+            this.zoomLevel = Math.max(1, this.zoomLevel); // 确保缩放级别不小于 1
+            this.image.style.transform = `scale(${this.zoomLevel})`; // 应用缩放
         } else {
-          this.showPreviousImage();
+            // 不按 Ctrl 键，切换图片
+            clearTimeout(this.wheelTimer);
+            this.wheelTimer = setTimeout(() => {
+                const delta = Math.sign(event.deltaY);
+                if (delta > 0) {
+                    this.showNextImage();
+                } else {
+                    this.showPreviousImage();
+                }
+            }, 50);
         }
-      }, 50);
     }
 
     handleTouchStart(event) {
@@ -266,22 +275,26 @@
     }
 
     showImage(imgSrc) {
-      this.image.style.opacity = '0'; // 开始时设为透明
-
-      const newImage = new Image();
-      newImage.src = imgSrc;
-
-      newImage.onload = () => {
-        this.image.src = imgSrc;
-        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
-        this.image.style.opacity = '1'; // 显示新图片
-        this.preloadImages(); // 预加载前后图片
-      };
-
-      newImage.onerror = () => {
-        console.error('Failed to load image:', imgSrc);
-        this.image.src = 'path/to/placeholder.png'; // 设置占位图
-      };
+        this.image.style.opacity = '0'; // 开始时设为透明
+    
+        const newImage = new Image();
+        newImage.src = imgSrc;
+    
+        newImage.onload = () => {
+            this.image.src = imgSrc;
+            this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
+            this.image.style.opacity = '1'; // 显示新图片
+    
+            // 确保图片完全显示
+            this.image.style.maxWidth = '100%';
+            this.image.style.maxHeight = '100%';
+    
+            this.preloadImages(); // 预加载前后图片
+        };
+    
+        newImage.onerror = () => {
+            console.error('Failed to load image:', imgSrc);
+        };
     }
 
     preloadImages() {
