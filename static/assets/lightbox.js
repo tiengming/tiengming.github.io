@@ -58,8 +58,8 @@
           height: 100%;
         }
         .lb-lightbox-container {
-          max-width: 90%;
-          max-height: 90%;
+          width: 100%; /* 宽度调整为100% */
+          height: 919px; /* 高度固定为919px */
           position: relative;
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
           overflow: hidden;
@@ -68,16 +68,22 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          max-height: 100%;
+          height: 100%; /* 确保wrapper的高度为100% */
           overflow: hidden; /* 确保不超出容器 */
+          position: absolute; /* 将wrapper设置为绝对定位 */
+          top: 0; /* 设置top */
+          left: 0; /* 设置left */
+          right: 0; /* 设置right */
+          bottom: 0; /* 设置bottom */
+          z-index: 1; /* 确保图片在容器的上层 */
         }
         .lb-lightbox-image {
           max-width: 100%;
           max-height: 100%;
           height: auto;
           object-fit: contain;
-          border-radius: 8px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          border-radius: 16px; /* 外部圆角 */
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* 陰影 */
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity ${this.options.animationDuration}ms ease;
         }
         .lb-lightbox-nav, .lb-lightbox-close {
@@ -88,12 +94,17 @@
           border-radius: 50%;
           cursor: pointer;
           box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          width: 50px; /* 增大导航按钮的尺寸 */
+          height: 50px; /* 增大导航按钮的尺寸 */
+          font-size: 30px; /* 增大字体 */
         }
         .lb-lightbox-prev {
           left: 20px;
+          top: calc(50% - 25px); /* 垂直居中 */
         }
         .lb-lightbox-next {
           right: 20px;
+          top: calc(50% - 25px); /* 垂直居中 */
         }
         .lb-lightbox-close {
           top: 20px;
