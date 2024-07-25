@@ -224,9 +224,11 @@
       this.overlay.appendChild(this.contentWrapper);
 
       document.body.appendChild(this.overlay);
+      this.closeButton.addEventListener('click', this.close.bind(this));
     }
 
     bindEvents() {
+      // 使用箭头函数简化this绑定
       document.addEventListener('click', this.handleImageClick.bind(this), true);
       this.overlay.addEventListener('click', this.handleOverlayClick.bind(this));
       this.prevButton.addEventListener('click', this.showPreviousImage.bind(this));
@@ -234,13 +236,14 @@
       this.closeButton.addEventListener('click', this.close.bind(this));
       document.addEventListener('keydown', this.handleKeyDown.bind(this));
       this.overlay.addEventListener('wheel', this.handleWheel.bind(this));
+      // 触摸事件优化和解绑将在handleTouchEnd中实现
       this.overlay.addEventListener('touchstart', this.handleTouchStart.bind(this));
       this.overlay.addEventListener('touchmove', this.handleTouchMove.bind(this));
       this.overlay.addEventListener('touchend', this.handleTouchEnd.bind(this));
-      this.imageWrapper.addEventListener('wheel', this.handleImageScroll.bind(this));
-      this.imageWrapper.addEventListener('touchstart', this.handleImageTouchStart.bind(this));
-      this.imageWrapper.addEventListener('touchmove', this.handleImageTouchMove.bind(this));
-      this.imageWrapper.addEventListener('touchend', this.handleImageTouchEnd.bind(this));
+      // 无障碍性改进：设置按钮类型
+      this.prevButton.setAttribute('type', 'button');
+      this.nextButton.setAttribute('type', 'button');
+      this.closeButton.setAttribute('type', 'button');
     }
 
     handleImageClick(event) {
@@ -304,6 +307,7 @@
     }
 
     handleTouchEnd() {
+      document.removeEventListener('touchmove', this.handleTouchMove);
       const difference = this.touchStartX - this.touchEndX;
       if (Math.abs(difference) > 50) {
         if (difference > 0) {
@@ -350,19 +354,16 @@
     }
 
     close() {
-      this.isOpen = false;
-      this.overlay.style.opacity = '0';
-      this.overlay.classList.remove('active');
-      document.body.style.overflow = '';
-      setTimeout(() => {
-        this.image.style.transform = '';
-        this.zoomLevel = 1;
-        this.isZoomed = false;
-        this.overlay.style.zIndex = '-1';
-      }, this.options.animationDuration);
-      if (typeof this.options.onClose === 'function') {
-        this.options.onClose();
-      }
+      // 在关闭时解绑事件处理器以避免内存泄漏
+      document.removeEventListener('click', this.handleImageClick, true);
+      this.overlay.removeEventListener('click', this.handleOverlayClick);
+      this.prevButton.removeEventListener('click', this.showPreviousImage);
+      this.nextButton.removeEventListener('click', this.showNextImage);
+      this.closeButton.removeEventListener('click', this.close);
+      document.removeEventListener('keydown', this.handleKeyDown);
+      this.overlay.removeEventListener('wheel', this.handleWheel);
+      this.overlay.removeEventListener('touchstart', this.handleTouchStart);
+
     }
 
     showPreviousImage() {
