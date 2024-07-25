@@ -17,6 +17,7 @@
       this.zoomLevel = 1;
       this.touchStartX = 0;
       this.touchEndX = 0;
+      this.touchStartY = 0;
       this.wheelTimer = null;
 
       this.init();
@@ -62,11 +63,31 @@
           max-height: 90%;
           position: relative;
           transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1);
-          overflow: auto;
+          overflow: hidden;
+        }
+        .lb-lightbox-image-wrapper {
+          max-height: 100%;
+          overflow-y: auto;
+          overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
+        }
+        .lb-lightbox-image-wrapper::-webkit-scrollbar {
+          width: 6px;
+        }
+        .lb-lightbox-image-wrapper::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .lb-lightbox-image-wrapper::-webkit-scrollbar-thumb {
+          background-color: rgba(150, 150, 150, 0.5);
+          border-radius: 3px;
+          border: 2px solid transparent;
+          background-clip: content-box;
         }
         .lb-lightbox-image {
           max-width: 100%;
-          max-height: none;
+          height: auto;
           object-fit: contain;
           border-radius: 8px;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -156,6 +177,9 @@
           .lb-lightbox-image {
             box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
           }
+          .lb-lightbox-image-wrapper::-webkit-scrollbar-thumb {
+            background-color: rgba(200, 200, 200, 0.5);
+          }
         }
       `;
       document.head.appendChild(style);
@@ -172,6 +196,9 @@
       this.container = document.createElement('div');
       this.container.className = 'lb-lightbox-container';
 
+      this.imageWrapper = document.createElement('div');
+      this.imageWrapper.className = 'lb-lightbox-image-wrapper';
+
       this.image = document.createElement('img');
       this.image.className = 'lb-lightbox-image';
 
@@ -187,7 +214,8 @@
       this.closeButton.className = 'lb-lightbox-close';
       this.closeButton.innerHTML = '&times;';
 
-      this.container.appendChild(this.image);
+      this.imageWrapper.appendChild(this.image);
+      this.container.appendChild(this.imageWrapper);
       this.contentWrapper.appendChild(this.container);
       this.contentWrapper.appendChild(this.prevButton);
       this.contentWrapper.appendChild(this.nextButton);
@@ -209,6 +237,10 @@
       this.overlay.addEventListener('touchstart', this.handleTouchStart.bind(this));
       this.overlay.addEventListener('touchmove', this.handleTouchMove.bind(this));
       this.overlay.addEventListener('touchend', this.handleTouchEnd.bind(this));
+      this.imageWrapper.addEventListener('wheel', this.handleImageScroll.bind(this));
+      this.imageWrapper.addEventListener('touchstart', this.handleImageTouchStart.bind(this));
+      this.imageWrapper.addEventListener('touchmove', this.handleImageTouchMove.bind(this));
+      this.imageWrapper.addEventListener('touchend', this.handleImageTouchEnd.bind(this));
     }
 
     handleImageClick(event) {
@@ -282,6 +314,29 @@
       }
     }
 
+    handleImageScroll(event) {
+      event.stopPropagation();
+    }
+
+    handleImageTouchStart(event) {
+      this.touchStartY = event.touches[0].clientY;
+    }
+
+    handleImageTouchMove(event) {
+      const touchEndY = event.touches[0].clientY;
+      const deltaY = this.touchStartY - touchEndY;
+
+      if (Math.abs(deltaY) > 5) {
+        event.preventDefault();
+        this.imageWrapper.scrollTop += deltaY;
+        this.touchStartY = touchEndY;
+      }
+    }
+
+    handleImageTouchEnd() {
+      this.touchStartY = null;
+    }
+
     open() {
       this.isOpen = true;
       this.overlay.style.zIndex = '10000';
@@ -333,7 +388,16 @@
       newImage.onload = () => {
         this.image.src = imgSrc;
         this.image.style.opacity = '1';
-        this.container.scrollTop = 0;
+        this.imageWrapper.scrollTop = 0;
+        
+        // 检查图片是否需要滚动
+        setTimeout(() => {
+          if (this.image.offsetHeight > this.imageWrapper.offsetHeight) {
+            this.imageWrapper.style.overflowY = 'auto';
+          } else {
+            this.imageWrapper.style.overflowY = 'hidden';
+          }
+        }, 50);
       };
 
       this.prevButton.style.display = this.currentIndex > 0 ? '' : 'none';
