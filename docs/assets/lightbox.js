@@ -274,6 +274,7 @@
       if (this.currentIndex > 0) {
         this.currentIndex--;
         this.showImage(this.images[this.currentIndex].src);
+        this.resetButtonScale(this.prevButton);
       }
     }
 
@@ -281,7 +282,15 @@
       if (this.currentIndex < this.images.length - 1) {
         this.currentIndex++;
         this.showImage(this.images[this.currentIndex].src);
+        this.resetButtonScale(this.nextButton);
       }
+    }
+
+    resetButtonScale(button) {
+      button.style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        button.style.transform = 'scale(1)';
+      }, 200);
     }
 
     showImage(imgSrc) {
