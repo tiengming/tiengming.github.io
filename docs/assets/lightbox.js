@@ -37,7 +37,7 @@
           left: 0;
           width: 100%;
           height: 100%;
-          background-color: rgba(255, 255, 255, 0.9);
+          background-color: transparent;
           backdrop-filter: blur(5px);
           display: flex;
           justify-content: center;
@@ -294,6 +294,19 @@
         this.image.style.transform = 'scale(1)';
 
         this.preloadImages(); 
+    // 显示/隐藏上一张导航按钮
+        if (this.currentIndex === 0) {
+          this.prevButton.style.display = 'none';
+        } else {
+          this.prevButton.style.display = 'block';
+        }
+    
+        // 显示/隐藏下一张导航按钮
+        if (this.currentIndex === this.images.length - 1) {
+          this.nextButton.style.display = 'none';
+        } else {
+          this.nextButton.style.display = 'block';
+        }
       };
 
       newImage.onerror = () => {
