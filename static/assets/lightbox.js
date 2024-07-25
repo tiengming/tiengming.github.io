@@ -396,36 +396,46 @@
       }
     }
 
-    showImage() {
-      const imgSrc = this.images[this.currentIndex].src;
-      this.image.style.opacity = '0';
-      
-      const newImage = new Image();
-      newImage.src = imgSrc;
-      newImage.onload = () => {
-        this.image.src = imgSrc;
-        this.image.style.opacity = '1';
-        this.imageWrapper.scrollTop = 0;
- 
-        setTimeout(() => {
-          if (this.image.offsetHeight > this.imageWrapper.offsetHeight) {
-            this.imageWrapper.style.overflowY = 'auto';
-          } else {
-            this.imageWrapper.style.overflowY = 'hidden';
-          }
-        }, 50);
-      };
+    showImage(imgSrc) {
 
-      this.prevButton.style.display = this.currentIndex > 0 ? '' : 'none';
-      this.nextButton.style.display = this.currentIndex < this.images.length - 1 ? '' : 'none';
+    // 隐藏页面滚动条
+      document.body.style.overflow = 'hidden';
 
-      if (typeof this.options.onNavigate === 'function') {
-        this.options.onNavigate(this.currentIndex);
+      // 获取当前窗口的高度并设置灯箱容器的最大高度
+      const windowHeight = window.innerHeight;
+      this.container.style.maxHeight = `${windowHeight * 0.9}px`; // 调整系数以留出顶部导航等空间
+
+      // 设置图片容器的样式以适应内容
+      this.image.style.objectFit = 'contain'; // 保持图片宽高比
+      this.image.style.opacity = '0'; // 初始化透明度便于淡入效果
+
+      // 如果之前有加载图片，先清除
+      if (this.currentImage) {
+        this.image.src = ''; // 清除现有图片
       }
 
-      this.preloadImages();
-    }
+      // 动态加载新图片
+      const newImage = new Image();
+      newImage.onload = () => {
+        // 更新当前显示的图片源
+        this.image.src = imgSrc;
 
+        // 图片加载完成后，应用淡入效果
+        setTimeout(() => {
+          this.image.style.opacity = '1';
+        }, 50); // 小延迟确保图片加载完成再淡入
+
+        // 根据图片实际尺寸调整滚动条
+        if (newImage.height > this.container.clientHeight) {
+          this.imageWrapper.style.overflowY = 'auto'; // 显示滚动条
+        } else {
+          this.imageWrapper.style.overflowY = 'hidden'; // 隐藏滚动条
+        }
+      };
+
+      newImage.src = imgSrc; // 开始加载图片
+      this.currentImage = imgSrc; // 记录当前显示的图片
+    }
     preloadImages() {
       const preloadNext = (this.currentIndex + 1) % this.images.length;
       const preloadPrev = (this.currentIndex - 1 + this.images.length) % this.images.length;
