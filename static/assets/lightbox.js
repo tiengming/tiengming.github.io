@@ -1,14 +1,17 @@
 (function() {
-  //灯箱插件
+  // 灯箱插件
   class Lightbox {
     constructor(options = {}) {
-      this.options = Object.assign({
-        animationDuration: 300,
-        closeOnOverlayClick: true,
-        onOpen: null,
-        onClose: null,
-        onNavigate: null
-      }, options);
+      this.options = Object.assign(
+        {
+          animationDuration: 300,
+          closeOnOverlayClick: true,
+          onOpen: null,
+          onClose: null,
+          onNavigate: null,
+        },
+        options
+      );
 
       this.images = [];
       this.currentIndex = 0;
@@ -78,6 +81,8 @@
           right: 0;
           bottom: 0;
           z-index: 1;
+          opacity: 0;
+          transition: opacity ${this.options.animationDuration}ms ease;
         }
         .lb-lightbox-image {
           max-width: 100%;
@@ -86,9 +91,11 @@
           object-fit: contain;
           border-radius: 16px;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-          transition: transform ${this.options.animationDuration}ms cubic-bezier(0.25, 0.1, 0.25, 1), opacity ${this.options.animationDuration}ms ease;
+          transition: transform ${this.options.animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity ${this.options.animationDuration}ms ease;
+          transform-origin: center center;
         }
-        .lb-lightbox-nav, .lb-lightbox-close {
+        .lb-lightbox-nav,
+        .lb-lightbox-close {
           position: absolute;
           background-color: rgba(255, 255, 255, 0.8);
           color: #333;
@@ -100,6 +107,12 @@
           height: 50px;
           font-size: 30px;
           z-index: 2;
+          opacity: 0;
+          transition: opacity ${this.options.animationDuration}ms ease;
+        }
+        .lb-lightbox-nav:hover,
+        .lb-lightbox-close:hover {
+          opacity: 1;
         }
         .lb-lightbox-prev {
           left: 20px;
@@ -114,7 +127,8 @@
           right: 20px;
         }
         @media (max-width: 768px) {
-          .lb-lightbox-nav, .lb-lightbox-close {
+          .lb-lightbox-nav,
+          .lb-lightbox-close {
             width: 40px;
             height: 40px;
             font-size: 20px;
@@ -211,9 +225,8 @@
     }
 
     handleWheel(event) {
-      event.preventDefault();
-
       if (event.ctrlKey) {
+        event.preventDefault();
         this.zoomLevel += event.deltaY > 0 ? -0.1 : 0.1;
         this.zoomLevel = Math.max(1, this.zoomLevel);
         this.image.style.transform = `scale(${this.zoomLevel})`;
@@ -282,25 +295,31 @@
 
     showImage(imgSrc) {
       this.image.style.opacity = '0';
+      this.imageWrapper.style.opacity = '0';
 
       const newImage = new Image();
       newImage.src = imgSrc;
 
       newImage.onload = () => {
         this.image.src = imgSrc;
-        this.image.style.transition = `opacity ${this.options.animationDuration}ms ease`;
+        this.image.style.transition = `transform ${this.options.animationDuration}ms cubic-bezier(0.4, 0, 0.2, 1), opacity ${this.options.animationDuration}ms ease`;
         this.image.style.opacity = '1';
+
+        setTimeout(() => {
+          this.imageWrapper.style.opacity = '1';
+        }, this.options.animationDuration / 2);
 
         this.image.style.transform = 'scale(1)';
 
-        this.preloadImages(); 
-    // 显示/隐藏上一张导航按钮
+        this.preloadImages();
+
+        // 显示/隐藏上一张导航按钮
         if (this.currentIndex === 0) {
           this.prevButton.style.display = 'none';
         } else {
           this.prevButton.style.display = 'block';
         }
-    
+
         // 显示/隐藏下一张导航按钮
         if (this.currentIndex === this.images.length - 1) {
           this.nextButton.style.display = 'none';
@@ -336,7 +355,7 @@
     }
 
     clearPreloadedImages() {
-      Object.keys(this.preloadedImages).forEach(key => {
+      Object.keys(this.preloadedImages).forEach((key) => {
         this.preloadedImages[key].src = '';
       });
       this.preloadedImages = {};
