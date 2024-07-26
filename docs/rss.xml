@@ -1,5 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Thu, 25 Jul 2024 09:05:59 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster><item><title>使用workers代理IP:端口</title><link>https://code.buxiantang.top/post/shi-yong-workers-dai-li-IP--duan-kou.html</link><description>## 一、目的&#13;
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Fri, 26 Jul 2024 02:58:14 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster><item><title>about</title><link>https://code.buxiantang.top/post/about.html</link><description>`Gmeek-html&#13;
+    &lt;div align='center'&gt;&#13;
+    # 关于我 &#13;
+&#13;
+    ![favicon](https://code.buxiantang.top/favicon.svg)&#13;
+&#13;
+    ## Tiengming&#13;
+    &lt;/div&gt;&#13;
+`&#13;
+&#13;
+职业：夕阳地质工程行业&#13;
+兼职：出道仙&#13;
+&#13;
+正如博客首页写的那样：&#13;
+&#13;
+&gt; 发现世界上所有美好的事物，分享有趣的东西&#13;
+&#13;
+我有一个渴望好奇的心，对世界新鲜未知的事物充满兴趣。</description><guid isPermaLink="true">https://code.buxiantang.top/post/about.html</guid><pubDate>Fri, 26 Jul 2024 02:57:46 +0000</pubDate></item><item><title>使用workers代理IP:端口</title><link>https://code.buxiantang.top/post/shi-yong-workers-dai-li-IP--duan-kou.html</link><description>## 一、目的&#13;
 &#13;
 - 通过workers实现访问域名时实际请求url是ip:port&#13;
 - 举个例子：&#13;
