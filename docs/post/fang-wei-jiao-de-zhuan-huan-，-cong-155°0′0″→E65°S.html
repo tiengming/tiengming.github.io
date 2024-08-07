@@ -140,43 +140,42 @@ If angle &lt; 0 Then angle = angle + 360
 ' 四舍五入角度到最近的整数
 roundedAngle = Round(angle)
 
-' 处理正向方向的情况
-Select Case roundedAngle
-    Case 0, 360
-        ConvertAngle = "N"
-        Exit Function
-    Case 90
-        ConvertAngle = "E"
-        Exit Function
-    Case 180
-        ConvertAngle = "S"
-        Exit Function
-    Case 270
-        ConvertAngle = "W"
-        Exit Function
-End Select
-
 ' 确定象限
 quadrant = roundedAngle \ 90
 
 ' 计算转换后的角度
 convertedAngle = roundedAngle Mod 90
-If convertedAngle = 0 Then convertedAngle = 90
 
 ' 根据象限返回结果
 Select Case quadrant
     Case 0
-        ConvertAngle = "N" &amp; convertedAngle &amp; "°E"
+        If convertedAngle = 0 Then
+            ConvertAngle = "N"
+        Else
+            ConvertAngle = "N" &amp; convertedAngle &amp; "°E"
+        End If
     Case 1
-        ConvertAngle = "E" &amp; convertedAngle &amp; "°S"
+        If convertedAngle = 0 Then
+            ConvertAngle = "E"
+        Else
+            ConvertAngle = "E" &amp; convertedAngle &amp; "°S"
+        End If
     Case 2
-        ConvertAngle = "S" &amp; convertedAngle &amp; "°W"
+        If convertedAngle = 0 Then
+            ConvertAngle = "S"
+        Else
+            ConvertAngle = "S" &amp; convertedAngle &amp; "°W"
+        End If
     Case 3
-        ConvertAngle = "W" &amp; convertedAngle &amp; "°N"
+        If convertedAngle = 0 Then
+            ConvertAngle = "W"
+        Else
+            ConvertAngle = "W" &amp; convertedAngle &amp; "°N"
+        End If
 End Select
 </code></pre>
-</code><p><code class="notranslate">End Function<br>
-</code></p></pre><p></p>
+<p>End Function</p>
+</code><p><code class="notranslate"></code></p></pre><p></p>
 </details>
 <h3>2. 特性</h3>
 <pre class="notranslate"><code class="notranslate">- 将输入转换为字符串，并移除可能存在的度数符号（°）。
