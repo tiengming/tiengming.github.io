@@ -19,7 +19,7 @@
 <meta property="og:url" content="https://code.buxiantang.top/post/fang-wei-jiao-de-zhuan-huan-%EF%BC%8C-cong-155%C2%B00%E2%80%B20%E2%80%B3%E2%86%92E65%C2%B0S.html">
 <meta property="og:image" content="https://code.buxiantang.top/favicon.svg">
 <title>方位角的转换，从155°0′0″→E65°S</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -79,71 +79,97 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h2>2. 省流</h2>
 <p>简单讲就是：155→E65°S或者155°→E65°S</p>
 <h2>3. 实现</h2>
-<p>为了实现这个功能，我们可以在Excel中使用VBA (Visual Basic for Applications) 来编写一个自定义函数。以下是实现这个功能的步骤：<br>
-a. 打开Excel，按Alt + F11 打开VBA编辑器。<br>
+<p>为了实现这个功能，我们可以在Excel中使用VBA (Visual Basic for Applications) 来编写一个自定义函数。</p>
+<h3>1. 实现步骤：</h3>
+<p>a. 打开Excel，按Alt + F11 打开VBA编辑器。<br>
 b. 在VBA编辑器中，插入一个新模块（Insert &gt; Module）。<br>
 c. 在新模块中，粘贴以下代码：：</p>
-<div class="highlight highlight-source-vba"><pre class="notranslate"><span class="pl-k">Function</span> ConvertAngle(value <span class="pl-k">As</span> <span class="pl-c1">Variant</span>) <span class="pl-k">As</span> <span class="pl-c1">String</span>
-    <span class="pl-k">Dim</span> angle <span class="pl-k">As</span> <span class="pl-c1">Double</span>
-    <span class="pl-k">Dim</span> inputStr <span class="pl-k">As</span> <span class="pl-c1">String</span>
-    <span class="pl-k">Dim</span> roundedAngle <span class="pl-k">As</span> <span class="pl-c1">Integer</span>
-    <span class="pl-k">Dim</span> quadrant <span class="pl-k">As</span> <span class="pl-c1">Integer</span>
-    <span class="pl-k">Dim</span> convertedAngle <span class="pl-k">As</span> <span class="pl-c1">Integer</span>
+<details>
+  <summary>点我展开看代码</summary>
+  <pre class="notranslate"><code class="notranslate">
+Function ConvertAngle(value As Variant) As String
+    Dim angle As Double
+    Dim inputStr As String
+    Dim roundedAngle As Integer
+    Dim quadrant As Integer
+    Dim convertedAngle As Integer
+    Dim degPart As String, minPart As String, secPart As String
+<pre class="notranslate"><code class="notranslate">' 检查输入是否为空或错误
+If IsEmpty(value) Or IsError(value) Then
+    ConvertAngle = "Invalid Input"
+    Exit Function
+End If
+
+' 将输入转换为字符串
+inputStr = CStr(value)
+
+' 解析度分秒格式
+If InStr(inputStr, "°") &gt; 0 Then
+    ' 提取度
+    degPart = Left(inputStr, InStr(inputStr, "°") - 1)
+    inputStr = Mid(inputStr, InStr(inputStr, "°") + 1)
     
-    <span class="pl-c">' 检查输入是否为空或错误</span>
-    <span class="pl-k">If</span> IsEmpty(value) <span class="pl-k">Or</span> IsError(value) <span class="pl-k">Then</span>
-        ConvertAngle = <span class="pl-s">"Invalid Input"</span>
-        <span class="pl-k">Exit Function</span>
-    <span class="pl-k">End If</span>
+    ' 提取分（如果存在）
+    If InStr(inputStr, "'") &gt; 0 Then
+        minPart = Left(inputStr, InStr(inputStr, "'") - 1)
+        inputStr = Mid(inputStr, InStr(inputStr, "'") + 1)
+        
+        ' 提取秒（如果存在）
+        If InStr(inputStr, """") &gt; 0 Then
+            secPart = Left(inputStr, InStr(inputStr, """") - 1)
+        End If
+    End If
     
-    <span class="pl-c">' 将输入转换为字符串并移除可能的度数符号</span>
-    inputStr = CStr(value)
-    inputStr = Replace(inputStr, <span class="pl-s">"°"</span>, <span class="pl-s">""</span>)
-    inputStr = Trim(inputStr)
-    
-    <span class="pl-c">' 检查清理后的字符串是否为数字</span>
-    <span class="pl-k">If</span> <span class="pl-k">Not</span> IsNumeric(inputStr) <span class="pl-k">Then</span>
-        ConvertAngle = <span class="pl-s">"Invalid Input"</span>
-        <span class="pl-k">Exit Function</span>
-    <span class="pl-k">End If</span>
-    
-    <span class="pl-c">' 将输入转换为数字</span>
+    ' 计算总角度
+    angle = CDbl(degPart) + CDbl(minPart) / 60 + CDbl(secPart) / 3600
+Else
+    ' 如果不是度分秒格式，尝试直接转换为数字
+    If Not IsNumeric(inputStr) Then
+        ConvertAngle = "Invalid Input"
+        Exit Function
+    End If
     angle = CDbl(inputStr)
-    
-    <span class="pl-c">' 确保角度在0-360范围内</span>
-    angle = angle <span class="pl-k">Mod</span> <span class="pl-c1">360</span>
-    <span class="pl-k">If</span> angle &lt; <span class="pl-c1">0</span> <span class="pl-k">Then</span> angle = angle + <span class="pl-c1">360</span>
-    
-    <span class="pl-c">' 四舍五入角度到最近的整数</span>
-    roundedAngle = Round(angle)
-    
-    <span class="pl-c">' 确定象限</span>
-    quadrant = roundedAngle \ <span class="pl-c1">90</span>
-    
-    <span class="pl-c">' 计算转换后的角度</span>
-    convertedAngle = roundedAngle <span class="pl-k">Mod</span> <span class="pl-c1">90</span>
-    <span class="pl-k">If</span> convertedAngle = <span class="pl-c1">0</span> <span class="pl-k">And</span> roundedAngle &lt;&gt; <span class="pl-c1">0</span> <span class="pl-k">Then</span> convertedAngle = <span class="pl-c1">90</span>
-    
-    <span class="pl-c">' 根据象限返回结果</span>
-    <span class="pl-k">Select Case</span> quadrant
-        <span class="pl-k">Case</span> <span class="pl-c1">0</span>
-            ConvertAngle = <span class="pl-s">"N"</span> &amp; convertedAngle &amp; <span class="pl-s">"°E"</span>
-        <span class="pl-k">Case</span> <span class="pl-c1">1</span>
-            ConvertAngle = <span class="pl-s">"E"</span> &amp; convertedAngle &amp; <span class="pl-s">"°S"</span>
-        <span class="pl-k">Case</span> <span class="pl-c1">2</span>
-            ConvertAngle = <span class="pl-s">"S"</span> &amp; convertedAngle &amp; <span class="pl-s">"°W"</span>
-        <span class="pl-k">Case</span> <span class="pl-c1">3</span>
-            ConvertAngle = <span class="pl-s">"W"</span> &amp; convertedAngle &amp; <span class="pl-s">"°N"</span>
-    <span class="pl-k">End Select</span>
-<span class="pl-k">End Function</span></pre></div>
-<p>d. 特性<br>
-- 将输入转换为字符串，并移除可能存在的度数符号（°）。<br>
-- 处理输入中可能存在的空格。<br>
-- 在移除度数符号后再次检查输入是否为有效数字。</p>
-<p>e. 使用方法：<br>
-1. 在 Excel 中打开 VBA 编辑器 (Alt + F11)。<br>
-2. 插入新模块并粘贴上述代码。<br>
-3. 在 E3 单元格中输入公式 <code class="notranslate">=ConvertAngle(D3)</code>。</p>
+End If
+
+' 确保角度在0-360范围内
+angle = angle Mod 360
+If angle &lt; 0 Then angle = angle + 360
+
+' 四舍五入角度到最近的整数
+roundedAngle = Round(angle)
+
+' 确定象限
+quadrant = roundedAngle \ 90
+
+' 计算转换后的角度
+convertedAngle = roundedAngle Mod 90
+If convertedAngle = 0 And roundedAngle &lt;&gt; 0 Then convertedAngle = 90
+
+' 根据象限返回结果
+Select Case quadrant
+    Case 0
+        ConvertAngle = "N" &amp; convertedAngle &amp; "°E"
+    Case 1
+        ConvertAngle = "E" &amp; convertedAngle &amp; "°S"
+    Case 2
+        ConvertAngle = "S" &amp; convertedAngle &amp; "°W"
+    Case 3
+        ConvertAngle = "W" &amp; convertedAngle &amp; "°N"
+End Select
+</code></pre>
+<p>End Function</p>
+</code><p><code class="notranslate"></code></p></pre><p></p>
+</details>
+<h3>2. 特性</h3>
+<pre class="notranslate"><code class="notranslate">- 将输入转换为字符串，并移除可能存在的度数符号（°）。
+- 处理输入中可能存在的空格。
+- 在移除度数符号后再次检查输入是否为有效数字。
+</code></pre>
+<h3>3. 使用方法：</h3>
+<pre class="notranslate"><code class="notranslate">1. 在 Excel 中打开 VBA 编辑器 (Alt + F11)。
+2. 插入新模块并粘贴上述代码。
+3. 在 E3 单元格中输入公式 `=ConvertAngle(D3)`。
+</code></pre>
 <p>现在，这个函数能够正确处理带有度数符号的输入：</p>
 <ul>
 <li>如果 D3 为 110°，E3 将显示 "E70°S"</li>
