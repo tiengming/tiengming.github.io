@@ -23,6 +23,24 @@
 - [x] 🦑 支持五线谱、及部分站点、视频、音频解析；
 - [x] 🌟 增加对**所见即所得**编辑模式的支持(`⌘-⇧-M`)；
 
+<details>
+  <summary>点我展开看代码</summary>
+  <pre><code>
+- [x] 🎉 通常 `Markdown` 解析器自带的基本功能；
+- [x] 🍀 支持**流程图**、**甘特图**、**时序图**、**任务列表**；
+- [x] 🏁 支持粘贴 HTML 自动转换为 Markdown；
+- [x] 💃🏻 支持插入原生 Emoji、设置常用表情列表；
+- [x] 🚑 支持编辑内容保存**本地存储**，防止意外丢失；
+- [x] 📝 支持**实时预览**，主窗口大小拖拽，字符计数；
+- [x] 🛠 支持常用快捷键(**Tab**)，及代码块添加复制
+- [x] ✨ 支持**导出**携带样式的 PDF、PNG、JPEG 等；
+- [x] ✨ 升级 Vditor，新增对 `echarts` 图表的支持；
+- [x] 👏 支持检查并格式化 Markdown 语法，使其专业；
+- [x] 🦑 支持五线谱、及部分站点、视频、音频解析；
+- [x] 🌟 增加对**所见即所得**编辑模式的支持(`⌘-⇧-M`)；
+  </code></pre>
+</details>
+
 ---
 
 ### 2. 书写一个质能守恒公式[^LaTeX]
@@ -95,6 +113,10 @@ gantt
 
 显示效果应该是这样：
 ![显示效果](https://imghosting.buxiantang.top/file/f8b53f9eab882aaf72288.png)
+
+<details>
+  <summary>点我展开看代码</summary>
+  <pre><code>
 ```echarts
 {
   "backgroundColor": "#212121",
@@ -169,6 +191,9 @@ gantt
   ]
 }
 ```
+  </code></pre>
+</details>
+
 
 > **备注**：上述 echarts 图表📈，其数据，须使用严格的 **JSON** 格式；您可使用 JSON.stringify(data)，将对象传换从而得标准数据，即可正常使用。
 
@@ -180,7 +205,16 @@ gantt
 | 卜仙堂 | [https://buxiantang.top/](https://buxiantang.top/) |2024-05|
 | Markerdown | [https://markdown.buxiantang.top/](https://markdown.buxiantang.top/) |2024-07|
 
-### 9. 更详细语法说明
+### 9. 折叠代码块
+```markdown
+<details>
+  <summary>点我展开看代码</summary>
+  <pre><code>
+# 在这里写折叠的代码
+  </code></pre>
+</details>
+```
+### 10. 更详细语法说明
 
 想要查看更详细的语法说明，可以参考这份 [Markdown 资源列表](https://github.com/nicejade/nice-front-end-tutorial/blob/master/tutorial/markdown-tutorial.md)，涵盖入门至进阶教程，以及资源、平台等信息，能让您对她有更深的认知。
 

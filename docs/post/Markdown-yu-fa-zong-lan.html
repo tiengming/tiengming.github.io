@@ -98,6 +98,23 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" checked=""> 🦑 支持五线谱、及部分站点、视频、音频解析；</li>
 <li class="task-list-item"><input type="checkbox" id="" disabled="" class="task-list-item-checkbox" checked=""> 🌟 增加对<strong>所见即所得</strong>编辑模式的支持(<code class="notranslate">⌘-⇧-M</code>)；</li>
 </ul>
+<details>
+  <summary>点我展开看代码</summary>
+  <pre class="notranslate"><code class="notranslate">
+- [x] 🎉 通常 `Markdown` 解析器自带的基本功能；
+- [x] 🍀 支持**流程图**、**甘特图**、**时序图**、**任务列表**；
+- [x] 🏁 支持粘贴 HTML 自动转换为 Markdown；
+- [x] 💃🏻 支持插入原生 Emoji、设置常用表情列表；
+- [x] 🚑 支持编辑内容保存**本地存储**，防止意外丢失；
+- [x] 📝 支持**实时预览**，主窗口大小拖拽，字符计数；
+- [x] 🛠 支持常用快捷键(**Tab**)，及代码块添加复制
+- [x] ✨ 支持**导出**携带样式的 PDF、PNG、JPEG 等；
+- [x] ✨ 升级 Vditor，新增对 `echarts` 图表的支持；
+- [x] 👏 支持检查并格式化 Markdown 语法，使其专业；
+- [x] 🦑 支持五线谱、及部分站点、视频、音频解析；
+- [x] 🌟 增加对**所见即所得**编辑模式的支持(`⌘-⇧-M`)；
+  </code></pre>
+</details>
 <hr>
 <h3>2. 书写一个质能守恒公式[^LaTeX]</h3>
 <p>$$
@@ -150,7 +167,11 @@ $$</p>
 </div>
 <p>显示效果应该是这样：<br>
 <a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/aa0b30d4e38f95ab2805bd561c318ea2301e83cee461d10dfc4072295cee6aed/68747470733a2f2f696d67686f7374696e672e62757869616e74616e672e746f702f66696c652f6638623533663965616238383261616637323238382e706e67"><img src="https://camo.githubusercontent.com/aa0b30d4e38f95ab2805bd561c318ea2301e83cee461d10dfc4072295cee6aed/68747470733a2f2f696d67686f7374696e672e62757869616e74616e672e746f702f66696c652f6638623533663965616238383261616637323238382e706e67" alt="显示效果" data-canonical-src="https://imghosting.buxiantang.top/file/f8b53f9eab882aaf72288.png" style="max-width: 100%;"></a></p>
-<pre lang="echarts" class="notranslate"><code class="notranslate">{
+<details>
+  <summary>点我展开看代码</summary>
+  <pre class="notranslate"><code class="notranslate">
+```echarts
+{
   "backgroundColor": "#212121",
   "title": {
     "text": "访问来源",
@@ -162,7 +183,7 @@ $$</p>
   },
   "tooltip": {
     "trigger": "item",
-    "formatter": "{a} &lt;br/&gt;{b} : {c} ({d}%)"
+    "formatter": "{a} <br>{b} : {c} ({d}%)"
   },
   "legend": {
     "orient": "vertical",
@@ -222,7 +243,9 @@ $$</p>
     }
   ]
 }
-</code></pre>
+```
+  </code></pre>
+</details>
 <blockquote>
 <p><strong>备注</strong>：上述 echarts 图表📈，其数据，须使用严格的 <strong>JSON</strong> 格式；您可使用 JSON.stringify(data)，将对象传换从而得标准数据，即可正常使用。</p>
 </blockquote>
@@ -253,7 +276,14 @@ $$</p>
 </tr>
 </tbody>
 </table></markdown-accessiblity-table>
-<h3>9. 更详细语法说明</h3>
+<h3>9. 折叠代码块</h3>
+<div class="highlight highlight-text-md"><pre class="notranslate">&lt;<span class="pl-ent">details</span>&gt;
+  &lt;<span class="pl-ent">summary</span>&gt;点我展开看代码&lt;/<span class="pl-ent">summary</span>&gt;
+  &lt;<span class="pl-ent">pre</span>&gt;&lt;<span class="pl-ent">code</span>&gt;
+# 在这里写折叠的代码
+  &lt;/<span class="pl-ent">code</span>&gt;&lt;/<span class="pl-ent">pre</span>&gt;
+&lt;/<span class="pl-ent">details</span>&gt;</pre></div>
+<h3>10. 更详细语法说明</h3>
 <p>想要查看更详细的语法说明，可以参考这份 <a href="https://github.com/nicejade/nice-front-end-tutorial/blob/master/tutorial/markdown-tutorial.md">Markdown 资源列表</a>，涵盖入门至进阶教程，以及资源、平台等信息，能让您对她有更深的认知。</p>
 <p>总而言之，不同于其它<em>所见即所得</em>的编辑器：你只需使用键盘专注于书写文本内容，就可以生成印刷级的排版格式，省却在键盘和工具栏之间来回切换，调整内容和格式的麻烦。<strong>Markdown 在流畅的书写和印刷级的阅读体验之间找到了平衡。</strong> 目前它已经成为世界上最大的技术分享网站 <code class="notranslate">GitHub</code> 和 技术问答网站 <code class="notranslate">StackOverFlow</code> 的御用书写格式，而且越发流行，正在在向各行业渗透。</p>
 <p>最新更新于 204.7.18</p></div>
