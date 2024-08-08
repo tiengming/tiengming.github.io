@@ -106,73 +106,65 @@ Function ConvertAngle(value As Variant) As String
         ' 提取度
         degPart = Left(inputStr, InStr(inputStr, "°") - 1)
         inputStr = Mid(inputStr, InStr(inputStr, "°") + 1)
-<pre class="notranslate"><code class="notranslate">    ' 提取分（如果存在）
-    If InStr(inputStr, "'") &gt; 0 Then
-        minPart = Left(inputStr, InStr(inputStr, "'") - 1)
-        inputStr = Mid(inputStr, InStr(inputStr, "'") + 1)
-        
-        ' 提取秒（如果存在）
-        If InStr(inputStr, """") &gt; 0 Then
-            secPart = Left(inputStr, InStr(inputStr, """") - 1)
+        ' 提取分（如果存在）
+        If InStr(inputStr, "'") &gt; 0 Then
+            minPart = Left(inputStr, InStr(inputStr, "'") - 1)
+            inputStr = Mid(inputStr, InStr(inputStr, "'") + 1)
+            ' 提取秒（如果存在）
+            If InStr(inputStr, """") &gt; 0 Then
+                secPart = Left(inputStr, InStr(inputStr, """") - 1)
+            End If
         End If
+        ' 计算总角度
+        angle = CDbl(degPart)
+        If minPart &lt;&gt; "" Then angle = angle + CDbl(minPart) / 60
+        If secPart &lt;&gt; "" Then angle = angle + CDbl(secPart) / 3600
+    Else
+        ' 如果不是度分秒格式，尝试直接转换为数字
+        If Not IsNumeric(inputStr) Then
+            ConvertAngle = "Invalid Input"
+            Exit Function
+        End If
+        angle = CDbl(inputStr)
     End If
-    
-    ' 计算总角度
-    angle = CDbl(degPart)
-    If minPart &lt;&gt; "" Then angle = angle + CDbl(minPart) / 60
-    If secPart &lt;&gt; "" Then angle = angle + CDbl(secPart) / 3600
-Else
-    ' 如果不是度分秒格式，尝试直接转换为数字
-    If Not IsNumeric(inputStr) Then
-        ConvertAngle = "Invalid Input"
-        Exit Function
-    End If
-    angle = CDbl(inputStr)
-End If
-
-' 确保角度在0-360范围内
-angle = angle Mod 360
-If angle &lt; 0 Then angle = angle + 360
-
-' 四舍五入角度到最近的整数
-roundedAngle = Round(angle)
-
-' 确定象限
-quadrant = roundedAngle \ 90
-
-' 计算转换后的角度
-convertedAngle = roundedAngle Mod 90
-
-' 根据象限返回结果
-Select Case quadrant
-    Case 0
-        If convertedAngle = 0 Then
-            ConvertAngle = "N"
-        Else
-            ConvertAngle = "N" &amp; convertedAngle &amp; "°E"
-        End If
-    Case 1
-        If convertedAngle = 0 Then
-            ConvertAngle = "E"
-        Else
-            ConvertAngle = "E" &amp; convertedAngle &amp; "°S"
-        End If
-    Case 2
-        If convertedAngle = 0 Then
-            ConvertAngle = "S"
-        Else
-            ConvertAngle = "S" &amp; convertedAngle &amp; "°W"
-        End If
-    Case 3
-        If convertedAngle = 0 Then
-            ConvertAngle = "W"
-        Else
-            ConvertAngle = "W" &amp; convertedAngle &amp; "°N"
-        End If
-End Select
-</code></pre>
-<p>End Function</p>
-</code><p><code class="notranslate"></code></p></pre><p></p>
+    ' 确保角度在0-360范围内
+    angle = angle Mod 360
+    If angle &lt; 0 Then angle = angle + 360 
+    ' 四舍五入角度到最近的整数
+    roundedAngle = Round(angle)
+    ' 确定象限
+    quadrant = roundedAngle \ 90
+    ' 计算转换后的角度
+    convertedAngle = roundedAngle Mod 90
+    ' 根据象限返回结果
+    Select Case quadrant
+        Case 0
+            If convertedAngle = 0 Then
+                ConvertAngle = "N"
+            Else
+                ConvertAngle = "N" &amp; convertedAngle &amp; "°E"
+            End If
+        Case 1
+            If convertedAngle = 0 Then
+                ConvertAngle = "E"
+            Else
+                ConvertAngle = "E" &amp; convertedAngle &amp; "°S"
+            End If
+        Case 2
+            If convertedAngle = 0 Then
+                ConvertAngle = "S"
+            Else
+                ConvertAngle = "S" &amp; convertedAngle &amp; "°W"
+            End If
+        Case 3
+            If convertedAngle = 0 Then
+                ConvertAngle = "W"
+            Else
+                ConvertAngle = "W" &amp; convertedAngle &amp; "°N"
+            End If
+    End Select
+End Function
+  </code></pre>
 </details>
 <h3>2. 特性</h3>
 <pre class="notranslate"><code class="notranslate">- 将输入转换为字符串，并移除可能存在的度数符号（°）。
