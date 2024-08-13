@@ -42,7 +42,10 @@
         // 3. 调整博客标题和右侧按钮的布局
         function adjustHeader() {
             const header = document.getElementById('header');
+            if (!header) return;
+
             const blogTitle = header.querySelector('.blogTitle');
+            const postTitle = header.querySelector('.postTitle');
             const avatar = header.querySelector('#avatarImg');
             const titleRight = header.querySelector('.title-right');
             
@@ -52,8 +55,16 @@
             // 创建header-content容器
             const headerContent = document.createElement('div');
             headerContent.className = 'header-content';
-            headerContent.appendChild(avatar);
-            headerContent.appendChild(blogTitle.parentNode);
+            
+            if (avatar && blogTitle) {
+                // 主页布局
+                headerContent.appendChild(avatar);
+                headerContent.appendChild(blogTitle.parentNode);
+            } else if (avatar && postTitle) {
+                // 文章页布局
+                headerContent.appendChild(avatar);
+                headerContent.appendChild(postTitle);
+            }
             
             // 创建title-right容器
             const titleRightContainer = document.createElement('div');
@@ -108,8 +119,9 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                width: 100%;
             }
-            .blogTitle {
+            .blogTitle, .postTitle {
                 text-align: center;
             }
             .title-right-container {
