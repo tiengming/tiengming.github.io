@@ -1,5 +1,4 @@
 (function() {
-    // 等待DOM加载完成
     document.addEventListener('DOMContentLoaded', function() {
         // 1. 调整标签和时间的位置
         function adjustLabels() {
@@ -9,7 +8,6 @@
                 const labels = item.querySelectorAll('.Label.LabelName');
                 const time = item.querySelector('.Label.LabelTime');
                 
-                // 创建新的容器
                 const labelContainer = document.createElement('div');
                 labelContainer.className = 'labelContainer';
                 const labelLeft = document.createElement('div');
@@ -17,14 +15,12 @@
                 const labelRight = document.createElement('div');
                 labelRight.className = 'labelRight';
                 
-                // 移动标签和时间
                 labels.forEach(label => labelLeft.appendChild(label));
                 if (time) labelRight.appendChild(time);
                 
                 labelContainer.appendChild(labelLeft);
                 labelContainer.appendChild(labelRight);
                 
-                // 插入新容器
                 listTitle.parentNode.insertBefore(labelContainer, listTitle.nextSibling);
             });
         }
@@ -50,19 +46,25 @@
             const avatar = header.querySelector('#avatarImg');
             const titleRight = header.querySelector('.title-right');
             
-            // 创建新的容器
+            // 清空header
+            header.innerHTML = '';
+            
+            // 创建header-content容器
             const headerContent = document.createElement('div');
             headerContent.className = 'header-content';
-            
-            // 重新组织元素
             headerContent.appendChild(avatar);
             headerContent.appendChild(blogTitle.parentNode);
-            header.insertBefore(headerContent, header.firstChild);
             
-            // 移动右侧按钮
+            // 创建title-right容器
+            const titleRightContainer = document.createElement('div');
+            titleRightContainer.className = 'title-right-container';
             if (titleRight) {
-                header.appendChild(titleRight);
+                titleRightContainer.appendChild(titleRight);
             }
+            
+            // 将两个容器添加到header
+            header.appendChild(headerContent);
+            header.appendChild(titleRightContainer);
         }
 
         // 4. 为文章页图片添加圆角和阴影
@@ -97,6 +99,11 @@
             .labelRight {
                 text-align: right;
             }
+            #header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
             .header-content {
                 display: flex;
                 flex-direction: column;
@@ -105,7 +112,8 @@
             .blogTitle {
                 text-align: center;
             }
-            .title-right {
+            .title-right-container {
+                width: 100%;
                 display: flex;
                 justify-content: center;
                 margin-top: 10px;
