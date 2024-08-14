@@ -1,7 +1,7 @@
 (function() {
     // 检测暗黑模式
     function isDarkMode() {
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return document.body.classList.contains('dark-theme');
     }
 
     // 添加样式
@@ -9,10 +9,11 @@
         const style = document.createElement('style');
         style.textContent = `
             :root {
-                --bg-color: ${isDarkMode() ? '#1a1a1a' : '#ffffff'};
-                --text-color: ${isDarkMode() ? '#ffffff' : '#333333'};
-                --hover-bg-color: ${isDarkMode() ? '#2a2a2a' : '#f0f0f0'};
+                --bg-color: ${isDarkMode() ? '#0d1117' : '#ffffff'};
+                --text-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
+                --hover-bg-color: ${isDarkMode() ? '#21262d' : '#f6f8fa'};
                 --shadow-color: ${isDarkMode() ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+                --link-color: ${isDarkMode() ? '#58a6ff' : '#0969da'};
             }
 
             body {
@@ -70,26 +71,28 @@
             }
 
             .avatar {
-                width: 100px;
-                height: 100px;
+                width: 50px;
+                height: 50px;
                 border-radius: 50%;
                 box-shadow: 0 4px 8px var(--shadow-color);
                 transition: all 0.3s ease;
+                margin-bottom: 10px;
             }
 
             .avatar:hover {
                 transform: scale(1.1) rotate(5deg);
             }
 
-            .blogTitle {
+            .blogTitle, .postTitle {
                 font-size: 24px;
                 font-weight: bold;
                 margin-top: 10px;
                 transition: all 0.3s ease;
+                text-align: center;
             }
 
             .blogTitle:hover {
-                color: #3498db;
+                color: var(--link-color);
                 transform: scale(1.05);
             }
 
@@ -115,6 +118,14 @@
 
             .fade-in {
                 animation: fadeIn 0.5s ease-out;
+            }
+
+            .btn-invisible {
+                color: var(--text-color);
+            }
+
+            .btn-invisible:hover {
+                color: var(--link-color);
             }
         `;
         document.head.appendChild(style);
@@ -148,33 +159,27 @@
         const header = document.getElementById('header');
         if (!header) return;
 
-        const blogTitle = header.querySelector('.blogTitle, .postTitle');
-        const avatar = header.querySelector('#avatarImg');
-        const titleRight = header.querySelector('.title-right');
+        const headerContent = header.querySelector('.header-content');
+        if (!headerContent) return;
 
-        header.innerHTML = '';
+        const postTitle = headerContent.querySelector('.blogTitle, .postTitle');
+        
+        // 只在文章页添加头像和网站名称
+        if (postTitle && postTitle.classList.contains('blogTitle')) {
+            // 这是文章页面
+            const avatar = document.createElement('img');
+            avatar.src = 'https://code.buxiantang.top/favicon.svg';
+            avatar.className = 'avatar fade-in';
+            avatar.alt = 'avatar';
 
-        const headerContent = document.createElement('div');
-        headerContent.className = 'header-content fade-in';
+            const blogTitle = document.createElement('a');
+            blogTitle.href = '/';
+            blogTitle.className = 'blogTitle fade-in';
+            blogTitle.textContent = 'Tiengming';
 
-        if (avatar) {
-            const newAvatar = avatar.cloneNode(true);
-            newAvatar.className = 'avatar';
-            headerContent.appendChild(newAvatar);
+            headerContent.insertBefore(blogTitle, headerContent.firstChild);
+            headerContent.insertBefore(avatar, headerContent.firstChild);
         }
-
-        if (blogTitle) {
-            const newBlogTitle = blogTitle.cloneNode(true);
-            newBlogTitle.className = 'blogTitle';
-            headerContent.appendChild(newBlogTitle);
-        }
-
-        const titleRightContainer = document.createElement('div');
-        titleRightContainer.className = 'title-right-container';
-        if (titleRight) titleRightContainer.appendChild(titleRight.cloneNode(true));
-
-        header.appendChild(headerContent);
-        header.appendChild(titleRightContainer);
     }
 
     function styleImages() {
@@ -188,38 +193,21 @@
     }
 
     function init() {
-        const isPostPage = document.querySelector('.post-content, .cnblogs_post_body') !== null;
-
         addStyles();
         adjustLabels();
         adjustHeader();
         styleImages();
 
-        if (isPostPage) {
-            // 在文章页面添加头像和博客标题
-            const postHeader = document.querySelector('.header-content');
-            if (postHeader) {
-                const avatar = document.createElement('img');
-                avatar.src = 'https://code.buxiantang.top/favicon.svg';
-                avatar.className = 'avatar fade-in';
-                avatar.alt = 'avatar';
-
-                const blogTitle = document.createElement('a');
-                blogTitle.href = '/';
-                blogTitle.className = 'blogTitle fade-in';
-                blogTitle.textContent = 'Tiengming';
-
-                postHeader.insertBefore(blogTitle, postHeader.firstChild);
-                postHeader.insertBefore(avatar, postHeader.firstChild);
-            }
-        }
-
-        // 监听系统主题变化
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addListener(() => {
-                addStyles(); // 重新应用样式以更新颜色
+        // 监听主题变化
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    addStyles(); // 重新应用样式以更新颜色
+                }
             });
-        }
+        });
+
+        observer.observe(document.body, { attributes: true });
     }
 
     // 确保DOM完全加载后执行脚本
