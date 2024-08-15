@@ -56,9 +56,22 @@
                 transform: translateY(-2px);
             }
 
+            .SideNav-item .d-flex.flex-items-center {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .SideNav-item .listLabels {
+                margin-left: auto;
+            }
+
             .labelContainer {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
+                width: 100%;
                 margin-top: 10px;
             }
 
@@ -143,25 +156,23 @@
     function adjustLabels() {
         const sideNavItems = document.querySelectorAll('.SideNav-item');
         sideNavItems.forEach(item => {
-            const listTitle = item.querySelector('.listTitle');
-            const labels = item.querySelectorAll('.Label.LabelName');
-            const time = item.querySelector('.Label.LabelTime');
+            const flexContainer = item.querySelector('.d-flex.flex-items-center');
+            const listLabels = item.querySelector('.listLabels');
+            const labelContainer = item.querySelector('.labelContainer');
             
-            if (listTitle && !item.querySelector('.labelContainer')) {
-                const labelContainer = document.createElement('div');
-                labelContainer.className = 'labelContainer fade-in';
-                const labelLeft = document.createElement('div');
-                labelLeft.className = 'labelLeft';
-                const labelRight = document.createElement('div');
-                labelRight.className = 'labelRight';
+            if (flexContainer && listLabels && !flexContainer.contains(listLabels)) {
+                flexContainer.appendChild(listLabels);
+            }
+
+            if (labelContainer) {
+                const labelLeft = labelContainer.querySelector('.labelLeft');
+                const labelRight = labelContainer.querySelector('.labelRight');
                 
-                labels.forEach(label => labelLeft.appendChild(label));
-                if (time) labelRight.appendChild(time);
-                
-                labelContainer.appendChild(labelLeft);
-                labelContainer.appendChild(labelRight);
-                
-                item.appendChild(labelContainer);
+                if (labelLeft && labelRight) {
+                    labelContainer.innerHTML = '';
+                    labelContainer.appendChild(labelLeft);
+                    labelContainer.appendChild(labelRight);
+                }
             }
         });
     }
