@@ -3,13 +3,15 @@
     function loadHighlightJS() {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/github.min.css';
         document.head.appendChild(link);
 
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js';
         script.onload = function() {
-            hljs.highlightAll();
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightAll();
+            }
         };
         document.head.appendChild(script);
     }
@@ -37,18 +39,15 @@
                 transition: background-color 0.3s ease, color 0.3s ease;
             }
 
-            .SideNav {
-                border-radius: 12px;
-                overflow: hidden;
-            }
-
             .SideNav-item {
                 transition: all 0.3s ease;
                 border-radius: 8px;
                 box-shadow: 0 2px 4px var(--shadow-color);
                 margin-bottom: 10px;
-                padding: 10px;
+                padding: 15px;
                 background-color: var(--bg-color);
+                display: flex;
+                flex-direction: column;
             }
 
             .SideNav-item:hover {
@@ -111,13 +110,6 @@
                 transform: scale(1.05);
             }
 
-            .title-right-container {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                margin-top: 10px;
-            }
-
             .post-content img,
             .cnblogs_post_body img {
                 border-radius: 8px;
@@ -135,12 +127,14 @@
                 animation: fadeIn 0.5s ease-out;
             }
 
-            .btn-invisible {
-                color: var(--text-color);
+            pre code.hljs {
+                display: block;
+                overflow-x: auto;
+                padding: 1em;
             }
 
-            .btn-invisible:hover {
-                color: var(--link-color);
+            code.hljs {
+                padding: 3px 5px;
             }
         `;
         document.head.appendChild(style);
@@ -167,7 +161,7 @@
                 labelContainer.appendChild(labelLeft);
                 labelContainer.appendChild(labelRight);
                 
-                listTitle.parentNode.insertBefore(labelContainer, listTitle.nextSibling);
+                item.appendChild(labelContainer);
             }
         });
     }
@@ -243,6 +237,9 @@
             if (mutation.type === 'childList') {
                 adjustLabels();
                 styleImages();
+                if (typeof hljs !== 'undefined') {
+                    hljs.highlightAll();
+                }
             }
         });
     });
