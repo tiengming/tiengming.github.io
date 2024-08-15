@@ -5,11 +5,26 @@ document.addEventListener("DOMContentLoaded", function() {
     clipboardScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js';
     document.body.appendChild(clipboardScript);
 
+    // 加载Highlight.js库
+    let highlightScript = document.createElement('script');
+    highlightScript.type = 'text/javascript';
+    highlightScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js';
+    document.body.appendChild(highlightScript);
+
+    // 加载Highlight.js样式
+    let highlightStyle = document.createElement('link');
+    highlightStyle.rel = 'stylesheet';
+    highlightStyle.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/github.min.css';
+    document.head.appendChild(highlightStyle);
+
     // 样式
     let style = document.createElement('style');
     style.innerHTML = `
         .markdown-body .highlight pre, .markdown-body pre {
             position: relative;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            padding: 16px;
         }
 
         .copy-button {
@@ -57,10 +72,23 @@ document.addEventListener("DOMContentLoaded", function() {
         .copy-feedback.show {
             opacity: 1;
         }
+
+        /* Highlight.js overrides */
+        .hljs {
+            background: transparent !important;
+            padding: 0 !important;
+        }
     `;
     document.head.appendChild(style);
 
-    clipboardScript.onload = function() {
+    // 等待所有脚本加载完成
+    Promise.all([
+        new Promise(resolve => clipboardScript.onload = resolve),
+        new Promise(resolve => highlightScript.onload = resolve)
+    ]).then(() => {
+        // 初始化Highlight.js
+        hljs.highlightAll();
+
         // 获取所有代码块
         var codeBlocks = document.querySelectorAll('pre.notranslate');
 
@@ -95,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 copyButton.style.opacity = '0';
             });
         });
-    };
+    });
 
     // 创建复制按钮
     function createCopyButton() {
