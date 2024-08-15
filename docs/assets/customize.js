@@ -16,28 +16,32 @@
     function loadHighlightJS() {
         if (document.querySelector('link[href*="highlight.js"]')) {
             log('Highlight.js CSS already loaded');
-            return;
+            return Promise.resolve();
         }
 
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/github.min.css';
-        document.head.appendChild(link);
+        return new Promise((resolve) => {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/github.min.css';
+            document.head.appendChild(link);
 
-        if (document.querySelector('script[src*="highlight.js"]')) {
-            log('Highlight.js script already loaded');
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js';
-        script.onload = function() {
-            log('Highlight.js loaded');
-            if (typeof hljs !== 'undefined') {
-                hljs.highlightAll();
+            if (document.querySelector('script[src*="highlight.js"]')) {
+                log('Highlight.js script already loaded');
+                resolve();
+                return;
             }
-        };
-        document.head.appendChild(script);
+
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js';
+            script.onload = function() {
+                log('Highlight.js loaded');
+                if (typeof hljs !== 'undefined') {
+                    hljs.highlightAll();
+                }
+                resolve();
+            };
+            document.head.appendChild(script);
+        });
     }
 
     function isDarkMode() {
@@ -54,53 +58,60 @@
         style.id = 'blog-enhancer-styles';
         style.textContent = `
             .SideNav-item {
-                display: flex;
-                flex-direction: column;
-                margin-bottom: 15px;
+                display: flex !important;
+                flex-direction: column !important;
+                margin-bottom: 15px !important;
             }
             .SideNav-item .d-flex.flex-items-center {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                width: 100% !important;
             }
             .SideNav-item .listLabels {
-                margin-left: auto;
+                margin-left: auto !important;
             }
             .SideNav-item .labelContainer {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 5px;
+                width: 100% !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                margin-top: 5px !important;
             }
             .SideNav-item .labelLeft {
-                text-align: left;
+                text-align: left !important;
             }
             .SideNav-item .labelRight {
-                text-align: right;
+                text-align: right !important;
             }
             .post-content img, .cnblogs_post_body img {
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                max-width: 100%;
-                height: auto;
+                border-radius: 8px !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+                max-width: 100% !important;
+                height: auto !important;
             }
             .dark-theme .post-content img, .dark-theme .cnblogs_post_body img {
-                box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+                box-shadow: 0 4px 8px rgba(255,255,255,0.1) !important;
             }
             .dark-theme {
-                background-color: #1a1a1a;
-                color: #e0e0e0;
+                background-color: #1a1a1a !important;
+                color: #e0e0e0 !important;
             }
             .dark-theme a {
-                color: #58a6ff;
+                color: #58a6ff !important;
             }
             .dark-theme .SideNav-item {
-                background-color: #2a2a2a;
+                background-color: #2a2a2a !important;
             }
             .dark-theme .labelContainer {
-                background-color: #2a2a2a;
+                background-color: #2a2a2a !important;
+            }
+            .fade-in {
+                animation: fadeIn 0.5s ease-in-out;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
         `;
         document.head.appendChild(style);
@@ -175,7 +186,7 @@
         }
     }
 
-    function init() {
+    async function init() {
         if (isInitialized) {
             log('Already initialized');
             return;
@@ -186,7 +197,7 @@
         adjustLabels();
         adjustHeader();
         styleImages();
-        loadHighlightJS();
+        await loadHighlightJS();
 
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
