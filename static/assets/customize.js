@@ -1,11 +1,9 @@
-(function() {
+(() => {
     // 检测暗黑模式
-    function isDarkMode() {
-        return document.body.classList.contains('dark-theme');
-    }
+    const isDarkMode = () => document.body.classList.contains('dark-theme');
 
     // 添加样式
-    function addStyles() {
+    const addStyles = () => {
         const style = document.createElement('style');
         style.textContent = `
             :root {
@@ -20,11 +18,14 @@
                 background-color: var(--bg-color);
                 color: var(--text-color);
                 transition: background-color 0.3s ease, color 0.3s ease;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             }
 
             .SideNav {
                 border-radius: 12px;
                 overflow: hidden;
+                backdrop-filter: blur(10px);
+                background-color: rgba(255, 255, 255, 0.1);
             }
 
             .SideNav-item {
@@ -32,7 +33,7 @@
                 border-radius: 8px;
                 box-shadow: 0 2px 4px var(--shadow-color);
                 margin-bottom: 10px;
-                padding: 10px;
+                padding: 15px;
                 background-color: var(--bg-color);
             }
 
@@ -61,6 +62,7 @@
                 flex-direction: column;
                 align-items: center;
                 padding: 20px 0;
+                background-image: linear-gradient(to bottom, var(--bg-color), transparent);
             }
 
             .header-content {
@@ -68,15 +70,16 @@
                 flex-direction: column;
                 align-items: center;
                 width: 100%;
+                max-width: 800px;
             }
 
             .avatar {
-                width: 50px;
-                height: 50px;
+                width: 80px;
+                height: 80px;
                 border-radius: 50%;
                 box-shadow: 0 4px 8px var(--shadow-color);
                 transition: all 0.3s ease;
-                margin-bottom: 10px;
+                margin-bottom: 20px;
             }
 
             .avatar:hover {
@@ -84,7 +87,7 @@
             }
 
             .blogTitle, .postTitle {
-                font-size: 24px;
+                font-size: 32px;
                 font-weight: bold;
                 margin-top: 10px;
                 transition: all 0.3s ease;
@@ -100,7 +103,7 @@
                 width: 100%;
                 display: flex;
                 justify-content: center;
-                margin-top: 10px;
+                margin-top: 20px;
             }
 
             .post-content img,
@@ -109,11 +112,17 @@
                 box-shadow: 0 4px 8px var(--shadow-color);
                 max-width: 100%;
                 height: auto;
+                transition: transform 0.3s ease;
+            }
+
+            .post-content img:hover,
+            .cnblogs_post_body img:hover {
+                transform: scale(1.05);
             }
 
             @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
             }
 
             .fade-in {
@@ -122,16 +131,56 @@
 
             .btn-invisible {
                 color: var(--text-color);
+                transition: color 0.3s ease;
             }
 
             .btn-invisible:hover {
                 color: var(--link-color);
             }
+
+            pre code {
+                display: block;
+                overflow-x: auto;
+                padding: 1em;
+                background: #f4f4f4;
+                border-radius: 8px;
+            }
+
+            #backToTop {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: var(--bg-color);
+                color: var(--text-color);
+                border: none;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 0.3s ease, background-color 0.3s ease;
+            }
+
+            #backToTop:hover {
+                background-color: var(--hover-bg-color);
+            }
+
+            @media (max-width: 768px) {
+                .blogTitle, .postTitle {
+                    font-size: 24px;
+                }
+
+                .avatar {
+                    width: 60px;
+                    height: 60px;
+                }
+            }
         `;
         document.head.appendChild(style);
-    }
+    };
 
-    function adjustLabels() {
+    const adjustLabels = () => {
         const sideNavItems = document.querySelectorAll('.SideNav-item');
         sideNavItems.forEach(item => {
             const listTitle = item.querySelector('.listTitle');
@@ -153,9 +202,9 @@
             
             listTitle.parentNode.insertBefore(labelContainer, listTitle.nextSibling);
         });
-    }
+    };
 
-    function adjustHeader() {
+    const adjustHeader = () => {
         const header = document.getElementById('header');
         if (!header) return;
 
@@ -164,9 +213,7 @@
 
         const postTitle = headerContent.querySelector('.blogTitle, .postTitle');
         
-        // 只在文章页添加头像和网站名称
         if (postTitle && postTitle.classList.contains('blogTitle')) {
-            // 这是文章页面
             const avatar = document.createElement('img');
             avatar.src = 'https://code.buxiantang.top/favicon.svg';
             avatar.className = 'avatar fade-in';
@@ -180,37 +227,60 @@
             headerContent.insertBefore(blogTitle, headerContent.firstChild);
             headerContent.insertBefore(avatar, headerContent.firstChild);
         }
-    }
+    };
 
-    function styleImages() {
+    const styleImages = () => {
         const postContent = document.querySelector('.post-content, .cnblogs_post_body');
         if (postContent) {
             const images = postContent.querySelectorAll('img');
             images.forEach(img => {
                 img.classList.add('styled-image', 'fade-in');
+                img.loading = 'lazy';  // 添加懒加载
             });
         }
-    }
+    };
 
-    function init() {
+    const addBackToTopButton = () => {
+        const button = document.createElement('button');
+        button.id = 'backToTop';
+        button.innerHTML = '↑';
+        button.setAttribute('aria-label', 'Back to top');
+        document.body.appendChild(button);
+
+        window.addEventListener('scroll', () => {
+            button.style.opacity = window.scrollY > 300 ? '1' : '0';
+        });
+
+        button.addEventListener('click', () => {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    };
+
+    const highlightCode = () => {
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+        });
+    };
+
+    const init = () => {
         addStyles();
         adjustLabels();
         adjustHeader();
         styleImages();
+        addBackToTopButton();
+        highlightCode();
 
-        // 监听主题变化
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    addStyles(); // 重新应用样式以更新颜色
+                    addStyles();
                 }
             });
         });
 
         observer.observe(document.body, { attributes: true });
-    }
+    };
 
-    // 确保DOM完全加载后执行脚本
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
