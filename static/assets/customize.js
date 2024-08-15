@@ -106,7 +106,7 @@
                 font-size: 12px;
                 font-weight: 500;
                 background-color: ${isDarkMode() ? '#30363d' : '#f1f8ff'};
-                color: ${isDarkMode() ? '#8b949e' : '#ffffff'};
+                color: ${isDarkMode() ? '#ffffff' : '#ffffff'};
             }
 
             .brand-wrapper {
