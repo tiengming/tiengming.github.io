@@ -22,6 +22,14 @@ function createTOC() {
        link.textContent = heading.textContent;
        link.className = 'toc-link';
        link.style.paddingLeft = `${(parseInt(heading.tagName.charAt(1)) - 1) * 10}px`;
+       link.addEventListener('click', function(e) {
+           e.preventDefault();
+           const targetElement = document.getElementById(heading.id);
+           if (targetElement) {
+               targetElement.scrollIntoView({ behavior: 'smooth' });
+           }
+           toggleTOC(); // 点击后关闭目录
+       });
        tocElement.appendChild(link);
    });
 }
@@ -32,7 +40,9 @@ function toggleTOC() {
    if (tocElement) {
        tocElement.classList.toggle('show');
        tocIcon.classList.toggle('active');
-       tocIcon.textContent = tocElement.classList.contains('show') ? '✖' : '☰';
+       tocIcon.innerHTML = tocElement.classList.contains('show') 
+           ? '<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>'
+           : '<svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>';
    }
 }
 
@@ -40,32 +50,32 @@ document.addEventListener("DOMContentLoaded", function() {
    createTOC();
    const css = `
        :root {
-           --toc-bg: #fff;
+           --toc-bg: rgba(255, 255, 255, 0.8);
            --toc-border: #e1e4e8;
            --toc-text: #24292e;
-           --toc-hover: #f6f8fa;
-           --toc-icon-bg: #fff;
-           --toc-icon-color: #ad6598;
-           --toc-icon-active-bg: #813c85;
-           --toc-icon-active-color: #fff;
+           --toc-hover: rgba(0, 0, 0, 0.05);
+           --toc-icon-bg: rgba(255, 255, 255, 0.8);
+           --toc-icon-color: #333;
+           --toc-icon-active-bg: #fff;
+           --toc-icon-active-color: #333;
        }
 
        @media (prefers-color-scheme: dark) {
            :root {
-               --toc-bg: #2d333b;
+               --toc-bg: rgba(45, 51, 59, 0.8);
                --toc-border: #444c56;
                --toc-text: #adbac7;
-               --toc-hover: #373e47;
-               --toc-icon-bg: #22272e;
-               --toc-icon-color: #ad6598;
-               --toc-icon-active-bg: #813c85;
+               --toc-hover: rgba(255, 255, 255, 0.05);
+               --toc-icon-bg: rgba(45, 51, 59, 0.8);
+               --toc-icon-color: #adbac7;
+               --toc-icon-active-bg: #2d333b;
                --toc-icon-active-color: #adbac7;
            }
        }
 
        .toc {
            position: fixed;
-           bottom: 60px;
+           bottom: 80px;
            right: 20px;
            width: 250px;
            max-height: 70vh;
@@ -78,13 +88,14 @@ document.addEventListener("DOMContentLoaded", function() {
            z-index: 1000;
            opacity: 0;
            visibility: hidden;
-           transform: translateY(20px) scale(0.9);
+           transform: translateY(20px);
            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+           backdrop-filter: blur(5px);
        }
        .toc.show {
            opacity: 1;
            visibility: visible;
-           transform: translateY(0) scale(1);
+           transform: translateY(0);
        }
        .toc a {
            display: block;
@@ -108,17 +119,15 @@ document.addEventListener("DOMContentLoaded", function() {
            bottom: 20px;
            right: 20px;
            cursor: pointer;
-           font-size: 24px;
            background-color: var(--toc-icon-bg);
            color: var(--toc-icon-color);
-           border: 2px solid var(--toc-icon-color);
            border-radius: 50%;
-           width: 40px;
-           height: 40px;
+           width: 50px;
+           height: 50px;
            display: flex;
            align-items: center;
            justify-content: center;
-           box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+           box-shadow: 0 2px 10px rgba(0,0,0,0.1);
            z-index: 1001;
            transition: all 0.3s ease;
            user-select: none;
@@ -127,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function() {
        }
        .toc-icon:hover {
            transform: scale(1.1);
+           background-color: var(--toc-icon-active-bg);
        }
        .toc-icon:active {
            transform: scale(0.9);
@@ -134,15 +144,22 @@ document.addEventListener("DOMContentLoaded", function() {
        .toc-icon.active {
            background-color: var(--toc-icon-active-bg);
            color: var(--toc-icon-active-color);
-           border-color: var(--toc-icon-active-bg);
-           transform: rotate(90deg);
+       }
+       .toc-icon svg {
+           width: 24px;
+           height: 24px;
+           fill: none;
+           stroke: currentColor;
+           stroke-width: 2;
+           stroke-linecap: round;
+           stroke-linejoin: round;
        }
    `;
    loadResource('style', {css: css});
 
    const tocIcon = document.createElement('div');
    tocIcon.className = 'toc-icon';
-   tocIcon.textContent = '☰';
+   tocIcon.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>';
    tocIcon.onclick = (e) => {
        e.stopPropagation();
        toggleTOC();
