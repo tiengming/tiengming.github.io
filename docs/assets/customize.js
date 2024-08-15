@@ -1,12 +1,18 @@
 (function() {
     let isInitialized = false;
+    let debounceTimer;
 
-    // 添加日志函数
     function log(message) {
         console.log(`[Blog Enhancer] ${message}`);
     }
 
-    // 动态加载 highlight.js
+    function debounce(func, delay) {
+        return function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => func.apply(this, arguments), delay);
+        }
+    }
+
     function loadHighlightJS() {
         if (document.querySelector('link[href*="highlight.js"]')) {
             log('Highlight.js CSS already loaded');
@@ -34,12 +40,10 @@
         document.head.appendChild(script);
     }
 
-    // 检测暗黑模式
     function isDarkMode() {
         return document.body.classList.contains('dark-theme');
     }
 
-    // 添加样式
     function addStyles() {
         if (document.getElementById('blog-enhancer-styles')) {
             log('Styles already added');
@@ -49,7 +53,55 @@
         const style = document.createElement('style');
         style.id = 'blog-enhancer-styles';
         style.textContent = `
-            /* 样式内容保持不变 */
+            .SideNav-item {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 15px;
+            }
+            .SideNav-item .d-flex.flex-items-center {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+            .SideNav-item .listLabels {
+                margin-left: auto;
+            }
+            .SideNav-item .labelContainer {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 5px;
+            }
+            .SideNav-item .labelLeft {
+                text-align: left;
+            }
+            .SideNav-item .labelRight {
+                text-align: right;
+            }
+            .post-content img, .cnblogs_post_body img {
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                max-width: 100%;
+                height: auto;
+            }
+            .dark-theme .post-content img, .dark-theme .cnblogs_post_body img {
+                box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+            }
+            .dark-theme {
+                background-color: #1a1a1a;
+                color: #e0e0e0;
+            }
+            .dark-theme a {
+                color: #58a6ff;
+            }
+            .dark-theme .SideNav-item {
+                background-color: #2a2a2a;
+            }
+            .dark-theme .labelContainer {
+                background-color: #2a2a2a;
+            }
         `;
         document.head.appendChild(style);
         log('Styles added');
@@ -70,7 +122,7 @@
                 const labelLeft = labelContainer.querySelector('.labelLeft');
                 const labelRight = labelContainer.querySelector('.labelRight');
                 
-                if (labelLeft && labelRight) {
+                if (labelLeft && labelRight && labelContainer.children.length !== 2) {
                     labelContainer.innerHTML = '';
                     labelContainer.appendChild(labelLeft);
                     labelContainer.appendChild(labelRight);
@@ -136,12 +188,11 @@
         styleImages();
         loadHighlightJS();
 
-        // 监听主题变化
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     log('Theme change detected');
-                    addStyles(); // 重新应用样式以更新颜色
+                    addStyles();
                 }
             });
         });
@@ -152,25 +203,25 @@
         log('Initialization complete');
     }
 
-    // 使用 DOMContentLoaded 事件确保 DOM 完全加载
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
 
-    // 为动态加载的内容添加 MutationObserver
+    const debouncedUpdate = debounce(() => {
+        log('Content change detected');
+        adjustLabels();
+        styleImages();
+        if (typeof hljs !== 'undefined') {
+            hljs.highlightAll();
+        }
+    }, 300);
+
     const bodyObserver = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'childList') {
-                log('Content change detected');
-                adjustLabels();
-                styleImages();
-                if (typeof hljs !== 'undefined') {
-                    hljs.highlightAll();
-                }
-            }
-        });
+        if (mutations.some(mutation => mutation.type === 'childList')) {
+            debouncedUpdate();
+        }
     });
 
     bodyObserver.observe(document.body, { childList: true, subtree: true });
