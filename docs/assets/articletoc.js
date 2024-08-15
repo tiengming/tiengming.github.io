@@ -154,6 +154,24 @@ document.addEventListener("DOMContentLoaded", function() {
            stroke-linecap: round;
            stroke-linejoin: round;
        }
+
+       @media (max-width: 768px) {
+           .toc {
+               width: 200px;
+               bottom: 70px;
+               right: 10px;
+           }
+           .toc-icon {
+               width: 40px;
+               height: 40px;
+               bottom: 15px;
+               right: 15px;
+           }
+           .toc-icon svg {
+               width: 20px;
+               height: 20px;
+           }
+       }
    `;
    loadResource('style', {css: css});
 
