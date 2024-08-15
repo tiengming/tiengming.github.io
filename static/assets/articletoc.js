@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
        .toc {
            position: fixed;
            bottom: 80px;
-           right: 15px;
+           right: 20px;
            width: 250px;
            max-height: 70vh;
            background-color: var(--toc-bg);
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
        .toc-icon {
            position: fixed;
            bottom: 20px;
-           right: 20px;
+           right: 15px;
            cursor: pointer;
            background-color: var(--toc-icon-bg);
            color: var(--toc-icon-color);
