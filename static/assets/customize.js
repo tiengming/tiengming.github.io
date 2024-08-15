@@ -21,7 +21,7 @@
                 --text-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
                 --hover-bg-color: ${isDarkMode() ? '#21262d' : '#f6f8fa'};
                 --shadow-color: ${isDarkMode() ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
-                --link-color: ${isDarkMode() ? '#58a6ff' : '#ffffff'};
+                --link-color: ${isDarkMode() ? '#58a6ff' : '#24292f'};
                 --border-color: ${isDarkMode() ? '#30363d' : '#d0d7de'};
                 --title-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
                 --hover-text-color: ${isDarkMode() ? '#ffffff' : '#ffffff'};
