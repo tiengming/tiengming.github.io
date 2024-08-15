@@ -56,31 +56,31 @@
         const style = document.createElement('style');
         style.id = 'blog-enhancer-styles';
         style.textContent = `
-            /* 在这里添加您的样式 */
-            .SideNav-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
+            body .SideNav-item {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
             }
-            .listLabels {
-                text-align: right;
+            body .SideNav-item .listLabels {
+                text-align: right !important;
+                margin-left: auto !important;
             }
-            .labelContainer {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
+            body .labelContainer {
+                width: 100% !important;
+                display: flex !important;
+                justify-content: space-between !important;
             }
-            .labelLeft {
-                text-align: left;
+            body .labelContainer .labelLeft {
+                text-align: left !important;
             }
-            .labelRight {
-                text-align: right;
+            body .labelContainer .labelRight {
+                text-align: right !important;
             }
-            .styled-image {
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                max-width: 100%;
-                height: auto;
+            body .post-content img, body .cnblogs_post_body img {
+                border-radius: 8px !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+                max-width: 100% !important;
+                height: auto !important;
             }
             .fade-in {
                 animation: fadeIn 0.5s;
@@ -89,10 +89,61 @@
                 from { opacity: 0; }
                 to { opacity: 1; }
             }
-            /* 添加更多样式... */
+            body.dark-theme {
+                background-color: #1a1a1a !important;
+                color: #e0e0e0 !important;
+            }
+            body.dark-theme a {
+                color: #58a6ff !important;
+            }
+            body.dark-theme .post-content img, body.dark-theme .cnblogs_post_body img {
+                box-shadow: 0 4px 8px rgba(255,255,255,0.1) !important;
+            }
         `;
         document.head.appendChild(style);
         log('Styles added');
+    }
+
+    function enforceStyles() {
+        const sideNavItems = document.querySelectorAll('.SideNav-item');
+        sideNavItems.forEach(item => {
+            item.style.setProperty('display', 'flex', 'important');
+            item.style.setProperty('justify-content', 'space-between', 'important');
+            item.style.setProperty('align-items', 'center', 'important');
+
+            const listLabels = item.querySelector('.listLabels');
+            if (listLabels) {
+                listLabels.style.setProperty('text-align', 'right', 'important');
+                listLabels.style.setProperty('margin-left', 'auto', 'important');
+            }
+        });
+
+        const labelContainers = document.querySelectorAll('.labelContainer');
+        labelContainers.forEach(container => {
+            container.style.setProperty('width', '100%', 'important');
+            container.style.setProperty('display', 'flex', 'important');
+            container.style.setProperty('justify-content', 'space-between', 'important');
+
+            const labelLeft = container.querySelector('.labelLeft');
+            if (labelLeft) {
+                labelLeft.style.setProperty('text-align', 'left', 'important');
+            }
+
+            const labelRight = container.querySelector('.labelRight');
+            if (labelRight) {
+                labelRight.style.setProperty('text-align', 'right', 'important');
+            }
+        });
+
+        const images = document.querySelectorAll('.post-content img, .cnblogs_post_body img');
+        images.forEach(img => {
+            img.style.setProperty('border-radius', '8px', 'important');
+            img.style.setProperty('box-shadow', '0 4px 8px rgba(0,0,0,0.1)', 'important');
+            img.style.setProperty('max-width', '100%', 'important');
+            img.style.setProperty('height', 'auto', 'important');
+        });
+
+        log('Styles enforced');
     }
 
     function adjustLabels() {
@@ -153,6 +204,7 @@
 
         adjustLabels();
         styleImages();
+        enforceStyles();
         if (typeof hljs !== 'undefined') {
             hljs.highlightAll();
         }
@@ -168,6 +220,7 @@
 
         log('Initializing');
         addStyles();
+        enforceStyles();
         adjustLabels();
         adjustHeader();
         styleImages();
@@ -181,6 +234,7 @@
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     log('Theme change detected');
                     addStyles(); // 重新应用样式以更新颜色
+                    enforceStyles();
                 }
             });
         });
