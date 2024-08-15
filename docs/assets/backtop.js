@@ -5,7 +5,7 @@
     .back-to-top {
       position: fixed;
       bottom: 80px;
-      right: 20px;
+      right: 15px;
       background-color: rgba(255, 255, 255, 0.8);
       color: #333;
       border: none;
