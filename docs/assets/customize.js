@@ -1,239 +1,128 @@
 (function() {
-    let isInitialized = false;
-    let debounceTimer;
-
-    function log(message) {
-        console.log(`[Blog Enhancer] ${message}`);
-    }
-
-    function debounce(func, delay) {
-        return function() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => func.apply(this, arguments), delay);
-        }
-    }
-
-    function loadHighlightJS() {
-        if (document.querySelector('link[href*="highlight.js"]')) {
-            log('Highlight.js CSS already loaded');
-            return Promise.resolve();
-        }
-
-        return new Promise((resolve) => {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/github.min.css';
-            document.head.appendChild(link);
-
-            if (document.querySelector('script[src*="highlight.js"]')) {
-                log('Highlight.js script already loaded');
-                resolve();
-                return;
-            }
-
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js';
-            script.onload = function() {
-                log('Highlight.js loaded');
-                if (typeof hljs !== 'undefined') {
-                    hljs.highlightAll();
-                }
-                resolve();
+    // 防抖函数
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
             };
-            document.head.appendChild(script);
-        });
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
     }
 
-    function isDarkMode() {
-        return document.body.classList.contains('dark-theme');
-    }
+    // 样式调整函数
+    function adjustStyles() {
+        console.log('Adjusting styles...');
 
-    function addStyles() {
-        if (document.getElementById('blog-enhancer-styles')) {
-            log('Styles already added');
-            return;
-        }
-
-        const style = document.createElement('style');
-        style.id = 'blog-enhancer-styles';
-        style.textContent = `
-            .SideNav-item {
-                display: flex !important;
-                flex-direction: column !important;
-                margin-bottom: 15px !important;
+        // 布局调整
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            .d-flex.flex-items-center {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
-            .SideNav-item .d-flex.flex-items-center {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                width: 100% !important;
+            .listLabels {
+                text-align: right;
             }
-            .SideNav-item .listLabels {
-                margin-left: auto !important;
+            .labelContainer {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
             }
-            .SideNav-item .labelContainer {
-                width: 100% !important;
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                margin-top: 5px !important;
+            .labelLeft {
+                text-align: left;
             }
-            .SideNav-item .labelLeft {
-                text-align: left !important;
+            .labelRight {
+                text-align: right;
             }
-            .SideNav-item .labelRight {
-                text-align: right !important;
+            #content img {
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                max-width: 100%;
+                height: auto;
             }
-            .post-content img, .cnblogs_post_body img {
-                border-radius: 8px !important;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-                max-width: 100% !important;
-                height: auto !important;
-            }
-            .dark-theme .post-content img, .dark-theme .cnblogs_post_body img {
-                box-shadow: 0 4px 8px rgba(255,255,255,0.1) !important;
-            }
-            .dark-theme {
-                background-color: #1a1a1a !important;
-                color: #e0e0e0 !important;
-            }
-            .dark-theme a {
-                color: #58a6ff !important;
-            }
-            .dark-theme .SideNav-item {
-                background-color: #2a2a2a !important;
-            }
-            .dark-theme .labelContainer {
-                background-color: #2a2a2a !important;
-            }
-            .fade-in {
-                animation: fadeIn 0.5s ease-in-out;
-            }
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
+            @media (prefers-color-scheme: dark) {
+                body {
+                    background-color: #1a1a1a;
+                    color: #e0e0e0;
+                }
+                a {
+                    color: #58a6ff;
+                }
+                #content img {
+                    box-shadow: 0 4px 8px rgba(255,255,255,0.1);
+                }
             }
         `;
-        document.head.appendChild(style);
-        log('Styles added');
-    }
+        document.head.appendChild(styleElement);
 
-    function adjustLabels() {
-        const sideNavItems = document.querySelectorAll('.SideNav-item');
-        sideNavItems.forEach(item => {
-            const flexContainer = item.querySelector('.d-flex.flex-items-center');
-            const listLabels = item.querySelector('.listLabels');
-            const labelContainer = item.querySelector('.labelContainer');
-            
-            if (flexContainer && listLabels && !flexContainer.contains(listLabels)) {
-                flexContainer.appendChild(listLabels);
+        // 添加头像和博客标题（仅在首页）
+        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+            const header = document.getElementById('header');
+            if (header && !document.querySelector('.blog-header')) {
+                const blogHeader = document.createElement('div');
+                blogHeader.className = 'blog-header';
+                blogHeader.innerHTML = `
+                    <img src="https://code.buxiantang.top/favicon.svg" alt="Blog Avatar" style="width: 100px; height: 100px; border-radius: 50%;">
+                    <h1>Tiengming</h1>
+                `;
+                header.insertBefore(blogHeader, header.firstChild);
             }
+        }
+    }
 
-            if (labelContainer) {
-                const labelLeft = labelContainer.querySelector('.labelLeft');
-                const labelRight = labelContainer.querySelector('.labelRight');
-                
-                if (labelLeft && labelRight && labelContainer.children.length !== 2) {
-                    labelContainer.innerHTML = '';
-                    labelContainer.appendChild(labelLeft);
-                    labelContainer.appendChild(labelRight);
-                }
-            }
+    // 代码高亮函数
+    function applyCodeHighlight() {
+        console.log('Applying code highlight...');
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
         });
-        log('Labels adjusted');
     }
 
-    function adjustHeader() {
-        const header = document.getElementById('header');
-        if (!header) {
-            log('Header not found');
-            return;
-        }
+    // 加载 Highlight.js
+    function loadHighlightJs() {
+        console.log('Loading Highlight.js...');
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css';
+        document.head.appendChild(link);
 
-        const headerContent = header.querySelector('.header-content');
-        if (!headerContent) {
-            log('Header content not found');
-            return;
-        }
-
-        const postTitle = headerContent.querySelector('.blogTitle, .postTitle');
-        
-        if (postTitle && postTitle.classList.contains('blogTitle') && !headerContent.querySelector('.avatar')) {
-            const avatar = document.createElement('img');
-            avatar.src = 'https://code.buxiantang.top/favicon.svg';
-            avatar.className = 'avatar fade-in';
-            avatar.alt = 'avatar';
-
-            const blogTitle = document.createElement('a');
-            blogTitle.href = '/';
-            blogTitle.className = 'blogTitle fade-in';
-            blogTitle.textContent = 'Tiengming';
-
-            headerContent.insertBefore(blogTitle, headerContent.firstChild);
-            headerContent.insertBefore(avatar, headerContent.firstChild);
-            log('Header adjusted');
-        }
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js';
+        script.onload = applyCodeHighlight;
+        document.head.appendChild(script);
     }
 
-    function styleImages() {
-        const postContent = document.querySelector('.post-content, .cnblogs_post_body');
-        if (postContent) {
-            const images = postContent.querySelectorAll('img:not(.styled-image)');
-            images.forEach(img => {
-                img.classList.add('styled-image', 'fade-in');
-            });
-            log(`${images.length} images styled`);
-        }
-    }
+    // 主函数
+    function init() {
+        console.log('Initializing plugin...');
+        adjustStyles();
+        loadHighlightJs();
 
-    async function init() {
-        if (isInitialized) {
-            log('Already initialized');
-            return;
-        }
+        // 监听主题变化
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addListener(adjustStyles);
 
-        log('Initializing');
-        addStyles();
-        adjustLabels();
-        adjustHeader();
-        styleImages();
-        await loadHighlightJS();
+        // 使用 MutationObserver 监听页面变化
+        const observer = new MutationObserver(debounce(() => {
+            console.log('Content changed, reapplying styles...');
+            adjustStyles();
+            applyCodeHighlight();
+        }, 200));
 
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    log('Theme change detected');
-                    addStyles();
-                }
-            });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
-
-        observer.observe(document.body, { attributes: true });
-
-        isInitialized = true;
-        log('Initialization complete');
     }
 
+    // 确保 DOM 加载完成后执行
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
-
-    const debouncedUpdate = debounce(() => {
-        log('Content change detected');
-        adjustLabels();
-        styleImages();
-        if (typeof hljs !== 'undefined') {
-            hljs.highlightAll();
-        }
-    }, 300);
-
-    const bodyObserver = new MutationObserver((mutations) => {
-        if (mutations.some(mutation => mutation.type === 'childList')) {
-            debouncedUpdate();
-        }
-    });
-
-    bodyObserver.observe(document.body, { childList: true, subtree: true });
 })();
