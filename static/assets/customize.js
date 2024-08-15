@@ -5,7 +5,7 @@
 
     function getWebsiteIcon() {
         const linkTag = document.querySelector('link[rel="shortcut icon"]');
-        return linkTag ? linkTag.href : '/favicon.ico';
+        return linkTag ? linkTag.href : '/favicon.svg';
     }
 
     function getWebsiteName() {
@@ -21,10 +21,10 @@
                 --text-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
                 --hover-bg-color: ${isDarkMode() ? '#21262d' : '#f6f8fa'};
                 --shadow-color: ${isDarkMode() ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
-                --link-color: ${isDarkMode() ? '#58a6ff' : '#0969da'};
+                --link-color: ${isDarkMode() ? '#58a6ff' : '#ffffff'};
                 --border-color: ${isDarkMode() ? '#30363d' : '#d0d7de'};
                 --title-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
-                --hover-text-color: ${isDarkMode() ? '#ffffff' : '#0969da'};
+                --hover-text-color: ${isDarkMode() ? '#ffffff' : '#ffffff'};
                 --article-bg-color: ${isDarkMode() ? '#161b22' : '#ffffff'};
             }
 
