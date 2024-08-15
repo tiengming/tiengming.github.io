@@ -89,40 +89,61 @@ document.addEventListener("DOMContentLoaded", function() {
         // 初始化Highlight.js
         hljs.highlightAll();
 
-        // 获取所有代码块
-        var codeBlocks = document.querySelectorAll('pre.notranslate');
+        // 处理代码块
+        function processCodeBlocks() {
+            var codeBlocks = document.querySelectorAll('pre.notranslate');
 
-        // 遍历
-        codeBlocks.forEach((codeBlock) => {
-            // 创建复制按钮
-            var copyButton = createCopyButton();
-            var feedbackElement = createFeedbackElement();
+            codeBlocks.forEach((codeBlock) => {
+                if (codeBlock.querySelector('.copy-button')) {
+                    return; // 如果已经处理过，就跳过
+                }
 
-            codeBlock.appendChild(copyButton);
-            codeBlock.appendChild(feedbackElement);
+                var copyButton = createCopyButton();
+                var feedbackElement = createFeedbackElement();
 
-            // 初始化Clipboard.js
-            var clipboard = new ClipboardJS(copyButton, {
-                target: function(trigger) {
-                    return trigger.parentElement.querySelector('code');
+                codeBlock.appendChild(copyButton);
+                codeBlock.appendChild(feedbackElement);
+
+                // 初始化Clipboard.js
+                var clipboard = new ClipboardJS(copyButton, {
+                    target: function(trigger) {
+                        return trigger.parentElement.querySelector('code');
+                    }
+                });
+
+                // 监听成功事件
+                clipboard.on('success', function(e) {
+                    handleCopySuccess(feedbackElement);
+                    e.clearSelection();
+                });
+
+                // 监听代码块hover事件
+                codeBlock.addEventListener('mouseenter', function() {
+                    copyButton.style.opacity = '1';
+                });
+
+                codeBlock.addEventListener('mouseleave', function() {
+                    copyButton.style.opacity = '0';
+                });
+
+                // 确保代码高亮
+                hljs.highlightElement(codeBlock.querySelector('code'));
+            });
+        }
+
+        // 初始处理
+        processCodeBlocks();
+
+        // 监听DOM变化
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    processCodeBlocks();
                 }
             });
-
-            // 监听成功事件
-            clipboard.on('success', function(e) {
-                handleCopySuccess(feedbackElement);
-                e.clearSelection();
-            });
-
-            // 监听代码块hover事件
-            codeBlock.addEventListener('mouseenter', function() {
-                copyButton.style.opacity = '1';
-            });
-
-            codeBlock.addEventListener('mouseleave', function() {
-                copyButton.style.opacity = '0';
-            });
         });
+
+        observer.observe(document.body, { childList: true, subtree: true });
     });
 
     // 创建复制按钮
