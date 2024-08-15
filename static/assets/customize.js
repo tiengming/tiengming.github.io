@@ -1,345 +1,196 @@
-(function() {
-    let isInitialized = false;
-    let isProcessing = false;
+let isInitialized = false;
 
-    function log(message) {
-        console.log(`[Blog Enhancer] ${message}`);
-    }
+function log(message) {
+    console.log(`[Customize] ${message}`);
+}
 
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
+function addStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .SideNav-item {
+            padding: 4px 8px !important;
+            margin-bottom: 4px !important;
+        }
+        .Label {
+            padding: 0 7px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            line-height: 18px !important;
+            border: 1px solid transparent !important;
+            border-radius: 2em !important;
+        }
+        .LabelName {
+            font-weight: 600;
+        }
+        .LabelTime {
+            opacity: 0.75;
+        }
+        .listTitle {
+            font-weight: 600 !important;
+        }
+        #header {
+            padding: 16px !important;
+        }
+        .header-content {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+        .blogTitle {
+            margin-left: 10px !important;
+        }
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 6px !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
 
-    function loadHighlightJS() {
-        if (document.querySelector('link[href*="highlight.js"]') && document.querySelector('script[src*="highlight.js"]')) {
-            log('Highlight.js already loaded');
-            return Promise.resolve();
+function enforceStyles() {
+    const labels = document.querySelectorAll('.Label');
+    labels.forEach(label => {
+        label.style.backgroundColor = 'var(--color-neutral-muted)';
+        label.style.color = 'var(--color-fg-default)';
+    });
+}
+
+function adjustArticleList() {
+    const sideNavItems = document.querySelectorAll('.SideNav-item:not(.adjusted)');
+    sideNavItems.forEach(item => {
+        const flexContainer = item.querySelector('.d-flex.flex-items-center');
+        if (!flexContainer) return;
+
+        // 保留原有结构，只调整样式
+        const listTitle = flexContainer.querySelector('.listTitle');
+        const label = flexContainer.querySelector('.Label');
+
+        if (listTitle) {
+            listTitle.style.flexGrow = '1';
+            listTitle.style.textAlign = 'left';
         }
 
-        return new Promise((resolve) => {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/github.min.css';
-            document.head.appendChild(link);
+        if (label) {
+            label.style.marginLeft = 'auto';
+            label.style.display = 'flex';
+            label.style.alignItems = 'center';
 
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js';
-            script.onload = () => {
-                log('Highlight.js loaded');
-                if (typeof hljs !== 'undefined') {
-                    hljs.highlightAll();
-                }
-                resolve();
-            };
-            document.head.appendChild(script);
-        });
-    }
+            const labelName = label.querySelector('.LabelName');
+            const labelTime = label.querySelector('.LabelTime');
 
-    function isDarkMode() {
-        return document.body.classList.contains('dark-theme');
-    }
-
-    function addStyles() {
-        if (document.getElementById('blog-enhancer-styles')) {
-            return;
+            if (labelName) labelName.style.marginRight = '10px';
+            if (labelTime) labelTime.style.whiteSpace = 'nowrap';
         }
 
-        const style = document.createElement('style');
-        style.id = 'blog-enhancer-styles';
-        style.textContent = `
-            .SideNav.border {
-                border-radius: 10px !important;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-                backdrop-filter: blur(10px) !important;
-                background-color: rgba(255, 255, 255, 0.7) !important;
-            }
-            .SideNav-item {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                padding: 10px 15px !important;
-                transition: all 0.3s ease !important;
-                border-radius: 8px !important;
-                margin: 5px 0 !important;
-            }
-            .SideNav-item:hover {
-                background-color: rgba(0, 0, 0, 0.05) !important;
-                transform: translateY(-2px) !important;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-            }
-            .SideNav-item .d-flex.flex-items-center {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
-                width: 100% !important;
-            }
-            .SideNav-item .listTitle {
-                flex-grow: 1 !important;
-                text-align: left !important;
-            }
-            .SideNav-item .Label {
-                display: flex !important;
-                align-items: center !important;
-            }
-            .SideNav-item .LabelName {
-                margin-right: 10px !important;
-            }
-            .SideNav-item .LabelTime {
-                text-align: right !important;
-            }
-            .post-content img, .cnblogs_post_body img {
-                border-radius: 8px !important;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-                max-width: 100% !important;
-                height: auto !important;
-            }
-            .fade-in {
-                animation: fadeIn 0.5s;
-            }
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            body.dark-theme .SideNav.border {
-                background-color: rgba(30, 30, 30, 0.7) !important;
-            }
-            body.dark-theme .SideNav-item:hover {
-                background-color: rgba(255, 255, 255, 0.05) !important;
-            }
-            body.dark-theme a {
-                color: #58a6ff !important;
-            }
-            body.dark-theme .post-content img, body.dark-theme .cnblogs_post_body img {
-                box-shadow: 0 4px 8px rgba(255,255,255,0.1) !important;
-            }
-            #avatarImg {
-                width: 40px !important;
-                height: 40px !important;
-                border-radius: 50% !important;
-                margin-right: 10px !important;
-            }
-            .blogTitle {
-                font-size: 1.5em !important;
-                font-weight: bold !important;
-                text-decoration: none !important;
-                color: inherit !important;
-            }
-        `;
-        document.head.appendChild(style);
-        log('Styles added');
+        item.classList.add('adjusted');
+    });
+    log('Article list adjusted');
+}
+
+function adjustHeader() {
+    const header = document.getElementById('header');
+    if (!header || header.querySelector('#avatarImg')) {
+        return;
     }
 
-    function enforceStyles() {
-        const sideNav = document.querySelector('.SideNav.border');
-        if (sideNav) {
-            sideNav.style.setProperty('border-radius', '10px', 'important');
-            sideNav.style.setProperty('box-shadow', '0 4px 6px rgba(0, 0, 0, 0.1)', 'important');
-            sideNav.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
-            sideNav.style.setProperty('background-color', 'rgba(255, 255, 255, 0.7)', 'important');
-        }
-
-        const sideNavItems = document.querySelectorAll('.SideNav-item');
-        sideNavItems.forEach(item => {
-            item.style.setProperty('display', 'flex', 'important');
-            item.style.setProperty('justify-content', 'space-between', 'important');
-            item.style.setProperty('align-items', 'center', 'important');
-            item.style.setProperty('padding', '10px 15px', 'important');
-            item.style.setProperty('transition', 'all 0.3s ease', 'important');
-            item.style.setProperty('border-radius', '8px', 'important');
-            item.style.setProperty('margin', '5px 0', 'important');
-
-            const flexContainer = item.querySelector('.d-flex.flex-items-center');
-            if (flexContainer) {
-                flexContainer.style.setProperty('display', 'flex', 'important');
-                flexContainer.style.setProperty('justify-content', 'space-between', 'important');
-                flexContainer.style.setProperty('align-items', 'center', 'important');
-                flexContainer.style.setProperty('width', '100%', 'important');
-            }
-
-            const listTitle = item.querySelector('.listTitle');
-            if (listTitle) {
-                listTitle.style.setProperty('flex-grow', '1', 'important');
-                listTitle.style.setProperty('text-align', 'left', 'important');
-            }
-
-            const label = item.querySelector('.Label');
-            if (label) {
-                label.style.setProperty('display', 'flex', 'important');
-                label.style.setProperty('align-items', 'center', 'important');
-            }
-
-            const labelName = item.querySelector('.LabelName');
-            if (labelName) {
-                labelName.style.setProperty('margin-right', '10px', 'important');
-            }
-
-            const labelTime = item.querySelector('.LabelTime');
-            if (labelTime) {
-                labelTime.style.setProperty('text-align', 'right', 'important');
-            }
-        });
-
-        const images = document.querySelectorAll('.post-content img, .cnblogs_post_body img');
-        images.forEach(img => {
-            img.style.setProperty('border-radius', '8px', 'important');
-            img.style.setProperty('box-shadow', '0 4px 8px rgba(0,0,0,0.1)', 'important');
-            img.style.setProperty('max-width', '100%', 'important');
-            img.style.setProperty('height', 'auto', 'important');
-        });
-
-        const avatarImg = document.getElementById('avatarImg');
-        if (avatarImg) {
-            avatarImg.style.setProperty('width', '40px', 'important');
-            avatarImg.style.setProperty('height', '40px', 'important');
-            avatarImg.style.setProperty('border-radius', '50%', 'important');
-            avatarImg.style.setProperty('margin-right', '10px', 'important');
-        }
-
-        const blogTitle = document.querySelector('a.blogTitle');
-        if (blogTitle) {
-            blogTitle.style.setProperty('font-size', '1.5em', 'important');
-            blogTitle.style.setProperty('font-weight', 'bold', 'important');
-            blogTitle.style.setProperty('text-decoration', 'none', 'important');
-            blogTitle.style.setProperty('color', 'inherit', 'important');
-        }
-
-        log('Styles enforced');
-    }
-
-    function adjustLabels() {
-        const sideNavItems = document.querySelectorAll('.SideNav-item:not(.adjusted)');
-        sideNavItems.forEach(item => {
-            const flexContainer = item.querySelector('.d-flex.flex-items-center');
-            if (!flexContainer) return;
+    const headerContent = header.querySelector('.header-content') || header;
     
-            // 清空 flexContainer
-            while (flexContainer.firstChild) {
-                flexContainer.removeChild(flexContainer.firstChild);
-            }
-    
-            const listTitle = item.querySelector('.listTitle');
-            const label = item.querySelector('.Label');
-            const labelName = item.querySelector('.LabelName');
-            const labelTime = item.querySelector('.LabelTime');
-    
-            // 重新构建结构
-            if (listTitle) flexContainer.appendChild(listTitle);
-    
-            if (label) {
-                const labelContainer = document.createElement('div');
-                labelContainer.style.display = 'flex';
-                labelContainer.style.justifyContent = 'flex-end';
-                labelContainer.style.alignItems = 'center';
-                labelContainer.style.marginLeft = 'auto';
-    
-                if (labelName) labelContainer.appendChild(labelName);
-                if (labelTime) {
-                    if (labelName) labelContainer.appendChild(document.createTextNode(' ')); // 添加空格
-                    labelContainer.appendChild(labelTime);
-                }
-    
-                flexContainer.appendChild(labelContainer);
-            }
-    
-            item.classList.add('adjusted');
-        });
-        log('Labels adjusted');
-    }
+    // 创建一个新的容器来放置头像和博客标题
+    const avatarTitleContainer = document.createElement('div');
+    avatarTitleContainer.style.display = 'flex';
+    avatarTitleContainer.style.alignItems = 'center';
+    avatarTitleContainer.style.marginRight = '20px';
 
+    const avatar = document.createElement('img');
+    avatar.src = 'https://code.buxiantang.top/favicon.svg';
+    avatar.id = 'avatarImg';
+    avatar.alt = 'avatar';
+    avatar.style.width = '40px';
+    avatar.style.height = '40px';
+    avatar.style.borderRadius = '50%';
+    avatar.style.marginRight = '10px';
 
-    function adjustHeader() {
-        const header = document.getElementById('header');
-        if (!header || header.querySelector('#avatarImg')) {
-            return;
-        }
+    const blogTitle = document.createElement('a');
+    blogTitle.href = '/';
+    blogTitle.className = 'blogTitle';
+    blogTitle.textContent = 'Tiengming';
+    blogTitle.style.fontSize = '1.5em';
+    blogTitle.style.fontWeight = 'bold';
+    blogTitle.style.textDecoration = 'none';
+    blogTitle.style.color = 'inherit';
 
-        const headerContent = header.querySelector('.header-content') || header;
-        const existingBlogTitle = headerContent.querySelector('a.blogTitle');
-        
-        if (!existingBlogTitle) {
-            const avatar = document.createElement('img');
-            avatar.src = 'https://code.buxiantang.top/favicon.svg';
-            avatar.id = 'avatarImg';
-            avatar.alt = 'avatar';
+    avatarTitleContainer.appendChild(avatar);
+    avatarTitleContainer.appendChild(blogTitle);
 
-            const blogTitle = document.createElement('a');
-            blogTitle.href = '/';
-            blogTitle.className = 'blogTitle';
-            blogTitle.textContent = 'Tiengming';
+    // 将新容器插入到 headerContent 的开头
+    headerContent.insertBefore(avatarTitleContainer, headerContent.firstChild);
 
-            headerContent.insertBefore(blogTitle, headerContent.firstChild);
-            headerContent.insertBefore(avatar, headerContent.firstChild);
-            log('Header adjusted');
-        }
-    }
+    log('Header adjusted');
+}
 
-    function styleImages() {
-        const postContent = document.querySelector('.post-content, .cnblogs_post_body');
-        if (postContent) {
-            const images = postContent.querySelectorAll('img:not(.styled-image)');
-            images.forEach(img => {
-                img.classList.add('styled-image', 'fade-in');
-            });
-            log(`${images.length} images styled`);
-        }
-    }
+function styleImages() {
+    const images = document.querySelectorAll('img:not([style])');
+    images.forEach(img => {
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        img.style.borderRadius = '6px';
+    });
+}
 
-    const debouncedUpdate = debounce(() => {
-        if (isProcessing) return;
-        isProcessing = true;
-
-        adjustLabels();
-        styleImages();
-        enforceStyles();
-        if (typeof hljs !== 'undefined') {
+function loadHighlightJS() {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js';
+        script.onload = () => {
+            const style = document.createElement('link');
+            style.rel = 'stylesheet';
+            style.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css';
+            document.head.appendChild(style);
             hljs.highlightAll();
-        }
+            resolve();
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
 
-        isProcessing = false;
-    }, 200);
-
-    function init() {
-        if (isInitialized) {
-            log('Already initialized');
-            return;
-        }
-
-        log('Initializing');
-        addStyles();
-        enforceStyles();
-        adjustLabels();
-        adjustHeader();
-        styleImages();
-        loadHighlightJS().then(() => {
-            log('Initial setup complete');
-        });
-
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    log('Theme change detected');
-                    addStyles();
-                    enforceStyles();
-                }
-            });
-        });
-
-        observer.observe(document.body, { attributes: true });
-
-        isInitialized = true;
-        log('Initialization complete');
+function init() {
+    if (isInitialized) {
+        log('Already initialized');
+        return;
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+    log('Initializing');
+    addStyles();
+    enforceStyles();
+    adjustArticleList();
+    adjustHeader();
+    styleImages();
+    loadHighlightJS().then(() => {
+        log('Initial setup complete');
+    });
 
-    const bodyObserver = new MutationObserver(debouncedUpdate);
-    bodyObserver.observe(document.body, { childList: true, subtree: true });
-})();
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                log('Theme change detected');
+                addStyles();
+                enforceStyles();
+            }
+        });
+    });
+
+    observer.observe(document.body, { attributes: true });
+
+    isInitialized = true;
+    log('Initialization complete');
+}
+
+// 在 DOMContentLoaded 事件触发时初始化
+document.addEventListener('DOMContentLoaded', init);
+
+// 如果 DOMContentLoaded 已经触发，立即初始化
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    init();
+}
