@@ -214,33 +214,42 @@
         const sideNavItems = document.querySelectorAll('.SideNav-item:not(.adjusted)');
         sideNavItems.forEach(item => {
             const flexContainer = item.querySelector('.d-flex.flex-items-center');
+            if (!flexContainer) return;
+    
+            // 清空 flexContainer
+            while (flexContainer.firstChild) {
+                flexContainer.removeChild(flexContainer.firstChild);
+            }
+    
             const listTitle = item.querySelector('.listTitle');
             const label = item.querySelector('.Label');
             const labelName = item.querySelector('.LabelName');
             const labelTime = item.querySelector('.LabelTime');
-            
-            if (flexContainer && listTitle && label) {
-                // 确保 listTitle 和 label 在同一行
-                flexContainer.appendChild(listTitle);
-                flexContainer.appendChild(label);
-
-                // 创建一个新的容器来包含 LabelName 和 LabelTime
+    
+            // 重新构建结构
+            if (listTitle) flexContainer.appendChild(listTitle);
+    
+            if (label) {
                 const labelContainer = document.createElement('div');
                 labelContainer.style.display = 'flex';
-                labelContainer.style.justifyContent = 'space-between';
+                labelContainer.style.justifyContent = 'flex-end';
                 labelContainer.style.alignItems = 'center';
-                labelContainer.style.width = '100%';
-
+                labelContainer.style.marginLeft = 'auto';
+    
                 if (labelName) labelContainer.appendChild(labelName);
-                if (labelTime) labelContainer.appendChild(labelTime);
-
-                label.appendChild(labelContainer);
+                if (labelTime) {
+                    if (labelName) labelContainer.appendChild(document.createTextNode(' ')); // 添加空格
+                    labelContainer.appendChild(labelTime);
+                }
+    
+                flexContainer.appendChild(labelContainer);
             }
-
+    
             item.classList.add('adjusted');
         });
         log('Labels adjusted');
     }
+
 
     function adjustHeader() {
         const header = document.getElementById('header');
