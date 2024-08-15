@@ -1,9 +1,26 @@
-(() => {
+(function() {
+    // 动态加载 highlight.js
+    function loadHighlightJS() {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css';
+        document.head.appendChild(link);
+
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js';
+        script.onload = function() {
+            hljs.highlightAll();
+        };
+        document.head.appendChild(script);
+    }
+
     // 检测暗黑模式
-    const isDarkMode = () => document.body.classList.contains('dark-theme');
+    function isDarkMode() {
+        return document.body.classList.contains('dark-theme');
+    }
 
     // 添加样式
-    const addStyles = () => {
+    function addStyles() {
         const style = document.createElement('style');
         style.textContent = `
             :root {
@@ -18,14 +35,11 @@
                 background-color: var(--bg-color);
                 color: var(--text-color);
                 transition: background-color 0.3s ease, color 0.3s ease;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             }
 
             .SideNav {
                 border-radius: 12px;
                 overflow: hidden;
-                backdrop-filter: blur(10px);
-                background-color: rgba(255, 255, 255, 0.1);
             }
 
             .SideNav-item {
@@ -33,7 +47,7 @@
                 border-radius: 8px;
                 box-shadow: 0 2px 4px var(--shadow-color);
                 margin-bottom: 10px;
-                padding: 15px;
+                padding: 10px;
                 background-color: var(--bg-color);
             }
 
@@ -62,7 +76,6 @@
                 flex-direction: column;
                 align-items: center;
                 padding: 20px 0;
-                background-image: linear-gradient(to bottom, var(--bg-color), transparent);
             }
 
             .header-content {
@@ -70,16 +83,15 @@
                 flex-direction: column;
                 align-items: center;
                 width: 100%;
-                max-width: 800px;
             }
 
             .avatar {
-                width: 80px;
-                height: 80px;
+                width: 50px;
+                height: 50px;
                 border-radius: 50%;
                 box-shadow: 0 4px 8px var(--shadow-color);
                 transition: all 0.3s ease;
-                margin-bottom: 20px;
+                margin-bottom: 10px;
             }
 
             .avatar:hover {
@@ -87,7 +99,7 @@
             }
 
             .blogTitle, .postTitle {
-                font-size: 32px;
+                font-size: 24px;
                 font-weight: bold;
                 margin-top: 10px;
                 transition: all 0.3s ease;
@@ -103,7 +115,7 @@
                 width: 100%;
                 display: flex;
                 justify-content: center;
-                margin-top: 20px;
+                margin-top: 10px;
             }
 
             .post-content img,
@@ -112,17 +124,11 @@
                 box-shadow: 0 4px 8px var(--shadow-color);
                 max-width: 100%;
                 height: auto;
-                transition: transform 0.3s ease;
-            }
-
-            .post-content img:hover,
-            .cnblogs_post_body img:hover {
-                transform: scale(1.05);
             }
 
             @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(20px); }
-                to { opacity: 1; transform: translateY(0); }
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
 
             .fade-in {
@@ -131,80 +137,42 @@
 
             .btn-invisible {
                 color: var(--text-color);
-                transition: color 0.3s ease;
             }
 
             .btn-invisible:hover {
                 color: var(--link-color);
             }
-
-            pre code {
-                display: block;
-                overflow-x: auto;
-                padding: 1em;
-                background: #f4f4f4;
-                border-radius: 8px;
-            }
-
-            #backToTop {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: var(--bg-color);
-                color: var(--text-color);
-                border: none;
-                border-radius: 50%;
-                width: 50px;
-                height: 50px;
-                font-size: 24px;
-                cursor: pointer;
-                opacity: 0;
-                transition: opacity 0.3s ease, background-color 0.3s ease;
-            }
-
-            #backToTop:hover {
-                background-color: var(--hover-bg-color);
-            }
-
-            @media (max-width: 768px) {
-                .blogTitle, .postTitle {
-                    font-size: 24px;
-                }
-
-                .avatar {
-                    width: 60px;
-                    height: 60px;
-                }
-            }
         `;
         document.head.appendChild(style);
-    };
+    }
 
-    const adjustLabels = () => {
+    function adjustLabels() {
         const sideNavItems = document.querySelectorAll('.SideNav-item');
         sideNavItems.forEach(item => {
             const listTitle = item.querySelector('.listTitle');
             const labels = item.querySelectorAll('.Label.LabelName');
             const time = item.querySelector('.Label.LabelTime');
             
-            const labelContainer = document.createElement('div');
-            labelContainer.className = 'labelContainer fade-in';
-            const labelLeft = document.createElement('div');
-            labelLeft.className = 'labelLeft';
-            const labelRight = document.createElement('div');
-            labelRight.className = 'labelRight';
-            
-            labels.forEach(label => labelLeft.appendChild(label));
-            if (time) labelRight.appendChild(time);
-            
-            labelContainer.appendChild(labelLeft);
-            labelContainer.appendChild(labelRight);
-            
-            listTitle.parentNode.insertBefore(labelContainer, listTitle.nextSibling);
+            if (listTitle && !item.querySelector('.labelContainer')) {
+                const labelContainer = document.createElement('div');
+                labelContainer.className = 'labelContainer fade-in';
+                const labelLeft = document.createElement('div');
+                labelLeft.className = 'labelLeft';
+                const labelRight = document.createElement('div');
+                labelRight.className = 'labelRight';
+                
+                labels.forEach(label => labelLeft.appendChild(label));
+                if (time) labelRight.appendChild(time);
+                
+                labelContainer.appendChild(labelLeft);
+                labelContainer.appendChild(labelRight);
+                
+                listTitle.parentNode.insertBefore(labelContainer, listTitle.nextSibling);
+            }
         });
-    };
+    }
 
-    const adjustHeader = () => {
+    function adjustHeader() {
         const header = document.getElementById('header');
         if (!header) return;
 
@@ -213,7 +181,9 @@
 
         const postTitle = headerContent.querySelector('.blogTitle, .postTitle');
         
-        if (postTitle && postTitle.classList.contains('blogTitle')) {
+        // 只在文章页添加头像和网站名称
+        if (postTitle && postTitle.classList.contains('blogTitle') && !headerContent.querySelector('.avatar')) {
+            // 这是文章页面
             const avatar = document.createElement('img');
             avatar.src = 'https://code.buxiantang.top/favicon.svg';
             avatar.className = 'avatar fade-in';
@@ -227,63 +197,55 @@
             headerContent.insertBefore(blogTitle, headerContent.firstChild);
             headerContent.insertBefore(avatar, headerContent.firstChild);
         }
-    };
+    }
 
-    const styleImages = () => {
+    function styleImages() {
         const postContent = document.querySelector('.post-content, .cnblogs_post_body');
         if (postContent) {
             const images = postContent.querySelectorAll('img');
             images.forEach(img => {
-                img.classList.add('styled-image', 'fade-in');
-                img.loading = 'lazy';  // 添加懒加载
+                if (!img.classList.contains('styled-image')) {
+                    img.classList.add('styled-image', 'fade-in');
+                }
             });
         }
-    };
+    }
 
-    const addBackToTopButton = () => {
-        const button = document.createElement('button');
-        button.id = 'backToTop';
-        button.innerHTML = '↑';
-        button.setAttribute('aria-label', 'Back to top');
-        document.body.appendChild(button);
-
-        window.addEventListener('scroll', () => {
-            button.style.opacity = window.scrollY > 300 ? '1' : '0';
-        });
-
-        button.addEventListener('click', () => {
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        });
-    };
-
-    const highlightCode = () => {
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightBlock(block);
-        });
-    };
-
-    const init = () => {
+    function init() {
         addStyles();
         adjustLabels();
         adjustHeader();
         styleImages();
-        addBackToTopButton();
-        highlightCode();
+        loadHighlightJS();
 
+        // 监听主题变化
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    addStyles();
+                    addStyles(); // 重新应用样式以更新颜色
                 }
             });
         });
 
         observer.observe(document.body, { attributes: true });
-    };
+    }
 
+    // 使用 DOMContentLoaded 事件确保 DOM 完全加载
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
+
+    // 为动态加载的内容添加 MutationObserver
+    const bodyObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'childList') {
+                adjustLabels();
+                styleImages();
+            }
+        });
+    });
+
+    bodyObserver.observe(document.body, { childList: true, subtree: true });
 })();
