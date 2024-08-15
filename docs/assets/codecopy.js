@@ -86,9 +86,6 @@ document.addEventListener("DOMContentLoaded", function() {
         new Promise(resolve => clipboardScript.onload = resolve),
         new Promise(resolve => highlightScript.onload = resolve)
     ]).then(() => {
-        // 初始化Highlight.js
-        hljs.highlightAll();
-
         // 处理代码块
         function processCodeBlocks() {
             var codeBlocks = document.querySelectorAll('pre.notranslate');
@@ -127,8 +124,39 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
 
                 // 确保代码高亮
-                hljs.highlightElement(codeBlock.querySelector('code'));
+                highlightCodeBlock(codeBlock);
             });
+        }
+
+        function highlightCodeBlock(codeBlock) {
+            var codeElement = codeBlock.querySelector('code');
+            if (!codeElement) return;
+
+            // 保存原始代码
+            var originalCode = codeElement.textContent;
+
+            // 尝试检测语言
+            var language = detectLanguage(originalCode);
+
+            // 应用高亮
+            if (language) {
+                codeElement.classList.add('language-' + language);
+                hljs.highlightElement(codeElement);
+            } else {
+                hljs.highlightAuto(codeElement);
+            }
+        }
+
+        function detectLanguage(code) {
+            // 这里可以添加更多的语言检测逻辑
+            if (code.includes('function') || code.includes('var ') || code.includes('let ') || code.includes('const ')) {
+                return 'javascript';
+            }
+            if (code.includes('def ') || code.includes('import ') || code.includes('class ')) {
+                return 'python';
+            }
+            // 添加更多语言的检测逻辑...
+            return null;
         }
 
         // 初始处理
@@ -137,13 +165,24 @@ document.addEventListener("DOMContentLoaded", function() {
         // 监听DOM变化
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList') {
+                if (mutation.type === 'childList' || mutation.type === 'attributes') {
                     processCodeBlocks();
                 }
             });
         });
 
-        observer.observe(document.body, { childList: true, subtree: true });
+        observer.observe(document.body, { 
+            childList: true, 
+            subtree: true, 
+            attributes: true, 
+            attributeFilter: ['style', 'class'] 
+        });
+
+        // 监听可能的折叠/展开事件
+        document.body.addEventListener('click', function(event) {
+            // 这里可以添加特定于您网站的折叠/展开逻辑
+            setTimeout(processCodeBlocks, 100); // 稍微延迟以确保DOM已更新
+        });
     });
 
     // 创建复制按钮
