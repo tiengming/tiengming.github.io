@@ -1,196 +1,219 @@
-let isInitialized = false;
-
-function log(message) {
-    console.log(`[Customize] ${message}`);
-}
-
-function addStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .SideNav-item {
-            padding: 4px 8px !important;
-            margin-bottom: 4px !important;
-        }
-        .Label {
-            padding: 0 7px !important;
-            font-size: 12px !important;
-            font-weight: 500 !important;
-            line-height: 18px !important;
-            border: 1px solid transparent !important;
-            border-radius: 2em !important;
-        }
-        .LabelName {
-            font-weight: 600;
-        }
-        .LabelTime {
-            opacity: 0.75;
-        }
-        .listTitle {
-            font-weight: 600 !important;
-        }
-        #header {
-            padding: 16px !important;
-        }
-        .header-content {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-        }
-        .blogTitle {
-            margin-left: 10px !important;
-        }
-        img {
-            max-width: 100% !important;
-            height: auto !important;
-            border-radius: 6px !important;
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-function enforceStyles() {
-    const labels = document.querySelectorAll('.Label');
-    labels.forEach(label => {
-        label.style.backgroundColor = 'var(--color-neutral-muted)';
-        label.style.color = 'var(--color-fg-default)';
-    });
-}
-
-function adjustArticleList() {
-    const sideNavItems = document.querySelectorAll('.SideNav-item:not(.adjusted)');
-    sideNavItems.forEach(item => {
-        const flexContainer = item.querySelector('.d-flex.flex-items-center');
-        if (!flexContainer) return;
-
-        // 保留原有结构，只调整样式
-        const listTitle = flexContainer.querySelector('.listTitle');
-        const label = flexContainer.querySelector('.Label');
-
-        if (listTitle) {
-            listTitle.style.flexGrow = '1';
-            listTitle.style.textAlign = 'left';
-        }
-
-        if (label) {
-            label.style.marginLeft = 'auto';
-            label.style.display = 'flex';
-            label.style.alignItems = 'center';
-
-            const labelName = label.querySelector('.LabelName');
-            const labelTime = label.querySelector('.LabelTime');
-
-            if (labelName) labelName.style.marginRight = '10px';
-            if (labelTime) labelTime.style.whiteSpace = 'nowrap';
-        }
-
-        item.classList.add('adjusted');
-    });
-    log('Article list adjusted');
-}
-
-function adjustHeader() {
-    const header = document.getElementById('header');
-    if (!header || header.querySelector('#avatarImg')) {
-        return;
+(function() {
+    // 检测暗黑模式
+    function isDarkMode() {
+        return document.body.classList.contains('dark-theme');
     }
 
-    const headerContent = header.querySelector('.header-content') || header;
-    
-    // 创建一个新的容器来放置头像和博客标题
-    const avatarTitleContainer = document.createElement('div');
-    avatarTitleContainer.style.display = 'flex';
-    avatarTitleContainer.style.alignItems = 'center';
-    avatarTitleContainer.style.marginRight = '20px';
-
-    const avatar = document.createElement('img');
-    avatar.src = 'https://code.buxiantang.top/favicon.svg';
-    avatar.id = 'avatarImg';
-    avatar.alt = 'avatar';
-    avatar.style.width = '40px';
-    avatar.style.height = '40px';
-    avatar.style.borderRadius = '50%';
-    avatar.style.marginRight = '10px';
-
-    const blogTitle = document.createElement('a');
-    blogTitle.href = '/';
-    blogTitle.className = 'blogTitle';
-    blogTitle.textContent = 'Tiengming';
-    blogTitle.style.fontSize = '1.5em';
-    blogTitle.style.fontWeight = 'bold';
-    blogTitle.style.textDecoration = 'none';
-    blogTitle.style.color = 'inherit';
-
-    avatarTitleContainer.appendChild(avatar);
-    avatarTitleContainer.appendChild(blogTitle);
-
-    // 将新容器插入到 headerContent 的开头
-    headerContent.insertBefore(avatarTitleContainer, headerContent.firstChild);
-
-    log('Header adjusted');
-}
-
-function styleImages() {
-    const images = document.querySelectorAll('img:not([style])');
-    images.forEach(img => {
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-        img.style.borderRadius = '6px';
-    });
-}
-
-function loadHighlightJS() {
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js';
-        script.onload = () => {
-            const style = document.createElement('link');
-            style.rel = 'stylesheet';
-            style.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css';
-            document.head.appendChild(style);
-            hljs.highlightAll();
-            resolve();
-        };
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-}
-
-function init() {
-    if (isInitialized) {
-        log('Already initialized');
-        return;
-    }
-
-    log('Initializing');
-    addStyles();
-    enforceStyles();
-    adjustArticleList();
-    adjustHeader();
-    styleImages();
-    loadHighlightJS().then(() => {
-        log('Initial setup complete');
-    });
-
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                log('Theme change detected');
-                addStyles();
-                enforceStyles();
+    // 添加样式
+    function addStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            :root {
+                --bg-color: ${isDarkMode() ? '#0d1117' : '#ffffff'};
+                --text-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
+                --hover-bg-color: ${isDarkMode() ? '#21262d' : '#f6f8fa'};
+                --shadow-color: ${isDarkMode() ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+                --link-color: ${isDarkMode() ? '#58a6ff' : '#0969da'};
             }
+
+            body {
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+
+            .SideNav {
+                border-radius: 12px;
+                overflow: hidden;
+            }
+
+            .SideNav-item {
+                transition: all 0.3s ease;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px var(--shadow-color);
+                margin-bottom: 10px;
+                padding: 10px;
+                background-color: var(--bg-color);
+            }
+
+            .SideNav-item:hover {
+                background-color: var(--hover-bg-color);
+                box-shadow: 0 4px 8px var(--shadow-color);
+                transform: translateY(-2px);
+            }
+
+            .labelContainer {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 10px;
+            }
+
+            .labelLeft {
+                text-align: left;
+            }
+
+            .labelRight {
+                text-align: right;
+            }
+
+            #header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+            }
+
+            .header-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .avatar {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                box-shadow: 0 4px 8px var(--shadow-color);
+                transition: all 0.3s ease;
+                margin-bottom: 10px;
+            }
+
+            .avatar:hover {
+                transform: scale(1.1) rotate(5deg);
+            }
+
+            .blogTitle, .postTitle {
+                font-size: 24px;
+                font-weight: bold;
+                margin-top: 10px;
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+
+            .blogTitle:hover {
+                color: var(--link-color);
+                transform: scale(1.05);
+            }
+
+            .title-right-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .post-content img,
+            .cnblogs_post_body img {
+                border-radius: 8px;
+                box-shadow: 0 4px 8px var(--shadow-color);
+                max-width: 100%;
+                height: auto;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            .fade-in {
+                animation: fadeIn 0.5s ease-out;
+            }
+
+            .btn-invisible {
+                color: var(--text-color);
+            }
+
+            .btn-invisible:hover {
+                color: var(--link-color);
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function adjustLabels() {
+        const sideNavItems = document.querySelectorAll('.SideNav-item');
+        sideNavItems.forEach(item => {
+            const listTitle = item.querySelector('.listTitle');
+            const labels = item.querySelectorAll('.Label.LabelName');
+            const time = item.querySelector('.Label.LabelTime');
+            
+            const labelContainer = document.createElement('div');
+            labelContainer.className = 'labelContainer fade-in';
+            const labelLeft = document.createElement('div');
+            labelLeft.className = 'labelLeft';
+            const labelRight = document.createElement('div');
+            labelRight.className = 'labelRight';
+            
+            labels.forEach(label => labelLeft.appendChild(label));
+            if (time) labelRight.appendChild(time);
+            
+            labelContainer.appendChild(labelLeft);
+            labelContainer.appendChild(labelRight);
+            
+            listTitle.parentNode.insertBefore(labelContainer, listTitle.nextSibling);
         });
-    });
+    }
 
-    observer.observe(document.body, { attributes: true });
+    function adjustHeader() {
+        const header = document.getElementById('header');
+        if (!header) return;
 
-    isInitialized = true;
-    log('Initialization complete');
-}
+        const headerContent = header.querySelector('.header-content');
+        if (!headerContent) return;
 
-// 在 DOMContentLoaded 事件触发时初始化
-document.addEventListener('DOMContentLoaded', init);
+        const postTitle = headerContent.querySelector('.blogTitle, .postTitle');
+        
+        // 只在文章页添加头像和网站名称
+        if (postTitle && postTitle.classList.contains('blogTitle')) {
+            // 这是文章页面
+            const avatar = document.createElement('img');
+            avatar.src = 'https://code.buxiantang.top/favicon.svg';
+            avatar.className = 'avatar fade-in';
+            avatar.alt = 'avatar';
 
-// 如果 DOMContentLoaded 已经触发，立即初始化
-if (document.readyState === 'interactive' || document.readyState === 'complete') {
-    init();
-}
+            const blogTitle = document.createElement('a');
+            blogTitle.href = '/';
+            blogTitle.className = 'blogTitle fade-in';
+            blogTitle.textContent = 'Tiengming';
+
+            headerContent.insertBefore(blogTitle, headerContent.firstChild);
+            headerContent.insertBefore(avatar, headerContent.firstChild);
+        }
+    }
+
+    function styleImages() {
+        const postContent = document.querySelector('.post-content, .cnblogs_post_body');
+        if (postContent) {
+            const images = postContent.querySelectorAll('img');
+            images.forEach(img => {
+                img.classList.add('styled-image', 'fade-in');
+            });
+        }
+    }
+
+    function init() {
+        addStyles();
+        adjustLabels();
+        adjustHeader();
+        styleImages();
+
+        // 监听主题变化
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    addStyles(); // 重新应用样式以更新颜色
+                }
+            });
+        });
+
+        observer.observe(document.body, { attributes: true });
+    }
+
+    // 确保DOM完全加载后执行脚本
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
