@@ -56,6 +56,7 @@
             .title-right {
                 width: 100%;
                 text-align: center;
+                justify-content: space-evenly;
             }
 
             .d-flex.flex-items-center {
@@ -123,7 +124,7 @@
                 border-top: 1px solid var(--border-color);
                 display: flex;
                 justify-content: space-between;
-                padding: 8px 16px;
+                padding: 3px 10px;
                 background-color: var(--article-bg-color);
             }
 
@@ -134,9 +135,9 @@
             }
 
             .labelLeft .Label, .labelRight .Label {
-                margin-right: 8px;
-                margin-bottom: 4px;
-                padding: 4px 8px;
+                margin-right: 5px;
+                margin-bottom: 0px;
+                padding: 2px 5px;
                 border-radius: 2em;
                 font-size: 12px;
                 font-weight: 500;
@@ -258,8 +259,8 @@
                 }
 
                 .listTitle {
-                    font-size: 16px;
-                    line-height: 1.4;
+                    font-size: 17px;
+                    line-height: 2.4;
                 }
 
                 .labelContainer {
@@ -271,7 +272,7 @@
 
                 .labelLeft, .labelRight {
                     flex: 1 1 auto;
-                    margin: 4px 0;
+                    margin: -1px 0;
                 }
 
                 .d-flex.flex-items-center {
@@ -279,7 +280,7 @@
                 }
 
                 .d-flex.flex-items-center .octicon {
-                    width: 20px;
+                    width: 10px;
                     height: 20px;
                 }
             }
