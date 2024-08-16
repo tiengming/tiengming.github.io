@@ -137,9 +137,9 @@
             .labelLeft .Label, .labelRight .Label {
                 margin-right: 5px;
                 margin-bottom: 0px;
-                padding: 2px 5px;
+                padding: 0px 5px;
                 border-radius: 2em;
-                font-size: 12px;
+                font-size: 10px;
                 font-weight: 500;
                 background-color: var(--label-bg-color);
                 color: #ffffff;
