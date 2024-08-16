@@ -284,6 +284,10 @@
                     width: 10px;
                     height: 20px;
                 }
+                .labelRight {
+                    display: flex !important;
+                    flex-direction: row-reverse;
+                }
             }
         `;
         document.head.appendChild(style);
