@@ -284,7 +284,7 @@
                     width: 10px;
                     height: 20px;
                 }
-                .labelRight {
+                .LabelTime {
                     display: flex !important;
                     flex-direction: row-reverse;
                 }
