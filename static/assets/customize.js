@@ -32,6 +32,37 @@
                 background-color: var(--bg-color);
                 color: var(--text-color);
                 transition: background-color 0.3s ease, color 0.3s ease;
+                opacity: 0;
+                animation: fadeIn 0.5s ease-out forwards;
+            }
+
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            #header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                padding: 20px 0;
+            }
+
+            .brand-wrapper,
+            .postTitle,
+            .title-right {
+                width: 100%;
+                text-align: center;
+            }
+
+            .d-flex.flex-items-center {
+                font-size: 1.2em;
+            }
+
+            .d-flex.flex-items-center .octicon {
+                width: 24px;
+                height: 24px;
             }
 
             .SideNav.border {
@@ -200,15 +231,6 @@
                 box-shadow: 0 6px 15px var(--shadow-color);
             }
 
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-
-            .fade-in {
-                animation: fadeIn 0.5s ease-out;
-            }
-
             @media (max-width: 768px) {
                 .blogTitle, .labelRight, .site-name {
                     font-size: 24px;
@@ -217,6 +239,24 @@
                 .listTitle {
                     font-size: 14px;
                     line-height: 1.4;
+                }
+
+                .labelContainer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .labelRight {
+                    margin-top: 10px;
+                }
+
+                .d-flex.flex-items-center {
+                    font-size: 1.1em;
+                }
+
+                .d-flex.flex-items-center .octicon {
+                    width: 20px;
+                    height: 20px;
                 }
             }
         `;
@@ -258,8 +298,8 @@
     }
 
     function addBrandToPostTitle() {
-        const postTitle = document.querySelector('.postTitle');
-        if (!postTitle) return;
+        const header = document.querySelector('#header');
+        if (!header) return;
 
         const brandWrapper = document.createElement('div');
         brandWrapper.className = 'brand-wrapper fade-in';
@@ -276,7 +316,13 @@
         brandWrapper.appendChild(favicon);
         brandWrapper.appendChild(siteName);
 
-        postTitle.insertAdjacentElement('beforebegin', brandWrapper);
+        const postTitle = header.querySelector('.postTitle');
+        const titleRight = header.querySelector('.title-right');
+
+        header.innerHTML = '';
+        header.appendChild(brandWrapper);
+        if (postTitle) header.appendChild(postTitle);
+        if (titleRight) header.appendChild(titleRight);
     }
 
     function styleImages() {
@@ -302,25 +348,15 @@
     }
 
     function init() {
+        document.body.style.opacity = '0';
         addStyles();
         adjustLabels();
         addBrandToPostTitle();
         styleImages();
 
-        const blogTitle = document.querySelector('.blogTitle');
-        if (blogTitle) {
-            blogTitle.classList.add('fade-in');
-        }
-
-        const postTitle = document.querySelector('.postTitle');
-        if (postTitle) {
-            postTitle.classList.add('fade-in');
-        }
-
-        const listTitles = document.querySelectorAll('.listTitle');
-        listTitles.forEach(title => {
-            title.classList.add('fade-in');
-        });
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+        }, 0);
     }
 
     if (document.readyState === 'loading') {
