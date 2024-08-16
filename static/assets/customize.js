@@ -128,12 +128,17 @@
                 background-color: var(--article-bg-color);
             }
 
-            .labelLeft, .labelRight {
+            .labelLeft {
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
             }
-
+            .labelRight {
+                display: flex !important;
+                flex-wrap: wrap;
+                align-items: center;
+                flex-direction: row-reverse;
+            }
             .labelLeft .Label, .labelRight .Label {
                 margin-right: 5px;
                 margin-bottom: 0px;
