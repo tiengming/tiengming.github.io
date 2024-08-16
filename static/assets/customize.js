@@ -20,12 +20,14 @@
                 --bg-color: ${isDarkMode() ? '#0d1117' : '#ffffff'};
                 --text-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
                 --hover-bg-color: ${isDarkMode() ? '#21262d' : '#f6f8fa'};
+                --hover-text-color: ${isDarkMode() ? '#ffffff' : '#0366d6'};
                 --shadow-color: ${isDarkMode() ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
-                --link-color: ${isDarkMode() ? '#58a6ff' : '#24292f'};
-                --border-color: ${isDarkMode() ? '#30363d' : '#d0d7de'};
+                --link-color: ${isDarkMode() ? '#58a6ff' : '#0366d6'};
+                --border-color: ${isDarkMode() ? '#30363d' : '#e1e4e8'};
                 --title-color: ${isDarkMode() ? '#c9d1d9' : '#24292f'};
-                --hover-text-color: ${isDarkMode() ? '#ffffff' : '#ffffff'};
                 --article-bg-color: ${isDarkMode() ? '#161b22' : '#ffffff'};
+                --label-bg-color: ${isDarkMode() ? '#30363d' : '#f1f8ff'};
+                --label-text-color: ${isDarkMode() ? '#ffffff' : '#0366d6'};
             }
 
             body {
@@ -69,6 +71,7 @@
                 border: 1px solid var(--border-color) !important;
                 border-radius: 6px !important;
                 overflow: hidden;
+                transition: all 0.3s ease;
             }
 
             .article-container {
@@ -81,15 +84,15 @@
             }
 
             .article-container:hover {
-                box-shadow: 0 2px 8px var(--shadow-color);
-                transform: translateY(-1px);
+                box-shadow: 0 4px 12px var(--shadow-color);
+                transform: translateY(-2px);
             }
 
             .SideNav-item {
                 border: none !important;
                 margin-bottom: 0 !important;
                 transition: all 0.3s ease;
-                padding: 8px 16px;
+                padding: 12px 16px;
                 background-color: transparent;
             }
 
@@ -102,8 +105,8 @@
             }
 
             .listTitle {
-                font-size: 16px;
-                line-height: 2;
+                font-size: 18px;
+                line-height: 1.5;
                 font-weight: 600;
                 transition: all 0.3s ease;
                 display: inline-block;
@@ -113,13 +116,14 @@
             .listTitle:hover {
                 color: var(--hover-text-color);
                 text-decoration: none;
+                transform: translateX(5px);
             }
 
             .labelContainer {
                 border-top: 1px solid var(--border-color);
                 display: flex;
                 justify-content: space-between;
-                padding: 2px 16px;
+                padding: 8px 16px;
                 background-color: var(--article-bg-color);
             }
 
@@ -132,12 +136,18 @@
             .labelLeft .Label, .labelRight .Label {
                 margin-right: 8px;
                 margin-bottom: 4px;
-                padding: 2px 6px;
+                padding: 4px 8px;
                 border-radius: 2em;
                 font-size: 12px;
                 font-weight: 500;
-                background-color: ${isDarkMode() ? '#30363d' : '#f1f8ff'};
-                color: ${isDarkMode() ? '#ffffff' : '#ffffff'};
+                background-color: var(--label-bg-color);
+                color: var(--label-text-color);
+                transition: all 0.3s ease;
+            }
+
+            .labelLeft .Label:hover, .labelRight .Label:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px var(--shadow-color);
             }
 
             .brand-wrapper {
@@ -193,23 +203,34 @@
 
             #postBody a {
                 color: var(--link-color);
+                transition: all 0.3s ease;
+            }
+
+            #postBody a:hover {
+                text-decoration: underline;
             }
 
             #postBody pre {
                 background-color: var(--hover-bg-color);
                 border: 1px solid var(--border-color);
                 border-radius: 6px;
+                padding: 16px;
+                overflow-x: auto;
             }
 
             #postBody code {
                 background-color: var(--hover-bg-color);
                 color: var(--text-color);
+                padding: 2px 4px;
+                border-radius: 3px;
             }
 
             #postBody blockquote {
                 border-left: 4px solid var(--border-color);
                 color: var(--text-color);
                 opacity: 0.8;
+                padding-left: 16px;
+                margin-left: 0;
             }
 
             .post-content img,
@@ -237,17 +258,20 @@
                 }
 
                 .listTitle {
-                    font-size: 14px;
+                    font-size: 16px;
                     line-height: 1.4;
                 }
 
                 .labelContainer {
-                    flex-direction: column;
-                    align-items: flex-start;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    flex-wrap: wrap;
                 }
 
-                .labelRight {
-                    margin-top: 10px;
+                .labelLeft, .labelRight {
+                    flex: 1 1 auto;
+                    margin: 4px 0;
                 }
 
                 .d-flex.flex-items-center {
