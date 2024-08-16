@@ -142,7 +142,7 @@
                 font-size: 12px;
                 font-weight: 500;
                 background-color: var(--label-bg-color);
-                color: var(--label-text-color);
+                color: #ffffff;
                 transition: all 0.3s ease;
             }
 
