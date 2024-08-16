@@ -155,13 +155,14 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-bottom: 20px;
+                margin-bottom: 15px;
+                flex-direction: column;
             }
 
             .website-icon {
-                width: 40px;
-                height: 40px;
-                margin-right: 12px;
+                width: 90px;
+                height: 90px;
+                margin-right: 0px;
                 transition: transform 0.3s ease;
             }
 
