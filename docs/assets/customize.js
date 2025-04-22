@@ -49,6 +49,7 @@
                 align-items: center;
                 gap: 20px;
                 padding: 20px 0;
+                margin-top: -5%;
             }
 
             .brand-wrapper,
@@ -91,7 +92,7 @@
 
             .SideNav-item {
                 border: none !important;
-                margin-bottom: 0 !important;
+                margin-bottom: 6px !important;
                 transition: all 0.3s ease;
                 padding: 12px 16px;
                 background-color: transparent;
