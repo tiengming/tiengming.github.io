@@ -221,7 +221,7 @@
 ---
 
 <center>
-    <img src="https://pick.buxiantang.top/rest/hfVDPrK.png" style="width: 500px;">
+    <img src="https://pick.buxiantang.top/rest/hfVDPrK.png" style="max-width: 45%;"">
 </center>
 
 
