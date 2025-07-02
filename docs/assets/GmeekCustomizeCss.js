@@ -1,10 +1,11 @@
 /*!
- * GmeekCustomizeCss.js v1.0.1
+ * GmeekCustomizeCss.js v1.0.2-debug
  * https://blog.meekdai.com/
- * Apple 风格 & 移动端优化
+ * Apple 风格 & 移动端优化 & 调试日志
  */
 (function(window, document){
   'use strict';
+  console.log('[Gmeek] 脚本开始加载');
 
   // 1. 默认配置
   var defaults = {
@@ -38,8 +39,9 @@
   }
   var cfg = deepMerge(defaults, userConfig);
 
-  // 3. 注入全局样式（含移动端优化）
+  // 3. 样式注入函数
   function injectStyles() {
+    console.log('[Gmeek] injectStyles() 调用');
     var css = `
       /* 基础样式 */
       html { font-family: ${cfg.font}; background: ${cfg.colors.bg}; scroll-behavior: ${cfg.smoothScroll ? 'smooth' : 'auto'}; }
@@ -107,11 +109,13 @@
     var style = document.createElement('style');
     style.id = 'gmeek-custom-style';
     style.textContent = css;
-    document.head.appendChild(style);
+    (document.head || document.documentElement).appendChild(style);
+    console.log('[Gmeek] 样式注入完成');
   }
 
-  // 4. 页面加载动画遮罩
+  // 4. 加载遮罩
   function setupLoader() {
+    console.log('[Gmeek] setupLoader() 调用');
     var overlay = document.createElement('div');
     overlay.id = 'gmeek-loading-overlay';
     overlay.innerHTML = '<div class="spinner"></div>';
@@ -122,8 +126,9 @@
     });
   }
 
-  // 5. 视差 & 进场动画绑定
+  // 5. 视差 & 进场动画
   function setupScrollEffects() {
+    console.log('[Gmeek] setupScrollEffects() 调用');
     var items = document.querySelectorAll('.parallax, .gmeek-reveal');
     if (!items.length || !window.IntersectionObserver) return;
     var io = new IntersectionObserver(function(entries){
@@ -140,8 +145,9 @@
     items.forEach(function(el){ io.observe(el); });
   }
 
-  // 6. 简易表单验证提示
+  // 6. 表单验证提示
   function enhanceForms() {
+    console.log('[Gmeek] enhanceForms() 调用');
     document.querySelectorAll('form').forEach(function(f){
       f.addEventListener('submit', function(e){
         if (!f.checkValidity()) {
@@ -154,21 +160,29 @@
     });
   }
 
-  // 7. 初始化
+  // 7. 初始化 & 暴露 init
   function init() {
-    // 低性能设备判断
+    console.log('[Gmeek] init() 开始');
     var isLowPerf = navigator.deviceMemory && navigator.deviceMemory < 2;
     if (isLowPerf) document.documentElement.classList.add('gmeek-low-perf');
-
     injectStyles();
     setupLoader();
     setupScrollEffects();
     enhanceForms();
+    console.log('[Gmeek] init() 完成');
   }
 
+  // 暴露 init 供手动调用
+  window.__GmeekInit__ = init;
+
+  // 自动执行 init
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', function(){
+      console.log('[Gmeek] DOMContentLoaded 触发');
+      init();
+    });
   } else {
+    console.log('[Gmeek] document.readyState=', document.readyState);
     init();
   }
 
