@@ -28,35 +28,42 @@
     return luminance > 0.6 ? "#000" : "#fff";
   }
 
-  // 🌌 渐变背景容器
-  const bg = document.createElement("div");
-  bg.className = "herobgcolor";
-  document.body.appendChild(bg);
+  function createGradientBackground() {
+    const bg = document.createElement("div");
+    bg.className = "herobgcolor";
+    document.body.appendChild(bg);
 
-  const bgStyle = document.createElement("style");
-  bgStyle.textContent = `
-    .herobgcolor {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background-size: 600% 600%;
-      animation: hueflow 30s ease infinite;
-      transition: background 0.6s ease;
-    }
-    @keyframes hueflow {
-      0% { filter: hue-rotate(0deg); background-position: 0% 50%; }
-      50% { filter: hue-rotate(180deg); background-position: 100% 50%; }
-      100% { filter: hue-rotate(360deg); background-position: 0% 50%; }
-    }
-  `;
-  document.head.appendChild(bgStyle);
+    const style = document.createElement("style");
+    style.textContent = `
+      .herobgcolor {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background-size: 600% 600%;
+        animation: hueflow 30s ease infinite;
+        transition: background 0.6s ease;
+      }
+      @keyframes hueflow {
+        0% { filter: hue-rotate(0deg); background-position: 0% 50%; }
+        50% { filter: hue-rotate(180deg); background-position: 100% 50%; }
+        100% { filter: hue-rotate(360deg); background-position: 0% 50%; }
+      }
+    `;
+    document.head.appendChild(style);
+    return bg;
+  }
+
+  const bg = createGradientBackground();
 
   function applyTheme() {
     const mode = document.documentElement.getAttribute("data-color-mode") || "light";
     const theme = themeColors[mode] || themeColors.light;
+
+    // 应用背景颜色和卡片背景
     bg.style.background = theme.bgGradient;
+    document.body.style.background = theme.cardBg;
 
     document.querySelectorAll(".post-card").forEach(card => {
       card.style.background = theme.cardBg;
@@ -69,8 +76,7 @@
     });
   }
 
-  const observer = new MutationObserver(applyTheme);
-  observer.observe(document.documentElement, {
+  new MutationObserver(applyTheme).observe(document.documentElement, {
     attributes: true,
     attributeFilter: ["data-color-mode"]
   });
@@ -80,6 +86,7 @@
     oldCards.forEach((card, i) => {
       const title = card.querySelector(".listTitle")?.innerText || "未命名文章";
       const link = card.getAttribute("href");
+
       const labelNodes = [...card.querySelectorAll(".Label")];
       const time = labelNodes.find(el => /^\d{4}/.test(el.textContent.trim()))?.textContent.trim() || "";
 
@@ -88,8 +95,8 @@
         .map(el => {
           const tag = el.textContent.trim();
           const bg = el.style.backgroundColor || "#999";
-          const color = getTextColor(bg);
-          return `<span class="post-tag" style="background-color:${bg};color:${color}">${tag}</span>`;
+          const fg = getTextColor(bg);
+          return `<span class="post-tag" style="background-color:${bg};color:${fg}">${tag}</span>`;
         })
         .join("");
 
