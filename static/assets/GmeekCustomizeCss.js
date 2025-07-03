@@ -4,22 +4,42 @@
 
   console.log("🍏 TiengmingModern 插件已启用");
 
-  // 注入所有样式
+  // 🌈 主题配置变量
+  const themeColors = {
+    light: {
+      bgGradient: "linear-gradient(120deg, #f8f8f8, #fef2f2, #f4f0ff)",
+      cardBg: "#ffffff",
+      cardText: "#1c1c1e",
+      summaryText: "#444",
+      tagBg: "#f1f1f4",
+      tagText: "#444",
+      metaText: "#888",
+    },
+    dark: {
+      bgGradient: "linear-gradient(120deg, #1e1e2f, #2a344b, #3c4d67)",
+      cardBg: "#2b2b2f",
+      cardText: "#f0f0f0",
+      summaryText: "#aaa",
+      tagBg: "#3d3d3d",
+      tagText: "#ddd",
+      metaText: "#bbb",
+    },
+  };
+
+  const fontStack = `-apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif`;
+
+  // 🌠 注入样式
   const style = document.createElement("style");
   style.textContent = `
     :root {
       --accent: #007aff;
-      --font: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
-      --bg: #fefefe;
-      --text: #1c1c1e;
+      --font: ${fontStack};
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
       max-width: 960px;
       padding: 24px;
       margin: auto;
@@ -31,20 +51,16 @@
     .post-card {
       display: flex;
       flex-direction: column;
-      background: #fff;
       border-radius: 20px;
       padding: 20px 24px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
       transition: all 0.25s ease;
       text-decoration: none;
-      color: inherit;
       animation: fadeUp 0.5s ease both;
     }
 
     .post-card:hover {
       transform: translateY(-3px) scale(1.012);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     }
 
     .post-meta {
@@ -53,21 +69,12 @@
       gap: 8px;
       font-size: 13px;
       margin-bottom: 10px;
-      color: #888;
     }
 
     .post-tag {
-      background: #f1f1f4;
       border-radius: 999px;
       padding: 3px 10px;
       font-weight: 500;
-      color: #444;
-    }
-
-    .post-date {
-      background: transparent;
-      color: #999;
-      font-weight: 400;
     }
 
     .post-title {
@@ -78,7 +85,6 @@
 
     .post-summary {
       font-size: 14.5px;
-      color: #444;
     }
 
     .avatar {
@@ -87,6 +93,11 @@
 
     .avatar:hover {
       transform: scale(1.1) rotate(5deg);
+    }
+
+    .SideNav {
+      border-radius: 12px;
+      overflow: hidden;
     }
 
     @keyframes fadeUp {
@@ -98,7 +109,7 @@
       body { padding: 16px; }
     }
 
-    /* 🌌 动态背景样式，根据 data-theme 切换 */
+    /* 🌌 背景容器样式 */
     .herobgcolor {
       position: fixed;
       top: 0; left: 0;
@@ -110,14 +121,6 @@
       transition: background 0.6s ease;
     }
 
-    .herobgcolor[data-theme="light"] {
-      background: linear-gradient(120deg, #007aff, #ff5e62, #4c84ff, #ff857a);
-    }
-
-    .herobgcolor[data-theme="dark"] {
-      background: linear-gradient(120deg, #1e1e2f, #004777, #00c2b2, #2e3a59);
-    }
-
     @keyframes hueflow {
       0% { filter: hue-rotate(0deg); background-position: 0% 50%; }
       50% { filter: hue-rotate(180deg); background-position: 100% 50%; }
@@ -126,25 +129,40 @@
   `;
   document.head.appendChild(style);
 
-  // 创建动态背景
+  // 🌗 动态主题背景处理
   const bg = document.createElement("div");
-  const getTheme = () =>
-    document.documentElement.getAttribute("data-color-mode") || "light";
-
   bg.className = "herobgcolor";
-  bg.setAttribute("data-theme", getTheme());
   document.body.appendChild(bg);
 
-  const themeObserver = new MutationObserver(() => {
-    const mode = getTheme();
-    bg.setAttribute("data-theme", mode);
-  });
-  themeObserver.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-color-mode"]
-  });
+  const applyTheme = () => {
+    const mode = document.documentElement.getAttribute("data-color-mode") || "light";
+    const theme = themeColors[mode] || themeColors.light;
+    bg.style.background = theme.bgGradient;
 
-  // 重构卡片内容
+    const cards = document.querySelectorAll(".post-card");
+    cards.forEach(card => {
+      card.style.background = theme.cardBg;
+      card.style.color = theme.cardText;
+      const summary = card.querySelector(".post-summary");
+      const title = card.querySelector(".post-title");
+      if (summary) summary.style.color = theme.summaryText;
+      if (title) title.style.color = theme.cardText;
+
+      const tags = card.querySelectorAll(".post-tag");
+      tags.forEach(tag => {
+        tag.style.background = theme.tagBg;
+        tag.style.color = theme.tagText;
+      });
+
+      const meta = card.querySelector(".post-meta");
+      if (meta) meta.style.color = theme.metaText;
+    });
+  };
+
+  const themeObserver = new MutationObserver(applyTheme);
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-color-mode"] });
+
+  // 🧱 卡片内容重构
   const rebuildCards = () => {
     const oldCards = document.querySelectorAll(".SideNav-item");
     oldCards.forEach((card, i) => {
@@ -168,14 +186,12 @@
         <h2 class="post-title">${title}</h2>
         <p class="post-summary">${summary}</p>
       `;
-
       card.replaceWith(newCard);
     });
+    applyTheme(); // 确保样式应用于新结构
   };
 
-  if (document.readyState === "loading") {
-    window.addEventListener("DOMContentLoaded", rebuildCards);
-  } else {
-    rebuildCards();
-  }
+  document.readyState === "loading"
+    ? window.addEventListener("DOMContentLoaded", rebuildCards)
+    : rebuildCards();
 })();
