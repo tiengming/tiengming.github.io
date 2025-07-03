@@ -4,7 +4,7 @@
 
   console.log("🍏 TiengmingModern 插件已启用");
 
-  // 注入 Apple 风格样式
+  // 注入所有样式
   const style = document.createElement("style");
   style.textContent = `
     :root {
@@ -24,6 +24,8 @@
       padding: 24px;
       margin: auto;
       line-height: 1.6;
+      position: relative;
+      z-index: 0;
     }
 
     .post-card {
@@ -95,10 +97,54 @@
     @media (max-width: 600px) {
       body { padding: 16px; }
     }
+
+    /* 🌌 动态背景样式，根据 data-theme 切换 */
+    .herobgcolor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      background-size: 600% 600%;
+      animation: hueflow 30s ease infinite;
+      transition: background 0.6s ease;
+    }
+
+    .herobgcolor[data-theme="light"] {
+      background: linear-gradient(120deg, #007aff, #ff5e62, #4c84ff, #ff857a);
+    }
+
+    .herobgcolor[data-theme="dark"] {
+      background: linear-gradient(120deg, #1e1e2f, #004777, #00c2b2, #2e3a59);
+    }
+
+    @keyframes hueflow {
+      0% { filter: hue-rotate(0deg); background-position: 0% 50%; }
+      50% { filter: hue-rotate(180deg); background-position: 100% 50%; }
+      100% { filter: hue-rotate(360deg); background-position: 0% 50%; }
+    }
   `;
   document.head.appendChild(style);
 
-  // 等待 DOM 构建后重构内容
+  // 创建动态背景
+  const bg = document.createElement("div");
+  const getTheme = () =>
+    document.documentElement.getAttribute("data-color-mode") || "light";
+
+  bg.className = "herobgcolor";
+  bg.setAttribute("data-theme", getTheme());
+  document.body.appendChild(bg);
+
+  const themeObserver = new MutationObserver(() => {
+    const mode = getTheme();
+    bg.setAttribute("data-theme", mode);
+  });
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-color-mode"]
+  });
+
+  // 重构卡片内容
   const rebuildCards = () => {
     const oldCards = document.querySelectorAll(".SideNav-item");
     oldCards.forEach((card, i) => {
