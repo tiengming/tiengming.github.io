@@ -5,30 +5,30 @@
 
   const themeColors = {
     light: {
-      bgGradient: "linear-gradient(120deg, #f8f8f8, #fef2f2, #f4f0ff)",
-      cardBg: "rgba(255,255,255,0.15)",
-      text: "#1c1c1e",
+      bgGradient: "linear-gradient(135deg, #f4f4f4, #fef2f2, #f4f0ff)",
+      cardBg: "rgba(255,255,255,0.25)",
+      cardBorder: "1px solid rgba(255,255,255,0.2)",
+      title: "#1c1c1e",
       summary: "#444",
-      meta: "#888",
-      cardBorder: "1px solid rgba(255,255,255,0.15)"
+      meta: "#888"
     },
     dark: {
-      bgGradient: "linear-gradient(120deg, #1e1e2f, #2a344b, #3c4d67)",
-      cardBg: "rgba(32,32,32,0.2)",
-      text: "#f0f0f0",
+      bgGradient: "linear-gradient(135deg, #1a1a2b, #222c3a, #2e3950)",
+      cardBg: "rgba(32,32,32,0.3)",
+      cardBorder: "1px solid rgba(255,255,255,0.08)",
+      title: "#eeeeee",
       summary: "#aaa",
-      meta: "#bbb",
-      cardBorder: "1px solid rgba(255,255,255,0.08)"
+      meta: "#bbb"
     }
   };
 
-  function getTextColor(bg) {
+  const getTextColor = (bg) => {
     const rgb = bg.match(/\d+/g);
-    if (!rgb || rgb.length < 3) return "#fff";
+    if (!rgb) return "#fff";
     const [r, g, b] = rgb.map(Number);
-    const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return lum > 0.6 ? "#000" : "#fff";
-  }
+    const l = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return l > 0.6 ? "#000" : "#fff";
+  };
 
   const bg = (() => {
     const el = document.createElement("div");
@@ -49,70 +49,68 @@
         0% { filter: hue-rotate(0deg); background-position: 0% 50%; }
         50% { filter: hue-rotate(180deg); background-position: 100% 50%; }
         100% { filter: hue-rotate(360deg); background-position: 0% 50%; }
-      }`;
+      }
+    `;
     document.head.appendChild(style);
     return el;
   })();
 
   function applyTheme() {
     const mode = document.documentElement.getAttribute("data-color-mode") || "light";
-    const theme = themeColors[mode] || themeColors.light;
+    const theme = themeColors[mode];
+
     bg.style.background = theme.bgGradient;
 
     document.querySelectorAll(".post-card").forEach(card => {
       card.style.background = theme.cardBg;
+      card.style.border = theme.cardBorder;
       card.style.backdropFilter = "blur(16px)";
       card.style.webkitBackdropFilter = "blur(16px)";
-      card.style.border = theme.cardBorder;
-      card.style.boxShadow = "0 6px 20px rgba(0, 0, 0, 0.1)";
-    });
+      card.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
 
-    document.querySelectorAll(".post-card").forEach(card => {
-      card.style.background = theme.cardBg;
-      card.style.backdropFilter = "blur(16px)";
-      card.style.webkitBackdropFilter = "blur(16px)";
-      card.style.border = theme.cardBorder;
       const title = card.querySelector(".post-title");
       const summary = card.querySelector(".post-summary");
       const meta = card.querySelector(".post-meta");
-      if (title) {
-        title.style.color = theme.text;
-        title.style.textShadow = "0 1px 1px rgba(0,0,0,0.2)";
-      }
-      if (summary) {
-        summary.style.color = theme.summary;
-        summary.style.textShadow = "0 1px 1px rgba(0,0,0,0.2)";
-      }
+
+      if (title) title.style.color = theme.title;
+      if (summary) summary.style.color = theme.summary;
       if (meta) meta.style.color = theme.meta;
+    });
+
+    // ✅ 仅 header/footer 可选提亮，其余内容不动
+    ["#header", "#footer"].forEach(sel => {
+      const el = document.querySelector(sel);
+      if (el) el.style.color = mode === "dark" ? "#ddd" : "";
     });
   }
 
   new MutationObserver(applyTheme).observe(document.documentElement, {
-    attributes: true, attributeFilter: ["data-color-mode"]
+    attributes: true,
+    attributeFilter: ["data-color-mode"]
   });
 
   function rebuildCards() {
     document.querySelectorAll(".SideNav-item").forEach((card, i) => {
       const title = card.querySelector(".listTitle")?.innerText || "未命名文章";
       const link = card.getAttribute("href");
-      const labelNodes = [...card.querySelectorAll(".Label")];
-      const time = labelNodes.find(el => /^\d{4}/.test(el.textContent.trim()))?.textContent.trim() || "";
+      const labels = [...card.querySelectorAll(".Label")];
+      const time = labels.find(el => /^\d{4}/.test(el.textContent.trim()))?.textContent.trim() || "";
 
-      const tagElems = labelNodes.filter(el => el.textContent.trim() !== time).map(el => {
+      const tags = labels.filter(el => el.textContent.trim() !== time).map(el => {
         const tag = el.textContent.trim();
         const bg = el.style.backgroundColor || "#999";
         const fg = getTextColor(bg);
         return `<span class="post-tag" style="background-color:${bg};color:${fg}">${tag}</span>`;
       }).join("");
 
-      const summary = `本篇内容涵盖主题「${labelNodes.map(x => x.textContent.trim()).join(" / ")}」，带你深入探索相关知识点。`;
+      const summary = `本篇内容涵盖主题「${labels.map(x => x.textContent.trim()).join(" / ")}」，带你深入探索相关知识点。`;
 
       const newCard = document.createElement("a");
       newCard.href = link;
       newCard.className = "post-card";
       newCard.style.animationDelay = `${i * 60}ms`;
       newCard.innerHTML = `
-        <div class="post-meta">${tagElems}<span class="post-date">${time}</span></div>
+        <div class="post-meta">${tags}<span class="post-date">${time}</span></div>
         <h2 class="post-title">${title}</h2>
         <p class="post-summary">${summary}</p>
       `;
