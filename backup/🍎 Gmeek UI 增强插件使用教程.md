@@ -1,16 +1,4 @@
----
-title: "Gmeek UI 增强插件使用教程"
-date: 2025-07-03
-tags:
-  - 插件
-  - UI
-  - JavaScript
-  - 教程
-cover: https://unsplash.com/photos/beach-view-with-dunes-and-tall-grass-zP1dH6LJbqM
-description: "为 Gmeek 博客打造的 Apple 风格 UI 插件，支持动态主题与卡片重构"
----
 
-![图片](https://source.unsplash.com/beach-view-with-dunes-and-tall-grass-zP1dH6LJbqM/2400x1599)
 # 🍎 Gmeek UI 增强插件使用教程
 
 ## 📦 插件简介
