@@ -1,5 +1,4 @@
-/* 🍏 Gmeek Apple 风格基础样式 */
-
+/* 🍏 Gmeek Apple 风格基础布局与排版样式 */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
   background: #fefefe;
@@ -17,15 +16,18 @@ body {
   border-radius: 20px;
   padding: 20px 24px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   text-decoration: none;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  background: #ffffff; /* 默认值，暗色由插件 JS 设置 */
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.15); /* 默认亮色玻璃拟态背景 */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .post-card:hover {
   transform: translateY(-3px) scale(1.012);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
 }
 
 .post-meta {
@@ -67,6 +69,7 @@ body {
 }
 
 @media (max-width: 600px) {
-  body { padding: 16px; }
+  body {
+    padding: 16px;
+  }
 }
-
