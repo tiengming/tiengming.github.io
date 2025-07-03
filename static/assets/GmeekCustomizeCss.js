@@ -1,91 +1,124 @@
 (function () {
-  if (window.__TiengmingUIInjected) return;
-  window.__TiengmingUIInjected = true;
+  if (window.__TiengmingEnhanced) return;
+  window.__TiengmingEnhanced = true;
 
   const style = document.createElement("style");
-  style.innerHTML = `
+  style.textContent = `
     :root {
-      --main-font: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
-      --main-color: #1d1d1f;
       --accent-color: #007aff;
-      --bg-light: #fafafa;
+      --font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", "PingFang SC", sans-serif;
+      --bg-color: #f9f9fa;
+      --text-color: #1d1d1f;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      font-family: var(--main-font);
-      color: var(--main-color);
-      background-color: var(--bg-light);
+      font-family: var(--font-family);
+      background: var(--bg-color);
+      color: var(--text-color);
       line-height: 1.6;
-      margin: auto;
-      max-width: 900px;
-      padding: 2em 1.5em;
       transition: all 0.3s ease;
-    }
-
-    h1,h2,h3,h4 {
-      font-weight: 600;
-      color: #000;
     }
 
     a {
       color: var(--accent-color);
       text-decoration: none;
-      transition: color 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     a:hover {
-      color: #0040dd;
+      color: #0055cc;
       text-decoration: underline;
     }
 
-    button, .btn, a.btn {
-      transition: transform 0.2s, box-shadow 0.2s;
+    .SideNav-item {
+      transition: background 0.3s ease, transform 0.2s ease;
+      border-radius: 8px;
+      padding: 6px 8px;
     }
 
-    button:hover, .btn:hover, a.btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    .SideNav-item:hover {
+      background: #eaeef3;
+      transform: scale(1.01);
     }
 
-    input:invalid {
-      border-color: red;
+    .listTitle {
+      font-weight: 600;
+      font-size: 1.05em;
     }
 
-    input:invalid::after {
-      content: " ⚠";
-      color: red;
-      margin-left: 4px;
+    .Label {
+      font-size: 13px !important;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-right: 6px;
+      font-weight: 500;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
-    ::selection {
-      background: #cce4ff;
+    .LabelTime {
+      color: white !important;
+      background-color: #999 !important;
     }
 
-    /* 平滑滚动 */
-    html {
-      scroll-behavior: smooth;
-    }
-
-    /* 加载动画 */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    [data-fade] {
-      animation: fadeIn 0.6s ease-in-out forwards;
+    .avatar {
+      border-radius: 50%;
+      transition: transform 0.3s ease;
     }
 
     .avatar:hover {
-      transition: all 0.6s ease;
-      transform: scale(1.1) rotate(8deg);
+      transform: scale(1.1) rotate(6deg);
+    }
+
+    .blogTitle {
+      font-size: 32px !important;
+      font-weight: 700;
+      font-family: var(--font-family);
+    }
+
+    .btn, button {
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background-color: #eef3f9;
+    }
+
+    /* 页面载入淡入 */
+    [data-fade] {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.6s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 表单字段验证美化 */
+    input:invalid {
+      border: 1px solid red;
+    }
+
+    input:invalid::placeholder {
+      color: red;
+    }
+
+    input:focus {
+      outline: 2px solid var(--accent-color);
     }
   `;
   document.head.appendChild(style);
 
-  // 页面加载动画注入
   document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("h1, h2, .SideNav-item, .listTitle, a").forEach(el => {
+    document.querySelectorAll(".SideNav-item, .listTitle, .Label, h1, h2, h3").forEach(el => {
       el.setAttribute("data-fade", "");
     });
   });
