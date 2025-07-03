@@ -1,86 +1,82 @@
 (function () {
-  if (window.__TiengmingModernApplied) return;
-  window.__TiengmingModernApplied = true;
+  if (window.__TiengmingModernized) return;
+  window.__TiengmingModernized = true;
 
+  console.log("🍏 TiengmingModern 插件已启用");
+
+  // 注入 Apple 风格样式
   const style = document.createElement("style");
   style.textContent = `
     :root {
-      --apple-font: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
-      --apple-bg: #fefefe;
-      --apple-text: #1c1c1e;
-      --apple-accent: #007aff;
+      --accent: #007aff;
+      --font: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
+      --bg: #fefefe;
+      --text: #1c1c1e;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: var(--apple-font);
-      background: var(--apple-bg);
-      color: var(--apple-text);
-      margin: 0 auto;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
       max-width: 960px;
       padding: 24px;
+      margin: auto;
       line-height: 1.6;
-      scroll-behavior: smooth;
     }
 
-    .SideNav {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      padding: 0;
-    }
-
-    .SideNav-item {
-      background: #fff;
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    .post-card {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      min-height: 140px;
-      position: relative;
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      transition: all 0.25s ease;
+      text-decoration: none;
+      color: inherit;
+      animation: fadeUp 0.5s ease both;
     }
 
-    .SideNav-item:hover {
-      transform: translateY(-4px) scale(1.015);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+    .post-card:hover {
+      transform: translateY(-3px) scale(1.012);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     }
 
-    .listTitle {
-      font-weight: 600;
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-
-    .listLabels {
+    .post-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
+      font-size: 13px;
+      margin-bottom: 10px;
+      color: #888;
     }
 
-    .Label {
-      background-color: #e0e0e0 !important;
-      color: #333 !important;
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 12px !important;
+    .post-tag {
+      background: #f1f1f4;
+      border-radius: 999px;
+      padding: 3px 10px;
       font-weight: 500;
-      text-transform: lowercase;
+      color: #444;
     }
 
-    .LabelTime {
-      background-color: #bbb !important;
-      color: #fff !important;
+    .post-date {
+      background: transparent;
+      color: #999;
+      font-weight: 400;
     }
 
-    a {
-      color: var(--apple-accent);
-      text-decoration: none;
+    .post-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .post-summary {
+      font-size: 14.5px;
+      color: #444;
     }
 
     .avatar {
@@ -88,44 +84,52 @@
     }
 
     .avatar:hover {
-      transform: scale(1.1) rotate(6deg);
+      transform: scale(1.1) rotate(5deg);
     }
 
-    .card-fade {
-      animation: fadeInUp 0.6s ease forwards;
-      opacity: 0;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 600px) {
-      body {
-        padding: 12px;
-      }
-      .SideNav {
-        grid-template-columns: 1fr;
-      }
+      body { padding: 16px; }
     }
   `;
   document.head.appendChild(style);
 
-  const fadeCards = () => {
-    document.querySelectorAll(".SideNav-item").forEach((el, i) => {
-      el.classList.add("card-fade");
-      el.style.animationDelay = `${i * 60}ms`;
+  // 等待 DOM 构建后重构内容
+  const rebuildCards = () => {
+    const oldCards = document.querySelectorAll(".SideNav-item");
+    oldCards.forEach((card, i) => {
+      const title = card.querySelector(".listTitle")?.innerText || "未命名文章";
+      const link = card.getAttribute("href");
+      const tags = [...card.querySelectorAll(".Label")].map(x => x.textContent.trim());
+      const time = tags.find(t => /^\d{4}/.test(t)) || "";
+      const tagElems = tags.filter(t => t !== time).map(t => `<span class="post-tag">${t}</span>`).join("");
+
+      const summary = `本篇内容涵盖主题「${tags.join(" / ")}」，带你深入探索相关知识点。`;
+
+      const newCard = document.createElement("a");
+      newCard.href = link;
+      newCard.className = "post-card";
+      newCard.style.animationDelay = `${i * 60}ms`;
+      newCard.innerHTML = `
+        <div class="post-meta">
+          ${tagElems}
+          <span class="post-date">${time}</span>
+        </div>
+        <h2 class="post-title">${title}</h2>
+        <p class="post-summary">${summary}</p>
+      `;
+
+      card.replaceWith(newCard);
     });
   };
 
-  document.readyState === "loading"
-    ? window.addEventListener("DOMContentLoaded", fadeCards)
-    : fadeCards();
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", rebuildCards);
+  } else {
+    rebuildCards();
+  }
 })();
