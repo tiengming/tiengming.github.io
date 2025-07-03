@@ -1,7 +1,7 @@
 (function () {
   if (window.__TiengmingModernized) return;
   window.__TiengmingModernized = true;
-  console.log("🍏 TiengmingModern 插件已启用");
+  console.log("🍏 TiengmingModern 插件已启用 https://code.buxiantang.top/");
 
   const themeColors = {
     light: {
