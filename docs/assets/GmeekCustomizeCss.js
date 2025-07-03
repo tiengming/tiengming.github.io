@@ -16,19 +16,25 @@
       bgGradient: "linear-gradient(135deg, #1a1a2b, #222c3a, #2e3950)",
       cardBg: "rgba(32,32,32,0.3)",
       cardBorder: "1px solid rgba(255,255,255,0.08)",
-      title: "#eeeeee",
+      title: "#eee",
       summary: "#aaa",
       meta: "#bbb"
     }
   };
 
-  const getTextColor = (bg) => {
+  function getEffectiveMode() {
+    const raw = document.documentElement.getAttribute("data-color-mode");
+    if (raw === "light" || raw === "dark") return raw;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+
+  function getTextColor(bg) {
     const rgb = bg.match(/\d+/g);
     if (!rgb) return "#fff";
     const [r, g, b] = rgb.map(Number);
     const l = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     return l > 0.6 ? "#000" : "#fff";
-  };
+  }
 
   const bg = (() => {
     const el = document.createElement("div");
@@ -56,7 +62,7 @@
   })();
 
   function applyTheme() {
-    const mode = document.documentElement.getAttribute("data-color-mode") || "light";
+    const mode = getEffectiveMode();
     const theme = themeColors[mode];
 
     bg.style.background = theme.bgGradient;
@@ -77,11 +83,14 @@
       if (meta) meta.style.color = theme.meta;
     });
 
-    // ✅ 仅 header/footer 可选提亮，其余内容不动
     ["#header", "#footer"].forEach(sel => {
       const el = document.querySelector(sel);
       if (el) el.style.color = mode === "dark" ? "#ddd" : "";
     });
+  }
+
+  if (document.documentElement.getAttribute("data-color-mode") === "auto") {
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
   }
 
   new MutationObserver(applyTheme).observe(document.documentElement, {
@@ -116,6 +125,7 @@
       `;
       card.replaceWith(newCard);
     });
+
     applyTheme();
   }
 
