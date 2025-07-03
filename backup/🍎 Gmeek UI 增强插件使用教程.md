@@ -55,7 +55,6 @@ Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 App
 > 推荐部署到自己的 CDN 或项目 `/assets/` 目录中，可长期缓存、独立版本管理。
 <details>
   <summary>点我展开看`GmeekBaseTheme.css`代码</summary>
-  <pre><code>
 
 ```Css
 /* 🍏 Gmeek Apple 风格基础布局与排版样式 */
@@ -118,12 +117,10 @@ body {
 
 ```
 
-  </code></pre>
 </details>
 
 <details>
   <summary>点我展开看`GmeekCustomizeCss.js`代码</summary>
-  <pre><code>
 
 ```Js
 (function () {
@@ -265,7 +262,6 @@ body {
 })();
 ```
 
-  </code></pre>
 </details>
 
 ---
