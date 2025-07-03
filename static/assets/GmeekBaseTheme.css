@@ -1,8 +1,8 @@
 /* 🍏 Gmeek Apple 风格基础布局与排版样式 */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", sans-serif;
-  background: #fefefe;
-  color: #1c1c1e;
+  background: transparent;
+  color: inherit;
   max-width: 960px;
   margin: auto;
   padding: 24px;
@@ -16,18 +16,18 @@ body {
   border-radius: 20px;
   padding: 20px 24px;
   margin-bottom: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.15); /* 默认亮色玻璃拟态背景 */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.15);
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .post-card:hover {
-  transform: translateY(-3px) scale(1.012);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
 .post-meta {
@@ -53,23 +53,6 @@ body {
 
 .post-summary {
   font-size: 14.5px;
+  line-height: 1.6;
 }
 
-.avatar {
-  transition: transform 0.3s ease;
-}
-
-.avatar:hover {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.SideNav {
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-@media (max-width: 600px) {
-  body {
-    padding: 16px;
-  }
-}
