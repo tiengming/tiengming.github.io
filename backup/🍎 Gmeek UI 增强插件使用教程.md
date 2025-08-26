@@ -33,11 +33,16 @@ Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 App
 
 ###  配置 `config.json`
 
-打开项目根目录下 `config.json`，在 `"allHead"` 字段中添加以下内容：
+打开项目根目录下 `config.json`，在 `"allHead"` 字段中添加以下内容（直接点击复制然后插入保存即可）：
 
 ```json
-"<style>body[data-ui-pending] #content {opacity:0;transition:opacity 0.3s ease;}</style><script>document.documentElement.setAttribute('data-ui-pending','true');</script><link rel='stylesheet' href='https://code.buxiantang.top/assets/GmeekBaseTheme.css'><script src='https://code.buxiantang.top/assets/GmeekCustomizeCss.js' defer></script>"
+<style>body[data-ui-pending] #content {opacity:0;transition:opacity 0.3s ease;}</style><script>document.documentElement.setAttribute('data-ui-pending','true');</script><link rel='stylesheet' href='https://code.buxiantang.top/assets/GmeekBaseTheme.css'><script src='https://code.buxiantang.top/assets/GmeekCustomizeCss.js' defer></script>
 ```
+![msedge_FHrCHq7Ru0.png](https://pick.buxiantang.top/rest/bMdZyXK.png)
+---
+👇👇👇👇
+---
+![msedge_bBQNpnAXyV.png](https://pick.buxiantang.top/rest/djkxyXK.png)
 
 - ✅ 确保所有链接以 `'单引号'` 包裹，避免 Gmeek 构建器解析错误；
 - ✅ 不需要更改主题模板或任何 HTML 内容结构，插件将自动注入卡片 UI 与渐变背景。
