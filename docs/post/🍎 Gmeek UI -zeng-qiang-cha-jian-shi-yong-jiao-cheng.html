@@ -176,15 +176,22 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </tbody>
 </table></markdown-accessiblity-table>
 <hr>
+<h2>更新说明：</h2>
+<ul>
+<li>删除了文章列表卡片中的文章说明，保持简洁，比如下图红框内容：<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/82575d548c7c3e465af4876772a3e6e9f6b9c30c627ee91a2aed2e95440396f0/68747470733a2f2f66696c65732e636174626f782e6d6f652f396e376876382e706e67"><img src="https://camo.githubusercontent.com/82575d548c7c3e465af4876772a3e6e9f6b9c30c627ee91a2aed2e95440396f0/68747470733a2f2f66696c65732e636174626f782e6d6f652f396e376876382e706e67" alt="红框内容" style="max-width: 100%;"></a></li>
+<li>解决<a href="https://github.com/tiengming/tiengming.github.io/issues/19#issuecomment-3281147970" data-hovercard-type="issue" data-hovercard-url="/tiengming/tiengming.github.io/issues/19/hovercard">此问题</a>，在插件设计时，没有考虑这个功能，疏忽了。点击标签可跳转到标签文章聚合页，鼠标悬浮友好渲染；</li>
+<li>解决<a href="https://github.com/tiengming/tiengming.github.io/issues/19#issuecomment-3289496357" data-hovercard-type="issue" data-hovercard-url="/tiengming/tiengming.github.io/issues/19/hovercard">性能问题</a>，我认为是加载方式不对，会导致<strong>LCP性能问题</strong>；</li>
+</ul>
+<hr>
 <h2>⚙️ 快速使用步骤</h2>
 <h3>配置 <code class="notranslate">config.json</code></h3>
 <p>打开项目根目录下 <code class="notranslate">config.json</code>，在 <code class="notranslate">"allHead"</code> 字段中添加以下内容（直接点击复制然后插入保存即可）：</p>
-<div class="highlight highlight-source-json"><pre class="notranslate"><span class="pl-ii">&lt;style&gt;body[data-ui-pending] #content {opacity:0;transition:opacity 0.3s ease;}&lt;/style&gt;&lt;script&gt;document.documentElement.setAttribute('data-ui-pending','true');&lt;/script&gt;&lt;link rel='stylesheet' href='https://code.buxiantang.top/assets/GmeekBaseTheme.css'&gt;&lt;script src='https://code.buxiantang.top/assets/GmeekCustomizeCss.js' defer&gt;&lt;/script&gt;</span></pre></div>
+<div class="highlight highlight-source-json"><pre class="notranslate"><span class="pl-ii">&lt;link rel=\"preconnect\" href=\"https://code.buxiantang.top\"&gt;&lt;link rel=\"preconnect\" href=\"https://blog.meekdai.com\"&gt;&lt;link rel=\"stylesheet\" href=\"https://code.buxiantang.top/assets/GmeekBaseTheme.css\"&gt;&lt;script src=\"https://code.buxiantang.top/assets/GmeekCustomizeCss.js\"&gt;&lt;/script&gt;</span></pre></div>
 <h2><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/e25d74148b5717eee6a9f0a02aa102f7ed20d7363054ff26b403766763af4a7b/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f624d645a79584b2e706e67"><img src="https://camo.githubusercontent.com/e25d74148b5717eee6a9f0a02aa102f7ed20d7363054ff26b403766763af4a7b/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f624d645a79584b2e706e67" alt="msedge_FHrCHq7Ru0.png" data-canonical-src="https://pick.buxiantang.top/rest/bMdZyXK.png" style="max-width: 100%;"></a></h2>
 <h2>👇👇👇👇</h2>
 <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/2be35d0ac649ed0be122d6c8f2620b53d5f8ede42b36b98b5180d1873c873269/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f646a6b7879584b2e706e67"><img src="https://camo.githubusercontent.com/2be35d0ac649ed0be122d6c8f2620b53d5f8ede42b36b98b5180d1873c873269/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f646a6b7879584b2e706e67" alt="msedge_bBQNpnAXyV.png" data-canonical-src="https://pick.buxiantang.top/rest/djkxyXK.png" style="max-width: 100%;"></a></p>
 <ul>
-<li>✅ 确保所有链接以 <code class="notranslate">'单引号'</code> 包裹，避免 Gmeek 构建器解析错误；</li>
+<li>✅ 确保所有链接以 <code class="notranslate">'单引号'</code> 包裹，避免 Gmeek 构建器解析错误；这里我使用的是转义方法。</li>
 <li>✅ 不需要更改主题模板或任何 HTML 内容结构，插件将自动注入卡片 UI 与渐变背景。</li>
 </ul>
 <hr>
@@ -273,6 +280,277 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </details>
 <details>
   <summary>点我展开看`GmeekCustomizeCss.js`代码</summary>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">(</span><span class="pl-k">function</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// 严格的重复执行保护</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+  
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"🍏 TiengmingModern 插件启动中... https://code.buxiantang.top/"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">const</span> <span class="pl-s1">themeColors</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+    <span class="pl-c1">light</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">bgGradient</span>: <span class="pl-s">"linear-gradient(135deg, #f4f4f4, #fef2f2, #f4f0ff)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBg</span>: <span class="pl-s">"rgba(255,255,255,0.25)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBorder</span>: <span class="pl-s">"1px solid rgba(255,255,255,0.2)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">title</span>: <span class="pl-s">"#1c1c1e"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">meta</span>: <span class="pl-s">"#888"</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-c1">dark</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">bgGradient</span>: <span class="pl-s">"linear-gradient(135deg, #1a1a2b, #222c3a, #2e3950)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBg</span>: <span class="pl-s">"rgba(32,32,32,0.3)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBorder</span>: <span class="pl-s">"1px solid rgba(255,255,255,0.08)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">title</span>: <span class="pl-s">"#eee"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">meta</span>: <span class="pl-s">"#bbb"</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">getEffectiveMode</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">raw</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">raw</span> <span class="pl-c1">===</span> <span class="pl-s">"light"</span> <span class="pl-c1">||</span> <span class="pl-s1">raw</span> <span class="pl-c1">===</span> <span class="pl-s">"dark"</span><span class="pl-kos">)</span> <span class="pl-k">return</span> <span class="pl-s1">raw</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">matchMedia</span><span class="pl-kos">(</span><span class="pl-s">"(prefers-color-scheme: dark)"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">matches</span> ? <span class="pl-s">"dark"</span> : <span class="pl-s">"light"</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">getTextColor</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">rgb</span> <span class="pl-c1">=</span> <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-en">match</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">\d</span><span class="pl-c1">+</span><span class="pl-c1">/</span>g</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">rgb</span><span class="pl-kos">)</span> <span class="pl-k">return</span> <span class="pl-s">"#fff"</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">r</span><span class="pl-kos">,</span> <span class="pl-s1">g</span><span class="pl-kos">,</span> <span class="pl-s1">b</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-s1">rgb</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-v">Number</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">l</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-c1">0.299</span> <span class="pl-c1">*</span> <span class="pl-s1">r</span> <span class="pl-c1">+</span> <span class="pl-c1">0.587</span> <span class="pl-c1">*</span> <span class="pl-s1">g</span> <span class="pl-c1">+</span> <span class="pl-c1">0.114</span> <span class="pl-c1">*</span> <span class="pl-s1">b</span><span class="pl-kos">)</span> <span class="pl-c1">/</span> <span class="pl-c1">255</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-s1">l</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0.6</span> ? <span class="pl-s">"#000"</span> : <span class="pl-s">"#fff"</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 标签点击处理函数</span>
+  <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">handleTagClick</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">event</span><span class="pl-kos">,</span> <span class="pl-s1">tagName</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-s1">event</span><span class="pl-kos">.</span><span class="pl-en">preventDefault</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">event</span><span class="pl-kos">.</span><span class="pl-en">stopPropagation</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">tagUrl</span> <span class="pl-c1">=</span> <span class="pl-s">`tag.html#<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-en">encodeURIComponent</span><span class="pl-kos">(</span><span class="pl-s1">tagName</span><span class="pl-kos">)</span><span class="pl-kos">}</span></span>`</span><span class="pl-kos">;</span>
+    <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">location</span><span class="pl-kos">.</span><span class="pl-c1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">tagUrl</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+  <span class="pl-c">// 初始化背景和样式</span>
+  <span class="pl-k">function</span> <span class="pl-en">initializeBackground</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">existingBg</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.herobgcolor'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">existingBg</span><span class="pl-kos">)</span> <span class="pl-s1">existingBg</span><span class="pl-kos">.</span><span class="pl-en">remove</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"div"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-c1">className</span> <span class="pl-c1">=</span> <span class="pl-s">"herobgcolor"</span><span class="pl-kos">;</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">const</span> <span class="pl-s1">existingStyle</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'#tiengming-modern-styles'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">existingStyle</span><span class="pl-kos">)</span> <span class="pl-s1">existingStyle</span><span class="pl-kos">.</span><span class="pl-en">remove</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">const</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"style"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">style</span><span class="pl-kos">.</span><span class="pl-c1">id</span> <span class="pl-c1">=</span> <span class="pl-s">'tiengming-modern-styles'</span><span class="pl-kos">;</span>
+    <span class="pl-s1">style</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s">`</span>
+<span class="pl-s">      .herobgcolor {</span>
+<span class="pl-s">        position: fixed;</span>
+<span class="pl-s">        top: 0; left: 0;</span>
+<span class="pl-s">        width: 100vw; height: 100vh;</span>
+<span class="pl-s">        z-index: -1;</span>
+<span class="pl-s">        background-size: 600% 600%;</span>
+<span class="pl-s">        animation: hueflow 30s ease infinite;</span>
+<span class="pl-s">        transition: background 0.6s ease;</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">      @keyframes hueflow {</span>
+<span class="pl-s">        0% { filter: hue-rotate(0deg); background-position: 0% 50%; }</span>
+<span class="pl-s">        50% { filter: hue-rotate(180deg); background-position: 100% 50%; }</span>
+<span class="pl-s">        100% { filter: hue-rotate(360deg); background-position: 0% 50%; }</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">      .post-tag {</span>
+<span class="pl-s">        cursor: pointer;</span>
+<span class="pl-s">        transition: all 0.2s ease;</span>
+<span class="pl-s">        border-radius: 4px;</span>
+<span class="pl-s">        padding: 2px 6px;</span>
+<span class="pl-s">        margin-right: 4px;</span>
+<span class="pl-s">        font-size: 0.8em;</span>
+<span class="pl-s">        display: inline-block;</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">      .post-tag:hover {</span>
+<span class="pl-s">        transform: translateY(-1px);</span>
+<span class="pl-s">        box-shadow: 0 2px 8px rgba(0,0,0,0.15);</span>
+<span class="pl-s">        opacity: 0.8;</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">    `</span><span class="pl-kos">;</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">head</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">style</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-s1">bg</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-en">initializeBackground</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">mode</span> <span class="pl-c1">=</span> <span class="pl-en">getEffectiveMode</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">theme</span> <span class="pl-c1">=</span> <span class="pl-s1">themeColors</span><span class="pl-kos">[</span><span class="pl-s1">mode</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span> <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">background</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">bgGradient</span><span class="pl-kos">;</span>
+
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".post-card"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">card</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">background</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">cardBg</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">border</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">cardBorder</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">backdropFilter</span> <span class="pl-c1">=</span> <span class="pl-s">"blur(16px)"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">webkitBackdropFilter</span> <span class="pl-c1">=</span> <span class="pl-s">"blur(16px)"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">boxShadow</span> <span class="pl-c1">=</span> <span class="pl-s">"0 8px 24px rgba(0,0,0,0.12)"</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".post-title"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">meta</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".post-meta"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">title</span><span class="pl-kos">)</span> <span class="pl-s1">title</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">title</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">meta</span><span class="pl-kos">)</span> <span class="pl-s1">meta</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">meta</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-kos">[</span><span class="pl-s">"#header"</span><span class="pl-kos">,</span> <span class="pl-s">"#footer"</span><span class="pl-kos">]</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">sel</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">el</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s1">sel</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">)</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">mode</span> <span class="pl-c1">===</span> <span class="pl-s">"dark"</span> ? <span class="pl-s">"#ddd"</span> : <span class="pl-s">""</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 主题监听器</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">)</span> <span class="pl-c1">===</span> <span class="pl-s">"auto"</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">matchMedia</span><span class="pl-kos">(</span><span class="pl-s">"(prefers-color-scheme: dark)"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">"change"</span><span class="pl-kos">,</span> <span class="pl-s1">applyTheme</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">new</span> <span class="pl-v">MutationObserver</span><span class="pl-kos">(</span><span class="pl-s1">applyTheme</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">observe</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+    <span class="pl-c1">attributes</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span>
+    <span class="pl-c1">attributeFilter</span>: <span class="pl-kos">[</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">]</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+
+
+  <span class="pl-k">function</span> <span class="pl-en">rebuildCards</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// 查找所有可能的文章容器</span>
+    <span class="pl-k">const</span> <span class="pl-s1">possibleSelectors</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>
+      <span class="pl-s">'.SideNav-item'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.Box-row'</span><span class="pl-kos">,</span> 
+      <span class="pl-s">'.d-flex'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.listTitle'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.Label'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[class*="SideNav"]'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[class*="Box"]'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[class*="list"]'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'article'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.post'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[href*=".html"]'</span>
+    <span class="pl-kos">]</span><span class="pl-kos">;</span>
+    
+    <span class="pl-s1">possibleSelectors</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">selector</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">elements</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s1">selector</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">elements</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">elements</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&lt;=</span> <span class="pl-c1">5</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+          <span class="pl-s1">elements</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">,</span> <span class="pl-s1">i</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+            <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&lt;</span> <span class="pl-c1">100</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+            <span class="pl-kos">}</span>
+          <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-kos">}</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-c">// 查找包含 listTitle 的父元素</span>
+    <span class="pl-k">const</span> <span class="pl-s1">listTitles</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">'.listTitle'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">listTitles</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">listTitles</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">title</span><span class="pl-kos">,</span> <span class="pl-s1">i</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+
+    <span class="pl-k">let</span> <span class="pl-s1">sideNavItems</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".SideNav-item"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    
+    <span class="pl-c">// 如果没找到，尝试通过 listTitle 找父元素</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">sideNavItems</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">===</span> <span class="pl-c1">0</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s1">listTitles</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-c">// 假设 listTitle 的父元素就是我们要找的容器</span>
+      <span class="pl-k">const</span> <span class="pl-s1">parents</span> <span class="pl-c1">=</span> <span class="pl-v">Array</span><span class="pl-kos">.</span><span class="pl-en">from</span><span class="pl-kos">(</span><span class="pl-s1">listTitles</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-s1">title</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-c">// 找到有href属性的祖先元素</span>
+        <span class="pl-k">let</span> <span class="pl-s1">current</span> <span class="pl-c1">=</span> <span class="pl-s1">title</span><span class="pl-kos">.</span><span class="pl-c1">parentElement</span><span class="pl-kos">;</span>
+        <span class="pl-k">while</span> <span class="pl-kos">(</span><span class="pl-s1">current</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-c1">!</span><span class="pl-s1">current</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">'href'</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+          <span class="pl-s1">current</span> <span class="pl-c1">=</span> <span class="pl-s1">current</span><span class="pl-kos">.</span><span class="pl-c1">parentElement</span><span class="pl-kos">;</span>
+          <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">current</span> <span class="pl-c1">===</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">)</span> <span class="pl-k">break</span><span class="pl-kos">;</span>
+        <span class="pl-kos">}</span>
+        <span class="pl-k">return</span> <span class="pl-s1">current</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">filter</span><span class="pl-kos">(</span><span class="pl-v">Boolean</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">parents</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-s1">sideNavItems</span> <span class="pl-c1">=</span> <span class="pl-s1">parents</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span>
+    
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">sideNavItems</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">===</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">rebuildCards</span><span class="pl-kos">,</span> <span class="pl-c1">1000</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">return</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+
+
+    <span class="pl-s1">sideNavItems</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">card</span><span class="pl-kos">,</span> <span class="pl-s1">i</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-c">// 从href中提取文章标题作为备用方案</span>
+      <span class="pl-k">let</span> <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".listTitle"</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-c1">innerText</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">title</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-c">// 如果没有listTitle，从href中提取文件名作为标题</span>
+        <span class="pl-k">const</span> <span class="pl-s1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"href"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">""</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">filename</span> <span class="pl-c1">=</span> <span class="pl-s1">href</span><span class="pl-kos">.</span><span class="pl-en">split</span><span class="pl-kos">(</span><span class="pl-s">'/'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">pop</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-s">'.html'</span><span class="pl-kos">,</span> <span class="pl-s">''</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">"未命名文章"</span><span class="pl-kos">;</span>
+        <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">filename</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-s">-</span><span class="pl-c1">/</span>g</span><span class="pl-kos">,</span> <span class="pl-s">' '</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">\b</span><span class="pl-cce">\w</span><span class="pl-c1">/</span>g</span><span class="pl-kos">,</span> <span class="pl-s1">l</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">l</span><span class="pl-kos">.</span><span class="pl-en">toUpperCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span>
+      <span class="pl-k">const</span> <span class="pl-s1">link</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"href"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">labels</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>...<span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".Label"</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">time</span> <span class="pl-c1">=</span> <span class="pl-s1">labels</span><span class="pl-kos">.</span><span class="pl-en">find</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">^</span><span class="pl-cce">\d</span><span class="pl-kos">{</span><span class="pl-c1">4</span><span class="pl-kos">}</span><span class="pl-c1">/</span></span><span class="pl-kos">.</span><span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">""</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">tags</span> <span class="pl-c1">=</span> <span class="pl-s1">labels</span><span class="pl-kos">.</span><span class="pl-en">filter</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">!==</span> <span class="pl-s1">time</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-k">const</span> <span class="pl-s1">tag</span> <span class="pl-c1">=</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">backgroundColor</span> <span class="pl-c1">||</span> <span class="pl-s">"#999"</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">fg</span> <span class="pl-c1">=</span> <span class="pl-en">getTextColor</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">return</span> <span class="pl-s">`&lt;span class="post-tag" style="background-color:<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">bg</span><span class="pl-kos">}</span></span>;color:<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">fg</span><span class="pl-kos">}</span></span>" data-tag="<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tag</span><span class="pl-kos">}</span></span>" onclick="handleTagClick(event, '<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tag</span><span class="pl-kos">}</span></span>')"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tag</span><span class="pl-kos">}</span></span>&lt;/span&gt;`</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">join</span><span class="pl-kos">(</span><span class="pl-s">""</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">newCard</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"a"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">link</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">className</span> <span class="pl-c1">=</span> <span class="pl-s">"post-card"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">animationDelay</span> <span class="pl-c1">=</span> <span class="pl-s">`<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">i</span> <span class="pl-c1">*</span> <span class="pl-c1">60</span><span class="pl-kos">}</span></span>ms`</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">innerHTML</span> <span class="pl-c1">=</span> <span class="pl-s">`</span>
+<span class="pl-s">        &lt;div class="post-meta"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tags</span><span class="pl-kos">}</span></span>&lt;span class="post-date"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">time</span><span class="pl-kos">}</span></span>&lt;/span&gt;&lt;/div&gt;</span>
+<span class="pl-s">        &lt;h2 class="post-title"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">title</span><span class="pl-kos">}</span></span>&lt;/h2&gt;</span>
+<span class="pl-s">      `</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">replaceWith</span><span class="pl-kos">(</span><span class="pl-s1">newCard</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 增强的DOM准备检查</span>
+  <span class="pl-k">function</span> <span class="pl-en">whenReady</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">readyState</span> <span class="pl-c1">===</span> <span class="pl-s">'complete'</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">100</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">readyState</span> <span class="pl-c1">===</span> <span class="pl-s">'interactive'</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">300</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+      <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'DOMContentLoaded'</span><span class="pl-kos">,</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">200</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'load'</span><span class="pl-kos">,</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">100</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 执行主逻辑</span>
+  <span class="pl-en">whenReady</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-en">rebuildCards</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-c">// 标记完成 - 放在最前面，避免重复执行</span>
+    <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span> <span class="pl-c1">=</span> <span class="pl-c1">true</span><span class="pl-kos">;</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"🍏 TiengmingModern 插件加载完成"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-c">// 页面可见性监听 - 简化逻辑，只处理样式重新应用</span>
+  <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'visibilitychange'</span><span class="pl-kos">,</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">hidden</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">existingCards</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.post-card'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">existingBg</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.herobgcolor'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">existingCards</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-c1">!</span><span class="pl-s1">existingBg</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-en">initializeBackground</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+</details>
+<details>
+  <summary>旧版本`GmeekCustomizeCss.js`代码</summary>
 <div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">(</span><span class="pl-k">function</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
   <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span><span class="pl-kos">)</span> <span class="pl-k">return</span><span class="pl-kos">;</span>
   <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span> <span class="pl-c1">=</span> <span class="pl-c1">true</span><span class="pl-kos">;</span>
