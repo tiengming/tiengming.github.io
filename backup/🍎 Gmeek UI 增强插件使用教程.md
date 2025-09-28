@@ -30,6 +30,9 @@ Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 App
 ---
 
 ## 更新说明：
+
+### v1.1.0（2025-9-28）
+
 - 删除了文章列表卡片中的文章说明，保持简洁，比如下图红框内容：![红框内容](https://camo.githubusercontent.com/82575d548c7c3e465af4876772a3e6e9f6b9c30c627ee91a2aed2e95440396f0/68747470733a2f2f66696c65732e636174626f782e6d6f652f396e376876382e706e67)
 -  解决[此问题](https://github.com/tiengming/tiengming.github.io/issues/19#issuecomment-3281147970)，在插件设计时，没有考虑这个功能，疏忽了。点击标签可跳转到标签文章聚合页，鼠标悬浮友好渲染；
 - 解决[性能问题](https://github.com/tiengming/tiengming.github.io/issues/19#issuecomment-3289496357)，我认为是加载方式不对，会导致**LCP性能问题**；
