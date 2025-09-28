@@ -9,7 +9,6 @@
       cardBg: "rgba(255,255,255,0.25)",
       cardBorder: "1px solid rgba(255,255,255,0.2)",
       title: "#1c1c1e",
-      summary: "#444",
       meta: "#888"
     },
     dark: {
@@ -17,7 +16,6 @@
       cardBg: "rgba(32,32,32,0.3)",
       cardBorder: "1px solid rgba(255,255,255,0.08)",
       title: "#eee",
-      summary: "#aaa",
       meta: "#bbb"
     }
   };
@@ -35,6 +33,17 @@
     const l = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     return l > 0.6 ? "#000" : "#fff";
   }
+
+  // 标签点击处理函数
+  window.handleTagClick = function(event, tagName) {
+    // 阻止事件冒泡，避免触发卡片链接
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // 跳转到标签聚合页面
+    const tagUrl = `tag.html#${encodeURIComponent(tagName)}`;
+    window.location.href = tagUrl;
+  };
 
   const bg = (() => {
     const el = document.createElement("div");
@@ -56,6 +65,20 @@
         50% { filter: hue-rotate(180deg); background-position: 100% 50%; }
         100% { filter: hue-rotate(360deg); background-position: 0% 50%; }
       }
+      .post-tag {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-radius: 4px;
+        padding: 2px 6px;
+        margin-right: 4px;
+        font-size: 0.8em;
+        display: inline-block;
+      }
+      .post-tag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        opacity: 0.8;
+      }
     `;
     document.head.appendChild(style);
     return el;
@@ -75,11 +98,9 @@
       card.style.boxShadow = "0 8px 24px rgba(0,0,0,0.12)";
 
       const title = card.querySelector(".post-title");
-      const summary = card.querySelector(".post-summary");
       const meta = card.querySelector(".post-meta");
 
       if (title) title.style.color = theme.title;
-      if (summary) summary.style.color = theme.summary;
       if (meta) meta.style.color = theme.meta;
     });
 
@@ -109,10 +130,8 @@
         const tag = el.textContent.trim();
         const bg = el.style.backgroundColor || "#999";
         const fg = getTextColor(bg);
-        return `<span class="post-tag" style="background-color:${bg};color:${fg}">${tag}</span>`;
+        return `<span class="post-tag" style="background-color:${bg};color:${fg}" data-tag="${tag}" onclick="handleTagClick(event, '${tag}')">${tag}</span>`;
       }).join("");
-
-      const summary = `本篇内容涵盖主题「${labels.map(x => x.textContent.trim()).join(" / ")}」，带你深入探索相关知识点。`;
 
       const newCard = document.createElement("a");
       newCard.href = link;
@@ -121,7 +140,6 @@
       newCard.innerHTML = `
         <div class="post-meta">${tags}<span class="post-date">${time}</span></div>
         <h2 class="post-title">${title}</h2>
-        <p class="post-summary">${summary}</p>
       `;
       card.replaceWith(newCard);
     });
