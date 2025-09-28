@@ -39,7 +39,7 @@
     return l > 0.6 ? "#000" : "#fff";
   }
 
-  // 标签点击处理函数 - 强制覆盖以确保最新版本
+  // 标签点击处理函数
   window.handleTagClick = function(event, tagName) {
     event.preventDefault();
     event.stopPropagation();
@@ -49,7 +49,6 @@
 
   // 初始化背景和样式
   function initializeBackground() {
-    // 移除可能存在的旧背景
     const existingBg = document.querySelector('.herobgcolor');
     if (existingBg) existingBg.remove();
 
@@ -57,7 +56,6 @@
     bg.className = "herobgcolor";
     document.body.appendChild(bg);
 
-    // 移除可能存在的旧样式
     const existingStyle = document.querySelector('#tiengming-modern-styles');
     if (existingStyle) existingStyle.remove();
 
@@ -135,12 +133,15 @@
     attributeFilter: ["data-color-mode"]
   });
 
+
+
   function rebuildCards() {
-    const sideNavItems = document.querySelectorAll(".SideNav-item");
+    // 根据CSS结构，正确的选择器应该是 .SideNav-item
+    let sideNavItems = document.querySelectorAll(".SideNav-item");
     
     if (sideNavItems.length === 0) {
       console.log("🍏 未找到 .SideNav-item 元素，延迟重试...");
-      setTimeout(rebuildCards, 500);
+      setTimeout(rebuildCards, 1000);
       return;
     }
 
@@ -177,14 +178,13 @@
   // 增强的DOM准备检查
   function whenReady(callback) {
     if (document.readyState === 'complete') {
-      setTimeout(callback, 100); // 额外延迟确保DOM稳定
+      setTimeout(callback, 100);
     } else if (document.readyState === 'interactive') {
       setTimeout(callback, 300);
     } else {
       document.addEventListener('DOMContentLoaded', function() {
         setTimeout(callback, 200);
       });
-      // 备用方案
       window.addEventListener('load', function() {
         setTimeout(callback, 100);
       });
@@ -194,20 +194,17 @@
   // 执行主逻辑
   whenReady(() => {
     rebuildCards();
-    // 移除pending状态
-    document.documentElement.removeAttribute("data-ui-pending");
-    
-    // 标记完成
     window.__TiengmingModernized = true;
     console.log("🍏 TiengmingModern 插件加载完成");
   });
 
-  // 页面可见性监听 - 处理返回页面的情况
+  // 页面可见性监听
   document.addEventListener('visibilitychange', function() {
-    if (!document.hidden && document.querySelector('.SideNav-item')) {
-      console.log("🍏 页面重新可见，检查DOM状态...");
+    if (!document.hidden) {
       setTimeout(() => {
-        if (document.querySelector('.SideNav-item') && !document.querySelector('.post-card')) {
+        const needsReprocessing = !document.querySelector('.post-card') && 
+                                 document.querySelector('.SideNav-item');
+        if (needsReprocessing) {
           console.log("🍏 检测到需要重新处理的DOM");
           rebuildCards();
         }
