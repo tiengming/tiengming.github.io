@@ -1,13 +1,9 @@
 (function () {
-  // 移除重复执行保护，改为基于DOM状态检查
-  const isAlreadyProcessed = document.querySelector('.post-card') !== null;
-  if (isAlreadyProcessed) {
-    // 如果已经处理过，只需要应用主题和背景
-    initializeBackground();
-    applyTheme();
+  // 严格的重复执行保护
+  if (window.__TiengmingModernized) {
     return;
   }
-
+  
   console.log("🍏 TiengmingModern 插件启动中... https://code.buxiantang.top/");
 
   const themeColors = {
@@ -138,7 +134,6 @@
 
 
   function rebuildCards() {
-    
     // 查找所有可能的文章容器
     const possibleSelectors = [
       '.SideNav-item',
@@ -159,7 +154,6 @@
       if (elements.length > 0) {
         if (elements.length <= 5) {
           elements.forEach((el, i) => {
-            console.log(`   [${i}] 类名: "${el.className}", 标签: ${el.tagName}`);
             if (el.textContent && el.textContent.length < 100) {
             }
           });
@@ -169,7 +163,6 @@
 
     // 查找包含 listTitle 的父元素
     const listTitles = document.querySelectorAll('.listTitle');
-    console.log(`📝 找到 .listTitle: ${listTitles.length} 个`);
     if (listTitles.length > 0) {
       listTitles.forEach((title, i) => {
       });
@@ -196,7 +189,6 @@
     }
     
     if (sideNavItems.length === 0) {
-      console.log("🍏 未找到任何文章容器元素，延迟重试...");
       setTimeout(rebuildCards, 1000);
       return;
     }
@@ -255,21 +247,21 @@
   // 执行主逻辑
   whenReady(() => {
     rebuildCards();
+    // 标记完成 - 放在最前面，避免重复执行
     window.__TiengmingModernized = true;
     console.log("🍏 TiengmingModern 插件加载完成");
   });
 
-  // 页面可见性监听
+  // 页面可见性监听 - 简化逻辑，只处理样式重新应用
   document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) {
-      setTimeout(() => {
-        // 检查是否有已转换的卡片需要重新应用样式
-        const existingCards = document.querySelector('.post-card');
-        if (existingCards && !document.querySelector('.herobgcolor')) {
-          initializeBackground();
-          applyTheme();
-        }
-      }, 200);
+    if (!document.hidden && window.__TiengmingModernized) {
+      const existingCards = document.querySelector('.post-card');
+      const existingBg = document.querySelector('.herobgcolor');
+      
+      if (existingCards && !existingBg) {
+        initializeBackground();
+        applyTheme();
+      }
     }
   });
 
