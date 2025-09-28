@@ -138,6 +138,7 @@
 
 
   function rebuildCards() {
+    
     // 查找所有可能的文章容器
     const possibleSelectors = [
       '.SideNav-item',
@@ -158,6 +159,7 @@
       if (elements.length > 0) {
         if (elements.length <= 5) {
           elements.forEach((el, i) => {
+            console.log(`   [${i}] 类名: "${el.className}", 标签: ${el.tagName}`);
             if (el.textContent && el.textContent.length < 100) {
             }
           });
@@ -167,6 +169,7 @@
 
     // 查找包含 listTitle 的父元素
     const listTitles = document.querySelectorAll('.listTitle');
+    console.log(`📝 找到 .listTitle: ${listTitles.length} 个`);
     if (listTitles.length > 0) {
       listTitles.forEach((title, i) => {
       });
@@ -231,7 +234,6 @@
     });
 
     applyTheme();
-    console.log("🍏 卡片处理完成");
   }
 
   // 增强的DOM准备检查
@@ -261,11 +263,11 @@
   document.addEventListener('visibilitychange', function() {
     if (!document.hidden) {
       setTimeout(() => {
-        const needsReprocessing = !document.querySelector('.post-card') && 
-                                 document.querySelector('.SideNav-item');
-        if (needsReprocessing) {
-          console.log("🍏 检测到需要重新处理的DOM");
-          rebuildCards();
+        // 检查是否有已转换的卡片需要重新应用样式
+        const existingCards = document.querySelector('.post-card');
+        if (existingCards && !document.querySelector('.herobgcolor')) {
+          initializeBackground();
+          applyTheme();
         }
       }, 200);
     }
