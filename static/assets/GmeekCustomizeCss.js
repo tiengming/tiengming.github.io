@@ -2,7 +2,9 @@
   // 移除重复执行保护，改为基于DOM状态检查
   const isAlreadyProcessed = document.querySelector('.post-card') !== null;
   if (isAlreadyProcessed) {
-    console.log("🍏 TiengmingModern 检测到已处理的DOM，跳过重复执行");
+    // 如果已经处理过，只需要应用主题和背景
+    initializeBackground();
+    applyTheme();
     return;
   }
 
@@ -136,19 +138,76 @@
 
 
   function rebuildCards() {
-    // 根据CSS结构，正确的选择器应该是 .SideNav-item
+    // 查找所有可能的文章容器
+    const possibleSelectors = [
+      '.SideNav-item',
+      '.Box-row', 
+      '.d-flex',
+      '.listTitle',
+      '.Label',
+      '[class*="SideNav"]',
+      '[class*="Box"]',
+      '[class*="list"]',
+      'article',
+      '.post',
+      '[href*=".html"]'
+    ];
+    
+    possibleSelectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      if (elements.length > 0) {
+        if (elements.length <= 5) {
+          elements.forEach((el, i) => {
+            if (el.textContent && el.textContent.length < 100) {
+            }
+          });
+        }
+      }
+    });
+
+    // 查找包含 listTitle 的父元素
+    const listTitles = document.querySelectorAll('.listTitle');
+    if (listTitles.length > 0) {
+      listTitles.forEach((title, i) => {
+      });
+    }
+
     let sideNavItems = document.querySelectorAll(".SideNav-item");
     
+    // 如果没找到，尝试通过 listTitle 找父元素
+    if (sideNavItems.length === 0 && listTitles.length > 0) {
+      // 假设 listTitle 的父元素就是我们要找的容器
+      const parents = Array.from(listTitles).map(title => {
+        // 找到有href属性的祖先元素
+        let current = title.parentElement;
+        while (current && !current.getAttribute('href')) {
+          current = current.parentElement;
+          if (current === document.body) break;
+        }
+        return current;
+      }).filter(Boolean);
+      
+      if (parents.length > 0) {
+        sideNavItems = parents;
+      }
+    }
+    
     if (sideNavItems.length === 0) {
-      console.log("🍏 未找到 .SideNav-item 元素，延迟重试...");
+      console.log("🍏 未找到任何文章容器元素，延迟重试...");
       setTimeout(rebuildCards, 1000);
       return;
     }
 
-    console.log(`🍏 开始处理 ${sideNavItems.length} 个卡片`);
 
     sideNavItems.forEach((card, i) => {
-      const title = card.querySelector(".listTitle")?.innerText || "未命名文章";
+      // 从href中提取文章标题作为备用方案
+      let title = card.querySelector(".listTitle")?.innerText;
+      if (!title) {
+        // 如果没有listTitle，从href中提取文件名作为标题
+        const href = card.getAttribute("href") || "";
+        const filename = href.split('/').pop()?.replace('.html', '') || "未命名文章";
+        title = filename.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      }
       const link = card.getAttribute("href");
       const labels = [...card.querySelectorAll(".Label")];
       const time = labels.find(el => /^\d{4}/.test(el.textContent.trim()))?.textContent.trim() || "";
