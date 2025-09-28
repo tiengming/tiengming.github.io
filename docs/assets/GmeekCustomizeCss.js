@@ -1,7 +1,12 @@
 (function () {
-  if (window.__TiengmingModernized) return;
-  window.__TiengmingModernized = true;
-  console.log("🍏 TiengmingModern 插件已启用 https://code.buxiantang.top/");
+  // 移除重复执行保护，改为基于DOM状态检查
+  const isAlreadyProcessed = document.querySelector('.post-card') !== null;
+  if (isAlreadyProcessed) {
+    console.log("🍏 TiengmingModern 检测到已处理的DOM，跳过重复执行");
+    return;
+  }
+
+  console.log("🍏 TiengmingModern 插件启动中... https://code.buxiantang.top/");
 
   const themeColors = {
     light: {
@@ -34,22 +39,30 @@
     return l > 0.6 ? "#000" : "#fff";
   }
 
-  // 标签点击处理函数
+  // 标签点击处理函数 - 强制覆盖以确保最新版本
   window.handleTagClick = function(event, tagName) {
-    // 阻止事件冒泡，避免触发卡片链接
     event.preventDefault();
     event.stopPropagation();
-    
-    // 跳转到标签聚合页面
     const tagUrl = `tag.html#${encodeURIComponent(tagName)}`;
     window.location.href = tagUrl;
   };
 
-  const bg = (() => {
-    const el = document.createElement("div");
-    el.className = "herobgcolor";
-    document.body.appendChild(el);
+  // 初始化背景和样式
+  function initializeBackground() {
+    // 移除可能存在的旧背景
+    const existingBg = document.querySelector('.herobgcolor');
+    if (existingBg) existingBg.remove();
+
+    const bg = document.createElement("div");
+    bg.className = "herobgcolor";
+    document.body.appendChild(bg);
+
+    // 移除可能存在的旧样式
+    const existingStyle = document.querySelector('#tiengming-modern-styles');
+    if (existingStyle) existingStyle.remove();
+
     const style = document.createElement("style");
+    style.id = 'tiengming-modern-styles';
     style.textContent = `
       .herobgcolor {
         position: fixed;
@@ -81,14 +94,16 @@
       }
     `;
     document.head.appendChild(style);
-    return el;
-  })();
+    return bg;
+  }
+
+  const bg = initializeBackground();
 
   function applyTheme() {
     const mode = getEffectiveMode();
     const theme = themeColors[mode];
 
-    bg.style.background = theme.bgGradient;
+    if (bg) bg.style.background = theme.bgGradient;
 
     document.querySelectorAll(".post-card").forEach(card => {
       card.style.background = theme.cardBg;
@@ -110,6 +125,7 @@
     });
   }
 
+  // 主题监听器
   if (document.documentElement.getAttribute("data-color-mode") === "auto") {
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
   }
@@ -120,7 +136,17 @@
   });
 
   function rebuildCards() {
-    document.querySelectorAll(".SideNav-item").forEach((card, i) => {
+    const sideNavItems = document.querySelectorAll(".SideNav-item");
+    
+    if (sideNavItems.length === 0) {
+      console.log("🍏 未找到 .SideNav-item 元素，延迟重试...");
+      setTimeout(rebuildCards, 500);
+      return;
+    }
+
+    console.log(`🍏 开始处理 ${sideNavItems.length} 个卡片`);
+
+    sideNavItems.forEach((card, i) => {
       const title = card.querySelector(".listTitle")?.innerText || "未命名文章";
       const link = card.getAttribute("href");
       const labels = [...card.querySelectorAll(".Label")];
@@ -145,11 +171,48 @@
     });
 
     applyTheme();
+    console.log("🍏 卡片处理完成");
   }
 
-  document.readyState === "loading"
-    ? window.addEventListener("DOMContentLoaded", rebuildCards)
-    : rebuildCards();
+  // 增强的DOM准备检查
+  function whenReady(callback) {
+    if (document.readyState === 'complete') {
+      setTimeout(callback, 100); // 额外延迟确保DOM稳定
+    } else if (document.readyState === 'interactive') {
+      setTimeout(callback, 300);
+    } else {
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(callback, 200);
+      });
+      // 备用方案
+      window.addEventListener('load', function() {
+        setTimeout(callback, 100);
+      });
+    }
+  }
 
-  document.documentElement.removeAttribute("data-ui-pending");
+  // 执行主逻辑
+  whenReady(() => {
+    rebuildCards();
+    // 移除pending状态
+    document.documentElement.removeAttribute("data-ui-pending");
+    
+    // 标记完成
+    window.__TiengmingModernized = true;
+    console.log("🍏 TiengmingModern 插件加载完成");
+  });
+
+  // 页面可见性监听 - 处理返回页面的情况
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && document.querySelector('.SideNav-item')) {
+      console.log("🍏 页面重新可见，检查DOM状态...");
+      setTimeout(() => {
+        if (document.querySelector('.SideNav-item') && !document.querySelector('.post-card')) {
+          console.log("🍏 检测到需要重新处理的DOM");
+          rebuildCards();
+        }
+      }, 200);
+    }
+  });
+
 })();
