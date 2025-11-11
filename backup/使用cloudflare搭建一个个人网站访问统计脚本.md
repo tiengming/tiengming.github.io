@@ -162,15 +162,80 @@ workers.js代码：
   <pre><code>
 export default {
   async fetch(request, env) {
-    // 获取请求的 URL
-    const url = new URL(request.url)
-    
-    // 如果是统计请求
+    const url = new URL(request.url);
+    const origin = request.headers.get('Origin') || '';
+
+    // 允许的域名规则
+    const isProductionOrigin = /^https:\/\/([a-z0-9-]+\.)?buxiantang\.top$/.test(origin);
+    const isLocalOrigin = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    const isAllowedOrigin = isProductionOrigin || isLocalOrigin;
+
+    // 基础 CORS 头
+    const corsHeaders = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
+
+    // 只有允许的 origin 才设置 CORS 头
+    if (isAllowedOrigin) {
+      corsHeaders['Access-Control-Allow-Origin'] = origin;
+      corsHeaders['Access-Control-Allow-Credentials'] = 'true';
+    } else {
+      // 不允许的 origin：不设置 Access-Control-Allow-Origin
+      // 这样浏览器会正确地阻止跨域请求
+      console.warn(`[CORS] 拒绝来自未授权域名的请求: ${origin}`);
+    }
+
+    // 处理预检请求
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: isAllowedOrigin ? 204 : 403,
+        headers: corsHeaders
+      });
+    }
+
+    // 健康检查端点
+    if (url.pathname === '/health' || url.pathname === '/') {
+      return new Response(JSON.stringify({
+        status: 'ok',
+        service: '统计服务 API',
+        version: '1.1.0',
+        environment: isLocalOrigin ? 'development' : 'production',
+        endpoints: {
+          stats: 'GET /stats - 获取和更新统计数据',
+          health: 'GET /health 或 / - 健康检查'
+        },
+        cors: {
+          allowedOrigins: [
+            'https://*.buxiantang.top',
+            'http://localhost:* (开发环境)',
+            'http://127.0.0.1:* (开发环境)'
+          ]
+        }
+      }), {
+        status: 200,
+        headers: corsHeaders
+      });
+    }
+
+    // 统计端点
     if (url.pathname === '/stats') {
+      // 检查是否允许访问
+      if (!isAllowedOrigin) {
+        return new Response(JSON.stringify({
+          error: '未授权的访问',
+          message: `域名 ${origin} 不在允许列表中`
+        }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+
       try {
-        console.log('开始处理统计请求')
-        
-        // 初始化数据库表（如果不存在）
+        console.log(`[Stats] 处理来自 ${origin} 的统计请求`);
+
+        // 初始化数据库表
         await env.DB.prepare(`
           CREATE TABLE IF NOT EXISTS stats (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -178,7 +243,7 @@ export default {
             uv INTEGER DEFAULT 0,
             last_update INTEGER
           )
-        `).run()
+        `).run();
 
         await env.DB.prepare(`
           CREATE TABLE IF NOT EXISTS visitors (
@@ -186,86 +251,88 @@ export default {
             ip TEXT UNIQUE,
             last_visit INTEGER
           )
-        `).run()
+        `).run();
 
         // 获取当前统计数据
-        let stats = await env.DB.prepare(`
-          SELECT * FROM stats WHERE id = 1
-        `).first()
+        let stats = await env.DB.prepare(`SELECT * FROM stats WHERE id = 1`).first();
 
-        // 如果没有统计数据，创建初始记录
         if (!stats) {
+          console.log('[Stats] 初始化统计数据');
           await env.DB.prepare(`
             INSERT INTO stats (id, pv, uv, last_update)
             VALUES (1, 0, 0, ?)
-          `).bind(Date.now()).run()
-          stats = { pv: 0, uv: 0, last_update: Date.now() }
+          `).bind(Date.now()).run();
+          stats = { pv: 0, uv: 0, last_update: Date.now() };
         }
 
-        // 更新 PV
+        // 更新 PV（每次访问都增加）
         await env.DB.prepare(`
           UPDATE stats SET pv = pv + 1, last_update = ? WHERE id = 1
-        `).bind(Date.now()).run()
+        `).bind(Date.now()).run();
 
-        // 检查是否是新的访客
-        const visitorId = request.headers.get('cf-connecting-ip')
+        // 获取访客 IP
+        const visitorId = request.headers.get('cf-connecting-ip') ||
+                         request.headers.get('x-forwarded-for') ||
+                         request.headers.get('x-real-ip') ||
+                         'unknown';
+
+        // 检查是否是新访客
         const visitor = await env.DB.prepare(`
           SELECT * FROM visitors WHERE ip = ?
-        `).bind(visitorId).first()
+        `).bind(visitorId).first();
 
-        // 如果是新访客，增加 UV 并记录访客
         if (!visitor) {
-          await env.DB.prepare(`
-            UPDATE stats SET uv = uv + 1 WHERE id = 1
-          `).run()
-
+          console.log(`[Stats] 新访客: ${visitorId} (来自: ${origin})`);
+          await env.DB.prepare(`UPDATE stats SET uv = uv + 1 WHERE id = 1`).run();
           await env.DB.prepare(`
             INSERT INTO visitors (ip, last_visit)
             VALUES (?, ?)
-          `).bind(visitorId, Date.now()).run()
+          `).bind(visitorId, Date.now()).run();
         } else {
-          // 更新现有访客的最后访问时间
+          // 更新访客最后访问时间
           await env.DB.prepare(`
             UPDATE visitors SET last_visit = ? WHERE ip = ?
-          `).bind(Date.now(), visitorId).run()
+          `).bind(Date.now(), visitorId).run();
         }
 
-        // 获取最新的统计数据
-        const latestStats = await env.DB.prepare(`
-          SELECT * FROM stats WHERE id = 1
-        `).first()
+        // 获取最新统计数据
+        const latestStats = await env.DB.prepare(`SELECT * FROM stats WHERE id = 1`).first();
 
-        // 返回统计数据
+        console.log(`[Stats] 统计更新成功: PV=${latestStats.pv}, UV=${latestStats.uv}`);
+
         return new Response(JSON.stringify({
           pv: latestStats.pv,
           uv: latestStats.uv,
           lastUpdate: latestStats.last_update
         }), {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+          status: 200,
+          headers: corsHeaders
+        });
+
       } catch (error) {
-        console.error('处理统计请求时发生错误:', error)
-        // 如果发生错误，返回默认值
+        console.error('[Stats] 错误:', error);
         return new Response(JSON.stringify({
+          error: '统计服务暂时不可用',
+          message: error.message,
           pv: 0,
           uv: 0,
-          lastUpdate: Date.now(),
-          error: error.message
+          lastUpdate: Date.now()
         }), {
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
+          status: 500,
+          headers: corsHeaders
+        });
       }
     }
-    
-    // 返回原始请求
-    return fetch(request)
+
+    // 未匹配的路径返回 404
+    return new Response(JSON.stringify({
+      error: '端点不存在',
+      availableEndpoints: ['/stats', '/health', '/']
+    }), {
+      status: 404,
+      headers: corsHeaders
+    });
   }
-} 
+};
   </code></pre>
 </details>
