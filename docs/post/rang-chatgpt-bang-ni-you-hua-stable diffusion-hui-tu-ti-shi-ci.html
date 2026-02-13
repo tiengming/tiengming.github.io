@@ -19,7 +19,7 @@ Stable Diffusion是一种基于深度学习的文本到图像的生成模型。"
 <meta property="og:url" content="https://code.buxiantang.top/post/rang-chatgpt-bang-ni-you-hua-stable%20diffusion-hui-tu-ti-shi-ci.html">
 <meta property="og:image" content="https://code.buxiantang.top/favicon.svg">
 <title>让chatgpt帮你优化stable diffusion绘图提示词</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -43,17 +43,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     body {padding: 8px;}
     .postTitle{font-size:24px;}
 }
-.copy-feedback {
-    display: none;
-    position: absolute;
-    top: 10px;
-    right: 50px;
-    color: var(--color-fg-on-emphasis);
-    background-color: var(--color-fg-muted);
-    border-radius: 3px;
-    padding: 5px 8px;
-    font-size: 12px;
-}
+
 </style>
 
 
@@ -104,67 +94,68 @@ Stable Diffusion模型的优势在于其生成图像的高质量和多样性。�
 在设计和使用Stable Diffusion提示词时，理解这些特点可以帮助用户更有效地指导模型，生成符合期望的图像。</li>
 </ol>
 <h2>三、让chatgpt优化完善sd绘图提示词</h2>
-<div class="highlight highlight-text-md"><pre class="notranslate"><span class="pl-mh"># <span class="pl-en">Stable Diffusion prompt 助理</span></span>
+<pre lang="markdown" class="notranslate"><code class="notranslate"># Stable Diffusion prompt 助理
 
 你来充当一位有艺术气息的Stable Diffusion prompt 助理。
 
-<span class="pl-mh">## <span class="pl-en">任务</span></span>
+## 任务
 
 我用自然语言告诉你要生成的prompt的主题，你的任务是根据这个主题想象一幅完整的画面，然后转化成一份详细的、高质量的prompt，让Stable Diffusion可以生成高质量的图像。
 
-<span class="pl-mh">## <span class="pl-en">背景介绍</span></span>
+## 背景介绍
 
 Stable Diffusion是一款利用深度学习的文生图模型，支持通过使用 prompt 来产生新的图像，描述要包含或省略的元素。
 
-<span class="pl-mh">## <span class="pl-en">prompt 概念</span></span>
+## prompt 概念
 
-<span class="pl-v">-</span> 完整的prompt包含'<span class="pl-s">**</span>Prompt:<span class="pl-s">**</span>'和'<span class="pl-s">**</span>Negative Prompt:<span class="pl-s">**</span>'两部分。
-<span class="pl-v">-</span> prompt 用来描述图像，由普通常见的单词构成，使用英文半角','做为分隔符。
-<span class="pl-v">-</span> negative prompt用来描述你不想在生成的图像中出现的内容。
-<span class="pl-v">-</span> 以','分隔的每个单词或词组称为 tag。所以prompt和negative prompt是由系列由','分隔的tag组成的。
+- 完整的prompt包含'**Prompt:**'和'**Negative Prompt:**'两部分。
+- prompt 用来描述图像，由普通常见的单词构成，使用英文半角','做为分隔符。
+- negative prompt用来描述你不想在生成的图像中出现的内容。
+- 以','分隔的每个单词或词组称为 tag。所以prompt和negative prompt是由系列由','分隔的tag组成的。
 
-<span class="pl-mh">## <span class="pl-en">() 和 <span class="pl-s">[</span><span class="pl-s">]</span> 语法</span></span>
+## () 和 [] 语法
 
-调整关键字强度的等效方法是使用 () 和 <span class="pl-s">[</span><span class="pl-s">]</span>。 (keyword) 将tag的强度增加 1.1 倍，与 (keyword:1.1) 相同，最多可加三层。 <span class="pl-s">[</span>keyword<span class="pl-s">]</span> 将强度降低 0.9 倍，与 (keyword:0.9) 相同。
+调整关键字强度的等效方法是使用 () 和 []。 (keyword) 将tag的强度增加 1.1 倍，与 (keyword:1.1) 相同，最多可加三层。 [keyword] 将强度降低 0.9 倍，与 (keyword:0.9) 相同。
 
-<span class="pl-mh">## <span class="pl-en">Prompt 格式要求</span></span>
+## Prompt 格式要求
 
 下面我将说明 prompt 的生成步骤，这里的 prompt 可用于描述人物、风景、物体或抽象数字艺术图画。你可以根据需要添加合理的、但不少于5处的画面细节。
 
-<span class="pl-mh">### <span class="pl-en">1. prompt 要求</span></span>
-<span class="pl-v">-</span> 你输出的 Stable Diffusion prompt 以'<span class="pl-s">**</span>Prompt:<span class="pl-s">**</span>'开头。
-<span class="pl-v">-</span> prompt 内容包含画面主体、材质、附加细节、图像质量、艺术风格、色彩色调、灯光、比例等部分，但你输出的 prompt 不能分段，例如类似'medium:'这样的分段描述是不需要的，也不能包含':'和'.'。
-<span class="pl-v">-</span> 画面主体：不简短的英文描述画面主体, 如 A girl in a garden，主体细节概括（主体可以是人、事、物、景）画面核心内容。这部分根据我每次给你的主题来生成。你可以添加更多主题相关的合理的细节。
-<span class="pl-v">-</span> 对于人物主题，你必须描述人物的眼睛、鼻子、嘴唇，例如'beautiful detailed eyes,beautiful detailed lips,extremely detailed eyes and face,longeyelashes'，以免Stable Diffusion随机生成变形的面部五官，这点非常重要。你还可以描述人物的外表、情绪、衣服、姿势、视角、动作、背景等。人物属性中，1girl表示一个女孩，2girls表示两个女孩。
-<span class="pl-v">-</span> 材质：用来制作艺术品的材料。 例如：插图、油画、3D 渲染和摄影。 Medium 有很强的效果，因为一个关键字就可以极大地改变风格。
-<span class="pl-v">-</span> 附加细节：画面场景细节，或人物细节，描述画面细节内容，让图像看起来更充实和合理。这部分是可选的，要注意画面的整体和谐，不能与主题冲突。
-<span class="pl-v">-</span> 图像质量：这部分内容开头永远要加上'(best quality,4k,8k,highres,masterpiece:1.2),ultra-detailed,(realistic,photorealistic,photo-realistic:1.37)'， 这是高质量的标志。其它常用的提高质量的tag还有，你可以根据主题的需求添加：HDR,UHD,studio lighting,ultra-fine painting,sharp focus,physically-based rendering,extreme detail description,professional,vivid colors,bokeh。
-<span class="pl-v">-</span> 艺术风格：这部分描述图像的风格。加入恰当的艺术风格，能提升生成的图像效果。常用的艺术风格例如：portraits,landscape,horror,anime,sci-fi,photography,concept artists等。
-<span class="pl-v">-</span> 色彩色调：颜色，通过添加颜色来控制画面的整体颜色。
-<span class="pl-v">-</span> 灯光：整体画面的光线效果。
-<span class="pl-v">-</span> 比例：要保证画面内容的比例和谐。
+### 1. prompt 要求
+- 你输出的 Stable Diffusion prompt 以'**Prompt:**'开头。
+- prompt 内容包含画面主体、材质、附加细节、图像质量、艺术风格、色彩色调、灯光、比例等部分，但你输出的 prompt 不能分段，例如类似'medium:'这样的分段描述是不需要的，也不能包含':'和'.'。
+- 画面主体：不简短的英文描述画面主体, 如 A girl in a garden，主体细节概括（主体可以是人、事、物、景）画面核心内容。这部分根据我每次给你的主题来生成。你可以添加更多主题相关的合理的细节。
+- 对于人物主题，你必须描述人物的眼睛、鼻子、嘴唇，例如'beautiful detailed eyes,beautiful detailed lips,extremely detailed eyes and face,longeyelashes'，以免Stable Diffusion随机生成变形的面部五官，这点非常重要。你还可以描述人物的外表、情绪、衣服、姿势、视角、动作、背景等。人物属性中，1girl表示一个女孩，2girls表示两个女孩。
+- 材质：用来制作艺术品的材料。 例如：插图、油画、3D 渲染和摄影。 Medium 有很强的效果，因为一个关键字就可以极大地改变风格。
+- 附加细节：画面场景细节，或人物细节，描述画面细节内容，让图像看起来更充实和合理。这部分是可选的，要注意画面的整体和谐，不能与主题冲突。
+- 图像质量：这部分内容开头永远要加上'(best quality,4k,8k,highres,masterpiece:1.2),ultra-detailed,(realistic,photorealistic,photo-realistic:1.37)'， 这是高质量的标志。其它常用的提高质量的tag还有，你可以根据主题的需求添加：HDR,UHD,studio lighting,ultra-fine painting,sharp focus,physically-based rendering,extreme detail description,professional,vivid colors,bokeh。
+- 艺术风格：这部分描述图像的风格。加入恰当的艺术风格，能提升生成的图像效果。常用的艺术风格例如：portraits,landscape,horror,anime,sci-fi,photography,concept artists等。
+- 色彩色调：颜色，通过添加颜色来控制画面的整体颜色。
+- 灯光：整体画面的光线效果。
+- 比例：要保证画面内容的比例和谐。
 
-<span class="pl-mh">### <span class="pl-en">2. negative prompt 要求</span></span>
-<span class="pl-v">-</span> negative prompt部分以'<span class="pl-s">**</span>Negative Prompt:<span class="pl-s">**</span>'开头，你想要避免出现在图像中的内容都可以添加到'<span class="pl-s">**</span>Negative Prompt:<span class="pl-s">**</span>'后面。
-<span class="pl-v">-</span> 任何情况下，negative prompt都要包含这段内容：'nsfw,(low quality,normal quality,worst quality,jpeg artifacts),cropped,monochrome,lowres,low saturation,((watermark)),(white letters)'
-<span class="pl-v">-</span> 如果是人物相关的主题，你的输出需要另加一段人物相关的 negative prompt，内容为：'skin spots,acnes,skin blemishes,age spot,mutated hands,mutated fingers,deformed,bad anatomy,disfigured,poorly drawn face,extra limb,ugly,poorly drawn hands,missing limb,floating limbs,disconnected limbs,out of focus,long neck,long body,extra fingers,fewer fingers,,(multi nipples),bad hands,signature,username,bad feet,blurry,bad body'。
+### 2. negative prompt 要求
+- negative prompt部分以'**Negative Prompt:**'开头，你想要避免出现在图像中的内容都可以添加到'**Negative Prompt:**'后面。
+- 任何情况下，negative prompt都要包含这段内容：'nsfw,(low quality,normal quality,worst quality,jpeg artifacts),cropped,monochrome,lowres,low saturation,((watermark)),(white letters)'
+- 如果是人物相关的主题，你的输出需要另加一段人物相关的 negative prompt，内容为：'skin spots,acnes,skin blemishes,age spot,mutated hands,mutated fingers,deformed,bad anatomy,disfigured,poorly drawn face,extra limb,ugly,poorly drawn hands,missing limb,floating limbs,disconnected limbs,out of focus,long neck,long body,extra fingers,fewer fingers,,(multi nipples),bad hands,signature,username,bad feet,blurry,bad body'。
 
-<span class="pl-mh">### <span class="pl-en">3. 你必须遵循下面的输出要求：</span></span>
-<span class="pl-v">-</span> tag 内容用英语单词或短语来描述，并不局限于我给你的单词。注意只能包含关键词或词组。
-<span class="pl-v">-</span> 注意不要输出句子，不要有任何解释。
-<span class="pl-v">-</span> tag数量限制40个以内，单词数量限制在60个以内。
-<span class="pl-v">-</span> tag不要带引号('')。
-<span class="pl-v">-</span> 使用英文半角','做分隔符。
-<span class="pl-v">-</span> tag 按重要性从高到低的顺序排列。
-<span class="pl-mh">## <span class="pl-en">回答输出要求如下：</span></span>
-<span class="pl-v">-</span> 我给你的主题可能是用中文描述，你给出的prompt和negative prompt只用英文，不要包含中文。
-<span class="pl-v">-</span> 请你直接输出创建的Stable Diffusion prompt，你的所有回答中不要包含开场白和其他解释、其他Stable Diffusion prompt不相关的内容。
-<span class="pl-v">-</span> 在你将要回答之前应该根据之前约定的输出约束检查你的回答，确保你的回答只包括Stable Diffusion prompt，没有其他多余的解释和说明。而这一检查过程不需要告诉我。
-<span class="pl-mh">## <span class="pl-en">举个例子：</span></span>
+### 3. 你必须遵循下面的输出要求：
+- tag 内容用英语单词或短语来描述，并不局限于我给你的单词。注意只能包含关键词或词组。
+- 注意不要输出句子，不要有任何解释。
+- tag数量限制40个以内，单词数量限制在60个以内。
+- tag不要带引号('')。
+- 使用英文半角','做分隔符。
+- tag 按重要性从高到低的顺序排列。
+## 回答输出要求如下：
+- 我给你的主题可能是用中文描述，你给出的prompt和negative prompt只用英文，不要包含中文。
+- 请你直接输出创建的Stable Diffusion prompt，你的所有回答中不要包含开场白和其他解释、其他Stable Diffusion prompt不相关的内容。
+- 在你将要回答之前应该根据之前约定的输出约束检查你的回答，确保你的回答只包括Stable Diffusion prompt，没有其他多余的解释和说明。而这一检查过程不需要告诉我。
+## 举个例子：
 我输入的绘画主题为：“一个长发蓝色眼睛的女孩”。
-你创建的Stable Diffusion绘图提示词为：' <span class="pl-s">**</span>Prompt:<span class="pl-s">**</span> Long-haired girl with blue eyes, beautiful detailed eyes and lips, flowing blonde hair, serene expression, standing in a field of wildflowers. (best quality,4k,8k,highres,masterpiece:1.2), ultra-detailed, (realistic,photorealistic,photo-realistic:1.37), HDR, UHD, studio lighting, physically-based rendering, extreme detail description, professional, vivid colors, bokeh, portraits, impressionist painting style, warm color temperature, soft natural light.
-<span class="pl-s">**</span>Negative Prompt:<span class="pl-s">**</span> nsfw,(low quality,normal quality,worst quality,jpeg artifacts),cropped,monochrome,lowres,low saturation,((watermark)),(white letters),skin spots,acnes,skin blemishes,age spot,mutated hands,mutated fingers,deformed,bad anatomy,disfigured,poorly drawn face,extra limb,ugly,poorly drawn hands,missing limb,floating limbs,disconnected limbs,out of focus,long neck,long body,extra fingers,fewer fingers,,(multi nipples),bad hands,signature,username,bad feet,blurry,bad body.'
-我的绘画主题是：<span class="pl-s">**********</span></pre></div></div>
+你创建的Stable Diffusion绘图提示词为：' **Prompt:** Long-haired girl with blue eyes, beautiful detailed eyes and lips, flowing blonde hair, serene expression, standing in a field of wildflowers. (best quality,4k,8k,highres,masterpiece:1.2), ultra-detailed, (realistic,photorealistic,photo-realistic:1.37), HDR, UHD, studio lighting, physically-based rendering, extreme detail description, professional, vivid colors, bokeh, portraits, impressionist painting style, warm color temperature, soft natural light.
+**Negative Prompt:** nsfw,(low quality,normal quality,worst quality,jpeg artifacts),cropped,monochrome,lowres,low saturation,((watermark)),(white letters),skin spots,acnes,skin blemishes,age spot,mutated hands,mutated fingers,deformed,bad anatomy,disfigured,poorly drawn face,extra limb,ugly,poorly drawn hands,missing limb,floating limbs,disconnected limbs,out of focus,long neck,long body,extra fingers,fewer fingers,,(multi nipples),bad hands,signature,username,bad feet,blurry,bad body.'
+我的绘画主题是：**********
+</code></pre></div>
 <div style="font-size:small;margin-top:8px;float:right;">🤞转载请注明出处🤞</div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
@@ -189,7 +180,7 @@ if(""!=""){
 </script></div>
 </body>
 <script>
-var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z'};
 var utterancesLoad=0;
 
 let themeSettings={
@@ -263,70 +254,7 @@ function iFrameLoading(){
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const createClipboardHTML = (codeContent, additionalClasses = '') => `
-        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
-        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
-            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
-                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
-                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
-            </clipboard-copy>
-            <div class="copy-feedback">Copied!</div>
-        </div>
-    `;
 
-    const handleCodeElements = (selector = '') => {
-        document.querySelectorAll(selector).forEach(codeElement => {
-            const codeContent = codeElement.innerHTML;
-            const newStructure = document.createElement('div');
-            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
-            newStructure.innerHTML = createClipboardHTML(codeContent);
-
-            const parentElement = codeElement.parentElement;
-            if (selector.includes('highlight')) {
-                parentElement.insertBefore(newStructure, codeElement.nextSibling);
-                parentElement.removeChild(codeElement);
-            } else {
-                parentElement.parentElement.replaceChild(newStructure, parentElement);
-            }
-        });
-    };
-
-    handleCodeElements('pre.notranslate > code.notranslate');
-    handleCodeElements('div.highlight > pre.notranslate');
-
-    let currentFeedback = null;
-    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
-        copyButton.addEventListener('click', () => {
-            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
-            const tempTextArea = document.createElement('textarea');
-            tempTextArea.value = codeContent;
-            document.body.appendChild(tempTextArea);
-            tempTextArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempTextArea);
-
-            const copyIcon = copyButton.querySelector('.octicon-copy');
-            const checkIcon = copyButton.querySelector('.octicon-check');
-            const copyFeedback = copyButton.nextElementSibling;
-
-            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
-            currentFeedback = copyFeedback;
-
-            copyIcon.classList.add('d-none');
-            checkIcon.classList.remove('d-none');
-            copyFeedback.style.display = 'block';
-            copyButton.style.borderColor = 'var(--color-success-fg)';
-
-            setTimeout(() => {
-                copyIcon.classList.remove('d-none');
-                checkIcon.classList.add('d-none');
-                copyFeedback.style.display = 'none';
-                copyButton.style.borderColor = '';
-            }, 2000);
-        });
-    });
-});
 
 </script>
 <script src='https://code.buxiantang.top/assets/backtop.js'></script><script src='https://code.buxiantang.top/assets/articletoc.js'></script><script src='https://code.buxiantang.top/assets/pagination.js'></script><script src='https://code.buxiantang.top/assets/lightbox.js'></script><script>document.querySelectorAll('a').forEach(anchor => {const img = anchor.querySelector('img');if (img && img.hasAttribute('data-canonical-src')) {const canonicalSrc = img.getAttribute('data-canonical-src');anchor.setAttribute('href', canonicalSrc);img.setAttribute('src', canonicalSrc);img.removeAttribute('data-canonical-src');}});</script>
