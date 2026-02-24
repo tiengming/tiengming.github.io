@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://code.buxiantang.top/post/shi-yong-cloudflare-da-jian-yi-ge-ge-ren-wang-zhan-fang-wen-tong-ji-jiao-ben.html">
 <meta property="og:image" content="https://code.buxiantang.top/favicon.svg">
 <title>使用cloudflare搭建一个个人网站访问统计脚本</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -203,33 +203,32 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ol>
 <h2>前端集成</h2>
 <p>在需要统计的页面中添加以下代码：</p>
-<pre lang="html" class="notranslate"><code class="notranslate">&lt;script&gt;
-  async function updateStats() {
-    try {
-      const response = await fetch("https://liuyaoworker.buxiantang.top/stats");
-      const data = await response.json();
-      document.getElementById("site_pv").textContent = data.pv;
-      document.getElementById("site_uv").textContent = data.uv;
-    } catch (error) {
-      console.error("统计更新失败:", error);
-    }
-  }
+<div class="highlight highlight-text-html-basic"><pre class="notranslate"><span class="pl-kos">&lt;</span><span class="pl-ent">script</span><span class="pl-kos">&gt;</span>
+  <span class="pl-k">async</span> <span class="pl-k">function</span> <span class="pl-en">updateStats</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">try</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-en">fetch</span><span class="pl-kos">(</span><span class="pl-s">"https://liuyaoworker.buxiantang.top/stats"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">data</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-en">json</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">getElementById</span><span class="pl-kos">(</span><span class="pl-s">"site_pv"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s1">data</span><span class="pl-kos">.</span><span class="pl-c1">pv</span><span class="pl-kos">;</span>
+      <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">getElementById</span><span class="pl-kos">(</span><span class="pl-s">"site_uv"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s1">data</span><span class="pl-kos">.</span><span class="pl-c1">uv</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span> <span class="pl-k">catch</span> <span class="pl-kos">(</span><span class="pl-s1">error</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">error</span><span class="pl-kos">(</span><span class="pl-s">"统计更新失败:"</span><span class="pl-kos">,</span> <span class="pl-s1">error</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
 
-  // 页面加载时更新统计
-  document.addEventListener("DOMContentLoaded", updateStats);
+  <span class="pl-c">// 页面加载时更新统计</span>
+  <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">"DOMContentLoaded"</span><span class="pl-kos">,</span> <span class="pl-s1">updateStats</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 
-  // 每5分钟更新一次统计
-  setInterval(updateStats, 5 * 60 * 1000);
-&lt;/script&gt;
+  <span class="pl-c">// 每5分钟更新一次统计</span>
+  <span class="pl-en">setInterval</span><span class="pl-kos">(</span><span class="pl-s1">updateStats</span><span class="pl-kos">,</span> <span class="pl-c1">5</span> <span class="pl-c1">*</span> <span class="pl-c1">60</span> <span class="pl-c1">*</span> <span class="pl-c1">1000</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">script</span><span class="pl-kos">&gt;</span>
 
-&lt;div class="site-stats" id="site-stats"&gt;
-  &lt;span class="stats-label"&gt;浏览量:&lt;/span&gt;
-  &lt;span id="site_pv"&gt;0&lt;/span&gt;
+<span class="pl-kos">&lt;</span><span class="pl-ent">div</span> <span class="pl-c1">class</span>="<span class="pl-s">site-stats</span>" <span class="pl-c1">id</span>="<span class="pl-s">site-stats</span>"<span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">stats-label</span>"<span class="pl-kos">&gt;</span>浏览量:<span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">id</span>="<span class="pl-s">site_pv</span>"<span class="pl-kos">&gt;</span>0<span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span>
   |
-  &lt;span class="stats-label"&gt;访客数:&lt;/span&gt;
-  &lt;span id="site_uv"&gt;0&lt;/span&gt;
-&lt;/div&gt;
-</code></pre>
+  <span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">class</span>="<span class="pl-s">stats-label</span>"<span class="pl-kos">&gt;</span>访客数:<span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span>
+  <span class="pl-kos">&lt;</span><span class="pl-ent">span</span> <span class="pl-c1">id</span>="<span class="pl-s">site_uv</span>"<span class="pl-kos">&gt;</span>0<span class="pl-kos">&lt;/</span><span class="pl-ent">span</span><span class="pl-kos">&gt;</span>
+<span class="pl-kos">&lt;/</span><span class="pl-ent">div</span><span class="pl-kos">&gt;</span></pre></div>
 <h2>统计接口</h2>
 <h3>请求</h3>
 <ul>
@@ -237,12 +236,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>方法: GET</li>
 </ul>
 <h3>响应</h3>
-<pre lang="json" class="notranslate"><code class="notranslate">{
-  "pv": 123,
-  "uv": 45,
-  "lastUpdate": 1746004388417
-}
-</code></pre>
+<div class="highlight highlight-source-json"><pre class="notranslate">{
+  <span class="pl-ent">"pv"</span>: <span class="pl-c1">123</span>,
+  <span class="pl-ent">"uv"</span>: <span class="pl-c1">45</span>,
+  <span class="pl-ent">"lastUpdate"</span>: <span class="pl-c1">1746004388417</span>
+}</pre></div>
 <h2>错误处理</h2>
 <p>系统会自动处理以下情况：</p>
 <ul>
@@ -251,13 +249,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>数据库操作失败</li>
 </ul>
 <p>在发生错误时会返回默认值：</p>
-<pre lang="json" class="notranslate"><code class="notranslate">{
-  "pv": 0,
-  "uv": 0,
-  "lastUpdate": 1746004388417,
-  "error": "错误信息"
-}
-</code></pre>
+<div class="highlight highlight-source-json"><pre class="notranslate">{
+  <span class="pl-ent">"pv"</span>: <span class="pl-c1">0</span>,
+  <span class="pl-ent">"uv"</span>: <span class="pl-c1">0</span>,
+  <span class="pl-ent">"lastUpdate"</span>: <span class="pl-c1">1746004388417</span>,
+  <span class="pl-ent">"error"</span>: <span class="pl-s"><span class="pl-pds">"</span>错误信息<span class="pl-pds">"</span></span>
+}</pre></div>
 <h2>维护建议</h2>
 <ol>
 <li>定期备份 D1 数据库</li>
