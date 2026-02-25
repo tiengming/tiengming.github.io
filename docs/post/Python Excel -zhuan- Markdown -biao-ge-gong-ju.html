@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://code.buxiantang.top/post/Python%20Excel%20-zhuan-%20Markdown%20-biao-ge-gong-ju.html">
 <meta property="og:image" content="https://code.buxiantang.top/favicon.svg">
 <title>Python Excel 转 Markdown 表格工具</title>
-<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
 
 
 </head>
@@ -104,66 +104,69 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <ol>
 <li><strong>安装依赖</strong><br>
 确保已安装 <code class="notranslate">openpyxl</code> 库，如果未安装，请运行（建议虚拟环境）：
-<div class="highlight highlight-source-shell"><pre class="notranslate">pip install openpyxl</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">pip install openpyxl
+</code></pre>
 </li>
 <li><strong>复制脚本</strong><br>
 代码如下，保存为py文件：</li>
 </ol>
-<div class="highlight highlight-source-python"><pre class="notranslate"><span class="pl-k">import</span> <span class="pl-s1">openpyxl</span>
+<pre lang="python" class="notranslate"><code class="notranslate">import openpyxl
 
-<span class="pl-s1">output_path</span> <span class="pl-c1">=</span> <span class="pl-s">'data'</span>  <span class="pl-c"># 解压 Excel 后的临时文件夹名称</span>
+output_path = 'data'  # 解压 Excel 后的临时文件夹名称
 
-<span class="pl-s1">file_path</span> <span class="pl-c1">=</span> <span class="pl-en">input</span>(<span class="pl-s">"请输入 Excel 文件路径："</span>)
-<span class="pl-s1">md_path</span> <span class="pl-c1">=</span> <span class="pl-s1">file_path</span>.<span class="pl-c1">split</span>(<span class="pl-s">'.'</span>)[<span class="pl-c1">0</span>] <span class="pl-c1">+</span> <span class="pl-s">".md"</span>  <span class="pl-c"># 输出的 Markdown 文件名</span>
+file_path = input("请输入 Excel 文件路径：")
+md_path = file_path.split('.')[0] + ".md"  # 输出的 Markdown 文件名
 
-<span class="pl-c"># 使用 openpyxl 读取 Excel 文件</span>
-<span class="pl-s1">wb</span> <span class="pl-c1">=</span> <span class="pl-s1">openpyxl</span>.<span class="pl-c1">load_workbook</span>(<span class="pl-s1">file_path</span>, <span class="pl-s1">data_only</span><span class="pl-c1">=</span><span class="pl-c1">False</span>)  <span class="pl-c"># data_only=False 保留公式</span>
-<span class="pl-s1">ws</span> <span class="pl-c1">=</span> <span class="pl-s1">wb</span>.<span class="pl-c1">active</span>
+# 使用 openpyxl 读取 Excel 文件
+wb = openpyxl.load_workbook(file_path, data_only=False)  # data_only=False 保留公式
+ws = wb.active
 
-<span class="pl-s1">result</span> <span class="pl-c1">=</span> []
-<span class="pl-c"># 遍历每一行</span>
-<span class="pl-k">for</span> <span class="pl-s1">row</span> <span class="pl-c1">in</span> <span class="pl-s1">ws</span>.<span class="pl-c1">iter_rows</span>():
-    <span class="pl-s1">row_data</span> <span class="pl-c1">=</span> []
-    <span class="pl-c"># 遍历每个单元格</span>
-    <span class="pl-k">for</span> <span class="pl-s1">cell</span> <span class="pl-c1">in</span> <span class="pl-s1">row</span>:
-        <span class="pl-k">if</span> <span class="pl-s1">cell</span>.<span class="pl-c1">value</span> <span class="pl-c1">is</span> <span class="pl-c1">None</span>:
-            <span class="pl-s1">row_data</span>.<span class="pl-c1">append</span>(<span class="pl-s">""</span>)
-        <span class="pl-k">elif</span> <span class="pl-s1">cell</span>.<span class="pl-c1">data_type</span> <span class="pl-c1">==</span> <span class="pl-s">'f'</span>:  <span class="pl-c"># 如果是公式</span>
-            <span class="pl-s1">row_data</span>.<span class="pl-c1">append</span>(<span class="pl-s">f"=<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">cell</span>.<span class="pl-c1">value</span><span class="pl-kos">}</span></span>"</span>)
-        <span class="pl-k">else</span>:
-            <span class="pl-s1">row_data</span>.<span class="pl-c1">append</span>(<span class="pl-en">str</span>(<span class="pl-s1">cell</span>.<span class="pl-c1">value</span>))
-    <span class="pl-s1">result</span>.<span class="pl-c1">append</span>(<span class="pl-s1">row_data</span>)
+result = []
+# 遍历每一行
+for row in ws.iter_rows():
+    row_data = []
+    # 遍历每个单元格
+    for cell in row:
+        if cell.value is None:
+            row_data.append("")
+        elif cell.data_type == 'f':  # 如果是公式
+            row_data.append(f"={cell.value}")
+        else:
+            row_data.append(str(cell.value))
+    result.append(row_data)
 
-<span class="pl-c"># 确保至少有一行数据</span>
-<span class="pl-k">if</span> <span class="pl-c1">not</span> <span class="pl-s1">result</span>:
-    <span class="pl-en">print</span>(<span class="pl-s">"警告：没有找到任何数据！"</span>)
-    <span class="pl-en">exit</span>()
-<span class="pl-c"># 构建 Markdown 表格</span>
-<span class="pl-c"># 生成第一行</span>
-<span class="pl-s1">markdown_table</span> <span class="pl-c1">=</span> <span class="pl-s">"|"</span>
-<span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"|"</span>.<span class="pl-c1">join</span>(<span class="pl-s1">result</span>[<span class="pl-c1">0</span>]) <span class="pl-c1">+</span> <span class="pl-s">"|"</span>
-<span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"<span class="pl-cce">\n</span>"</span>
-<span class="pl-c"># 生成分隔行（第二行）</span>
-<span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"|"</span>
-<span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"|"</span>.<span class="pl-c1">join</span>([<span class="pl-s">"-"</span> <span class="pl-k">for</span> <span class="pl-s1">_</span> <span class="pl-c1">in</span> <span class="pl-s1">result</span>[<span class="pl-c1">0</span>]]) <span class="pl-c1">+</span> <span class="pl-s">"|"</span>
-<span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"<span class="pl-cce">\n</span>"</span>
-<span class="pl-c"># 生成后续的行</span>
-<span class="pl-k">for</span> <span class="pl-s1">row</span> <span class="pl-c1">in</span> <span class="pl-s1">result</span>[<span class="pl-c1">1</span>:]:
-    <span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"|"</span>
-    <span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"|"</span>.<span class="pl-c1">join</span>([<span class="pl-en">str</span>(<span class="pl-s1">value</span>) <span class="pl-k">for</span> <span class="pl-s1">value</span> <span class="pl-c1">in</span> <span class="pl-s1">row</span>]) <span class="pl-c1">+</span> <span class="pl-s">"|"</span>
-    <span class="pl-s1">markdown_table</span> <span class="pl-c1">+=</span> <span class="pl-s">"<span class="pl-cce">\n</span>"</span>
-<span class="pl-c"># 去除多余的换行符</span>
-<span class="pl-s1">markdown_table</span> <span class="pl-c1">=</span> <span class="pl-s1">markdown_table</span>[:<span class="pl-c1">-</span><span class="pl-c1">1</span>]
+# 确保至少有一行数据
+if not result:
+    print("警告：没有找到任何数据！")
+    exit()
+# 构建 Markdown 表格
+# 生成第一行
+markdown_table = "|"
+markdown_table += "|".join(result[0]) + "|"
+markdown_table += "\n"
+# 生成分隔行（第二行）
+markdown_table += "|"
+markdown_table += "|".join(["-" for _ in result[0]]) + "|"
+markdown_table += "\n"
+# 生成后续的行
+for row in result[1:]:
+    markdown_table += "|"
+    markdown_table += "|".join([str(value) for value in row]) + "|"
+    markdown_table += "\n"
+# 去除多余的换行符
+markdown_table = markdown_table[:-1]
 
-<span class="pl-c"># 生成 Markdown 文件</span>
-<span class="pl-k">with</span> <span class="pl-en">open</span>(<span class="pl-s1">md_path</span>, <span class="pl-s">'w'</span>, <span class="pl-s1">encoding</span><span class="pl-c1">=</span><span class="pl-s">'utf-8'</span>) <span class="pl-k">as</span> <span class="pl-s1">md_file</span>:
-    <span class="pl-s1">md_file</span>.<span class="pl-c1">write</span>(<span class="pl-s1">markdown_table</span>)
+# 生成 Markdown 文件
+with open(md_path, 'w', encoding='utf-8') as md_file:
+    md_file.write(markdown_table)
 
-<span class="pl-en">print</span>(<span class="pl-s">f"转换完成！Markdown 文件已保存为：<span class="pl-s1"><span class="pl-kos">{</span><span class="pl-s1">md_path</span><span class="pl-kos">}</span></span>"</span>)</pre></div>
+print(f"转换完成！Markdown 文件已保存为：{md_path}")
+</code></pre>
 <ol start="3">
 <li>
 <p><strong>运行脚本</strong>   在终端或命令行运行：</p>
-<div class="highlight highlight-source-shell"><pre class="notranslate">python script.py</pre></div>
+<pre lang="bash" class="notranslate"><code class="notranslate">python script.py
+</code></pre>
 <p>（将 <code class="notranslate">script.py</code> 替换为你的 Python 文件名）</p>
 </li>
 <li>
