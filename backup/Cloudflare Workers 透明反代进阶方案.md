@@ -19,90 +19,105 @@ Cloudflare Workers 透明反代进阶方案
 ```javascript
 /**
  * 生产环境透明反代脚本
- * 功能：支持登录保持、重定向修复、HTML 链接改写
+ * 功能：支持登录保持、多 Cookie 保持,重定向修复、HTML 链接改写
  * 配置说明：
  * 1. 在 Workers 控制台 -> 设置 -> 变量 -> 添加环境变量：
  * - TARGET_HOSTNAME: b.example.com
  */
+
 
 addEventListener('fetch', event => {
     event.respondWith(handleRequest(event.request));
 });
 
 async function handleRequest(request) {
-    // 从环境变量获取目标域名，如果没有则手动修改下方字符串
-    const targetHost = typeof TARGET_HOSTNAME !== 'undefined' ? TARGET_HOSTNAME : 'rin-server.tiengfeng-3cd.workers.dev';
+    // 配置：目标原站域名
+    const targetHost = typeof TARGET_HOSTNAME !== 'undefined' ? TARGET_HOSTNAME : 'b.example.com';
     
     try {
         const url = new URL(request.url);
-        const userHost = url.host; // 即 blog.buxiantang.top
+        const userHost = url.host; // 用户访问的域名 (a.example.com)
 
-        // 1. 修改请求目标
+        // 1. 构造目标 URL
         const newUrl = new URL(request.url);
         newUrl.host = targetHost;
         newUrl.protocol = 'https:';
 
-        // 2. 构造请求头 (透传 Cookie, Authorization 等)
+        // 2. 构造请求头
         const newHeaders = new Headers(request.headers);
         newHeaders.set('Host', targetHost);
         newHeaders.set('Referer', `https://${targetHost}/`);
         
-        // 移除 CF 自身生成的干扰头
-        const headersToDelete = ['cf-connecting-ip', 'cf-ipcountry', 'cf-ray', 'cf-visitor', 'x-forwarded-for', 'x-real-ip'];
+        // 移除可能引起循环或拦截的干扰头
+        const headersToDelete = ['cf-connecting-ip', 'cf-ipcountry', 'cf-ray', 'cf-visitor', 'x-real-ip'];
         headersToDelete.forEach(h => newHeaders.delete(h));
 
-        // 3. 发起后端请求
+        // 3. 发起后端请求 (核心修复：直接透传 request.body 以支持文件上传)
         const response = await fetch(newUrl.href, {
             method: request.method,
             headers: newHeaders,
-            body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
-            redirect: 'manual' // 必须手动处理，否则会导致 Cookie 丢失
+            body: (request.method !== 'GET' && request.method !== 'HEAD') ? request.body : null,
+            redirect: 'manual' 
         });
 
         // 4. 处理响应头
         let responseHeaders = new Headers(response.headers);
 
-        // 【关键】修复重定向：防止跳回到源站域名
+        // 【修复重定向】确保 Location 头部指向代理域名
         if ([301, 302, 303, 307, 308].includes(response.status)) {
             const location = responseHeaders.get('Location');
             if (location) {
-                // 将响应中的源站域名替换回你的优选域名
                 const modifiedLocation = location.replace(targetHost, userHost);
                 responseHeaders.set('Location', modifiedLocation);
             }
         }
 
-        // 【关键】修复登录 Cookie：移除 Domain 限制，让浏览器能正常保存
+        // 【核心修复】多 Cookie 兼容与 OAuth SameSite 修复
         if (responseHeaders.has('Set-Cookie')) {
-            let cookies = responseHeaders.get('Set-Cookie');
-            // 移除 Domain 属性，确保 Cookie 写入 blog.buxiantang.top
-            cookies = cookies.replace(/Domain=[^;]+;?/gi, '');
-            // 移除 Secure 属性（如果你没有全站强制 HTTPS，可以留着，推荐保留）
-            // cookies = cookies.replace(/Secure/gi, ''); 
-            responseHeaders.set('Set-Cookie', cookies);
+            // 使用 getSetCookie 获取完整的 Cookie 数组 (关键：解决 OAuth 状态丢失)
+            const rawCookies = response.headers.getSetCookie(); 
+            responseHeaders.delete('Set-Cookie'); 
+
+            for (let cookie of rawCookies) {
+                // 移除 Domain 限制
+                cookie = cookie.replace(/Domain=[^;]+;?/gi, '');
+                
+                // 修复 SameSite 属性以支持 GitHub OAuth 回调携带 Cookie
+                if (!/SameSite/i.test(cookie)) {
+                    cookie += '; SameSite=None';
+                } else {
+                    cookie = cookie.replace(/SameSite=[^;]+/gi, 'SameSite=None');
+                }
+                
+                // SameSite=None 必须配合 Secure
+                if (!/Secure/i.test(cookie)) {
+                    cookie += '; Secure';
+                }
+
+                responseHeaders.append('Set-Cookie', cookie);
+            }
         }
 
-        // 5. 处理 HTML 内容 (可选，但建议保留，防止点击页面内部链接跳走)
+        // 5. 处理内容替换 (可选)
         let body = response.body;
         const contentType = responseHeaders.get("Content-Type") || "";
         if (contentType.includes("text/html")) {
             let text = await response.text();
-            // 全局替换：将页面中所有的源站域名改成优选域名
+            // 全局域名替换，防止页面内部链接跳出代理
             text = text.replace(new RegExp(targetHost, 'g'), userHost);
             body = text;
         }
 
-        // 6. 返回结果
+        // 6. 构造最终响应
         const finalResponse = new Response(body, {
             status: response.status,
             statusText: response.statusText,
             headers: responseHeaders
         });
 
-        // 注入 CORS 和安全头
+        // 注入 CORS 并清理 CSP 策略
         finalResponse.headers.set('Access-Control-Allow-Origin', '*');
         finalResponse.headers.set('Access-Control-Allow-Credentials', 'true');
-        // 移除 CSP 策略，防止拦截代理加载的资源
         finalResponse.headers.delete('Content-Security-Policy');
 
         return finalResponse;

@@ -107,90 +107,105 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h3>3. 部署代码 (JavaScript)</h3>
 <div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-c">/**</span>
 <span class="pl-c"> * 生产环境透明反代脚本</span>
-<span class="pl-c"> * 功能：支持登录保持、重定向修复、HTML 链接改写</span>
+<span class="pl-c"> * 功能：支持登录保持、多 Cookie 保持,重定向修复、HTML 链接改写</span>
 <span class="pl-c"> * 配置说明：</span>
 <span class="pl-c"> * 1. 在 Workers 控制台 -&gt; 设置 -&gt; 变量 -&gt; 添加环境变量：</span>
 <span class="pl-c"> * - TARGET_HOSTNAME: b.example.com</span>
 <span class="pl-c"> */</span>
+
 
 <span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'fetch'</span><span class="pl-kos">,</span> <span class="pl-s1">event</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
     <span class="pl-s1">event</span><span class="pl-kos">.</span><span class="pl-en">respondWith</span><span class="pl-kos">(</span><span class="pl-en">handleRequest</span><span class="pl-kos">(</span><span class="pl-s1">event</span><span class="pl-kos">.</span><span class="pl-c1">request</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 
 <span class="pl-k">async</span> <span class="pl-k">function</span> <span class="pl-en">handleRequest</span><span class="pl-kos">(</span><span class="pl-s1">request</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
-    <span class="pl-c">// 从环境变量获取目标域名，如果没有则手动修改下方字符串</span>
-    <span class="pl-k">const</span> <span class="pl-s1">targetHost</span> <span class="pl-c1">=</span> <span class="pl-k">typeof</span> <span class="pl-c1">TARGET_HOSTNAME</span> <span class="pl-c1">!==</span> <span class="pl-s">'undefined'</span> ? <span class="pl-c1">TARGET_HOSTNAME</span> : <span class="pl-s">'rin-server.tiengfeng-3cd.workers.dev'</span><span class="pl-kos">;</span>
+    <span class="pl-c">// 配置：目标原站域名</span>
+    <span class="pl-k">const</span> <span class="pl-s1">targetHost</span> <span class="pl-c1">=</span> <span class="pl-k">typeof</span> <span class="pl-c1">TARGET_HOSTNAME</span> <span class="pl-c1">!==</span> <span class="pl-s">'undefined'</span> ? <span class="pl-c1">TARGET_HOSTNAME</span> : <span class="pl-s">'b.example.com'</span><span class="pl-kos">;</span>
     
     <span class="pl-k">try</span> <span class="pl-kos">{</span>
         <span class="pl-k">const</span> <span class="pl-s1">url</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-c1">URL</span><span class="pl-kos">(</span><span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">url</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-        <span class="pl-k">const</span> <span class="pl-s1">userHost</span> <span class="pl-c1">=</span> <span class="pl-s1">url</span><span class="pl-kos">.</span><span class="pl-c1">host</span><span class="pl-kos">;</span> <span class="pl-c">// 即 blog.buxiantang.top</span>
+        <span class="pl-k">const</span> <span class="pl-s1">userHost</span> <span class="pl-c1">=</span> <span class="pl-s1">url</span><span class="pl-kos">.</span><span class="pl-c1">host</span><span class="pl-kos">;</span> <span class="pl-c">// 用户访问的域名 (a.example.com)</span>
 
-        <span class="pl-c">// 1. 修改请求目标</span>
+        <span class="pl-c">// 1. 构造目标 URL</span>
         <span class="pl-k">const</span> <span class="pl-s1">newUrl</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-c1">URL</span><span class="pl-kos">(</span><span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">url</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
         <span class="pl-s1">newUrl</span><span class="pl-kos">.</span><span class="pl-c1">host</span> <span class="pl-c1">=</span> <span class="pl-s1">targetHost</span><span class="pl-kos">;</span>
         <span class="pl-s1">newUrl</span><span class="pl-kos">.</span><span class="pl-c1">protocol</span> <span class="pl-c1">=</span> <span class="pl-s">'https:'</span><span class="pl-kos">;</span>
 
-        <span class="pl-c">// 2. 构造请求头 (透传 Cookie, Authorization 等)</span>
+        <span class="pl-c">// 2. 构造请求头</span>
         <span class="pl-k">const</span> <span class="pl-s1">newHeaders</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Headers</span><span class="pl-kos">(</span><span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">headers</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
         <span class="pl-s1">newHeaders</span><span class="pl-kos">.</span><span class="pl-en">set</span><span class="pl-kos">(</span><span class="pl-s">'Host'</span><span class="pl-kos">,</span> <span class="pl-s1">targetHost</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
         <span class="pl-s1">newHeaders</span><span class="pl-kos">.</span><span class="pl-en">set</span><span class="pl-kos">(</span><span class="pl-s">'Referer'</span><span class="pl-kos">,</span> <span class="pl-s">`https://<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">targetHost</span><span class="pl-kos">}</span></span>/`</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
         
-        <span class="pl-c">// 移除 CF 自身生成的干扰头</span>
-        <span class="pl-k">const</span> <span class="pl-s1">headersToDelete</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-s">'cf-connecting-ip'</span><span class="pl-kos">,</span> <span class="pl-s">'cf-ipcountry'</span><span class="pl-kos">,</span> <span class="pl-s">'cf-ray'</span><span class="pl-kos">,</span> <span class="pl-s">'cf-visitor'</span><span class="pl-kos">,</span> <span class="pl-s">'x-forwarded-for'</span><span class="pl-kos">,</span> <span class="pl-s">'x-real-ip'</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+        <span class="pl-c">// 移除可能引起循环或拦截的干扰头</span>
+        <span class="pl-k">const</span> <span class="pl-s1">headersToDelete</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span><span class="pl-s">'cf-connecting-ip'</span><span class="pl-kos">,</span> <span class="pl-s">'cf-ipcountry'</span><span class="pl-kos">,</span> <span class="pl-s">'cf-ray'</span><span class="pl-kos">,</span> <span class="pl-s">'cf-visitor'</span><span class="pl-kos">,</span> <span class="pl-s">'x-real-ip'</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
         <span class="pl-s1">headersToDelete</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">h</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">newHeaders</span><span class="pl-kos">.</span><span class="pl-en">delete</span><span class="pl-kos">(</span><span class="pl-s1">h</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 
-        <span class="pl-c">// 3. 发起后端请求</span>
+        <span class="pl-c">// 3. 发起后端请求 (核心修复：直接透传 request.body 以支持文件上传)</span>
         <span class="pl-k">const</span> <span class="pl-s1">response</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-en">fetch</span><span class="pl-kos">(</span><span class="pl-s1">newUrl</span><span class="pl-kos">.</span><span class="pl-c1">href</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
             <span class="pl-c1">method</span>: <span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">method</span><span class="pl-kos">,</span>
             <span class="pl-c1">headers</span>: <span class="pl-s1">newHeaders</span><span class="pl-kos">,</span>
-            <span class="pl-c1">body</span>: <span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">method</span> <span class="pl-c1">!==</span> <span class="pl-s">'GET'</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">method</span> <span class="pl-c1">!==</span> <span class="pl-s">'HEAD'</span> ? <span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">body</span> : <span class="pl-c1">undefined</span><span class="pl-kos">,</span>
-            <span class="pl-c1">redirect</span>: <span class="pl-s">'manual'</span> <span class="pl-c">// 必须手动处理，否则会导致 Cookie 丢失</span>
+            <span class="pl-c1">body</span>: <span class="pl-kos">(</span><span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">method</span> <span class="pl-c1">!==</span> <span class="pl-s">'GET'</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">method</span> <span class="pl-c1">!==</span> <span class="pl-s">'HEAD'</span><span class="pl-kos">)</span> ? <span class="pl-s1">request</span><span class="pl-kos">.</span><span class="pl-c1">body</span> : <span class="pl-c1">null</span><span class="pl-kos">,</span>
+            <span class="pl-c1">redirect</span>: <span class="pl-s">'manual'</span> 
         <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 
         <span class="pl-c">// 4. 处理响应头</span>
         <span class="pl-k">let</span> <span class="pl-s1">responseHeaders</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Headers</span><span class="pl-kos">(</span><span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-c1">headers</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 
-        <span class="pl-c">// 【关键】修复重定向：防止跳回到源站域名</span>
+        <span class="pl-c">// 【修复重定向】确保 Location 头部指向代理域名</span>
         <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-kos">[</span><span class="pl-c1">301</span><span class="pl-kos">,</span> <span class="pl-c1">302</span><span class="pl-kos">,</span> <span class="pl-c1">303</span><span class="pl-kos">,</span> <span class="pl-c1">307</span><span class="pl-kos">,</span> <span class="pl-c1">308</span><span class="pl-kos">]</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-c1">status</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
             <span class="pl-k">const</span> <span class="pl-s1">location</span> <span class="pl-c1">=</span> <span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">get</span><span class="pl-kos">(</span><span class="pl-s">'Location'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
             <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">location</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
-                <span class="pl-c">// 将响应中的源站域名替换回你的优选域名</span>
                 <span class="pl-k">const</span> <span class="pl-s1">modifiedLocation</span> <span class="pl-c1">=</span> <span class="pl-s1">location</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-s1">targetHost</span><span class="pl-kos">,</span> <span class="pl-s1">userHost</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
                 <span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">set</span><span class="pl-kos">(</span><span class="pl-s">'Location'</span><span class="pl-kos">,</span> <span class="pl-s1">modifiedLocation</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
             <span class="pl-kos">}</span>
         <span class="pl-kos">}</span>
 
-        <span class="pl-c">// 【关键】修复登录 Cookie：移除 Domain 限制，让浏览器能正常保存</span>
+        <span class="pl-c">// 【核心修复】多 Cookie 兼容与 OAuth SameSite 修复</span>
         <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">has</span><span class="pl-kos">(</span><span class="pl-s">'Set-Cookie'</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
-            <span class="pl-k">let</span> <span class="pl-s1">cookies</span> <span class="pl-c1">=</span> <span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">get</span><span class="pl-kos">(</span><span class="pl-s">'Set-Cookie'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-            <span class="pl-c">// 移除 Domain 属性，确保 Cookie 写入 blog.buxiantang.top</span>
-            <span class="pl-s1">cookies</span> <span class="pl-c1">=</span> <span class="pl-s1">cookies</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-s">D</span><span class="pl-s">o</span><span class="pl-s">m</span><span class="pl-s">a</span><span class="pl-s">i</span><span class="pl-s">n</span><span class="pl-s">=</span><span class="pl-kos">[</span><span class="pl-c1">^</span><span class="pl-c1">;</span><span class="pl-kos">]</span><span class="pl-c1">+</span><span class="pl-s">;</span><span class="pl-c1">?</span><span class="pl-c1">/</span>gi</span><span class="pl-kos">,</span> <span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-            <span class="pl-c">// 移除 Secure 属性（如果你没有全站强制 HTTPS，可以留着，推荐保留）</span>
-            <span class="pl-c">// cookies = cookies.replace(/Secure/gi, ''); </span>
-            <span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">set</span><span class="pl-kos">(</span><span class="pl-s">'Set-Cookie'</span><span class="pl-kos">,</span> <span class="pl-s1">cookies</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+            <span class="pl-c">// 使用 getSetCookie 获取完整的 Cookie 数组 (关键：解决 OAuth 状态丢失)</span>
+            <span class="pl-k">const</span> <span class="pl-s1">rawCookies</span> <span class="pl-c1">=</span> <span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-c1">headers</span><span class="pl-kos">.</span><span class="pl-en">getSetCookie</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span> 
+            <span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">delete</span><span class="pl-kos">(</span><span class="pl-s">'Set-Cookie'</span><span class="pl-kos">)</span><span class="pl-kos">;</span> 
+
+            <span class="pl-k">for</span> <span class="pl-kos">(</span><span class="pl-k">let</span> <span class="pl-s1">cookie</span> <span class="pl-k">of</span> <span class="pl-s1">rawCookies</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+                <span class="pl-c">// 移除 Domain 限制</span>
+                <span class="pl-s1">cookie</span> <span class="pl-c1">=</span> <span class="pl-s1">cookie</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-s">D</span><span class="pl-s">o</span><span class="pl-s">m</span><span class="pl-s">a</span><span class="pl-s">i</span><span class="pl-s">n</span><span class="pl-s">=</span><span class="pl-kos">[</span><span class="pl-c1">^</span><span class="pl-c1">;</span><span class="pl-kos">]</span><span class="pl-c1">+</span><span class="pl-s">;</span><span class="pl-c1">?</span><span class="pl-c1">/</span>gi</span><span class="pl-kos">,</span> <span class="pl-s">''</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+                
+                <span class="pl-c">// 修复 SameSite 属性以支持 GitHub OAuth 回调携带 Cookie</span>
+                <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-s">S</span><span class="pl-s">a</span><span class="pl-s">m</span><span class="pl-s">e</span><span class="pl-s">S</span><span class="pl-s">i</span><span class="pl-s">t</span><span class="pl-s">e</span><span class="pl-c1">/</span>i</span><span class="pl-kos">.</span><span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s1">cookie</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+                    <span class="pl-s1">cookie</span> <span class="pl-c1">+=</span> <span class="pl-s">'; SameSite=None'</span><span class="pl-kos">;</span>
+                <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+                    <span class="pl-s1">cookie</span> <span class="pl-c1">=</span> <span class="pl-s1">cookie</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-s">S</span><span class="pl-s">a</span><span class="pl-s">m</span><span class="pl-s">e</span><span class="pl-s">S</span><span class="pl-s">i</span><span class="pl-s">t</span><span class="pl-s">e</span><span class="pl-s">=</span><span class="pl-kos">[</span><span class="pl-c1">^</span><span class="pl-c1">;</span><span class="pl-kos">]</span><span class="pl-c1">+</span><span class="pl-c1">/</span>gi</span><span class="pl-kos">,</span> <span class="pl-s">'SameSite=None'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+                <span class="pl-kos">}</span>
+                
+                <span class="pl-c">// SameSite=None 必须配合 Secure</span>
+                <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-s">S</span><span class="pl-s">e</span><span class="pl-s">c</span><span class="pl-s">u</span><span class="pl-s">r</span><span class="pl-s">e</span><span class="pl-c1">/</span>i</span><span class="pl-kos">.</span><span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s1">cookie</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+                    <span class="pl-s1">cookie</span> <span class="pl-c1">+=</span> <span class="pl-s">'; Secure'</span><span class="pl-kos">;</span>
+                <span class="pl-kos">}</span>
+
+                <span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">append</span><span class="pl-kos">(</span><span class="pl-s">'Set-Cookie'</span><span class="pl-kos">,</span> <span class="pl-s1">cookie</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+            <span class="pl-kos">}</span>
         <span class="pl-kos">}</span>
 
-        <span class="pl-c">// 5. 处理 HTML 内容 (可选，但建议保留，防止点击页面内部链接跳走)</span>
+        <span class="pl-c">// 5. 处理内容替换 (可选)</span>
         <span class="pl-k">let</span> <span class="pl-s1">body</span> <span class="pl-c1">=</span> <span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">;</span>
         <span class="pl-k">const</span> <span class="pl-s1">contentType</span> <span class="pl-c1">=</span> <span class="pl-s1">responseHeaders</span><span class="pl-kos">.</span><span class="pl-en">get</span><span class="pl-kos">(</span><span class="pl-s">"Content-Type"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">""</span><span class="pl-kos">;</span>
         <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">contentType</span><span class="pl-kos">.</span><span class="pl-en">includes</span><span class="pl-kos">(</span><span class="pl-s">"text/html"</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
             <span class="pl-k">let</span> <span class="pl-s1">text</span> <span class="pl-c1">=</span> <span class="pl-k">await</span> <span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-en">text</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-            <span class="pl-c">// 全局替换：将页面中所有的源站域名改成优选域名</span>
+            <span class="pl-c">// 全局域名替换，防止页面内部链接跳出代理</span>
             <span class="pl-s1">text</span> <span class="pl-c1">=</span> <span class="pl-s1">text</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-k">new</span> <span class="pl-v">RegExp</span><span class="pl-kos">(</span><span class="pl-s1">targetHost</span><span class="pl-kos">,</span> <span class="pl-s">'g'</span><span class="pl-kos">)</span><span class="pl-kos">,</span> <span class="pl-s1">userHost</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
             <span class="pl-s1">body</span> <span class="pl-c1">=</span> <span class="pl-s1">text</span><span class="pl-kos">;</span>
         <span class="pl-kos">}</span>
 
-        <span class="pl-c">// 6. 返回结果</span>
+        <span class="pl-c">// 6. 构造最终响应</span>
         <span class="pl-k">const</span> <span class="pl-s1">finalResponse</span> <span class="pl-c1">=</span> <span class="pl-k">new</span> <span class="pl-v">Response</span><span class="pl-kos">(</span><span class="pl-s1">body</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
             <span class="pl-c1">status</span>: <span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-c1">status</span><span class="pl-kos">,</span>
             <span class="pl-c1">statusText</span>: <span class="pl-s1">response</span><span class="pl-kos">.</span><span class="pl-c1">statusText</span><span class="pl-kos">,</span>
             <span class="pl-c1">headers</span>: <span class="pl-s1">responseHeaders</span>
         <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 
-        <span class="pl-c">// 注入 CORS 和安全头</span>
+        <span class="pl-c">// 注入 CORS 并清理 CSP 策略</span>
         <span class="pl-s1">finalResponse</span><span class="pl-kos">.</span><span class="pl-c1">headers</span><span class="pl-kos">.</span><span class="pl-en">set</span><span class="pl-kos">(</span><span class="pl-s">'Access-Control-Allow-Origin'</span><span class="pl-kos">,</span> <span class="pl-s">'*'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
         <span class="pl-s1">finalResponse</span><span class="pl-kos">.</span><span class="pl-c1">headers</span><span class="pl-kos">.</span><span class="pl-en">set</span><span class="pl-kos">(</span><span class="pl-s">'Access-Control-Allow-Credentials'</span><span class="pl-kos">,</span> <span class="pl-s">'true'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
-        <span class="pl-c">// 移除 CSP 策略，防止拦截代理加载的资源</span>
         <span class="pl-s1">finalResponse</span><span class="pl-kos">.</span><span class="pl-c1">headers</span><span class="pl-kos">.</span><span class="pl-en">delete</span><span class="pl-kos">(</span><span class="pl-s">'Content-Security-Policy'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
 
         <span class="pl-k">return</span> <span class="pl-s1">finalResponse</span><span class="pl-kos">;</span>
