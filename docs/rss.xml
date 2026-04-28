@@ -1,2 +1,133 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Mon, 27 Apr 2026 17:18:00 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster></channel></rss>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Tue, 28 Apr 2026 17:44:07 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster><item><title>Cloudflare Workers 透明反代进阶方案</title><link>https://code.buxiantang.top/post/Cloudflare%20Workers%20-tou-ming-fan-dai-jin-jie-fang-an.html</link><description>Cloudflare Workers 透明反代进阶方案
+
+### 1. 核心应用场景
+* **域名映射**：将 `a.example.com` 透明代理至 `b.example.com`。</description><guid isPermaLink="true">https://code.buxiantang.top/post/Cloudflare%20Workers%20-tou-ming-fan-dai-jin-jie-fang-an.html</guid><pubDate>Mon, 20 Apr 2026 09:02:13 +0000</pubDate></item><item><title>科学的尽头是玄学--是否继续持有？</title><link>https://code.buxiantang.top/post/ke-xue-de-jin-tou-shi-xuan-xue----shi-fou-ji-xu-chi-you-%EF%BC%9F.html</link><description>&lt;img width='1228' height='412' alt='Image' src='https://github.com/user-attachments/assets/c42bb31a-4899-4840-8dd6-8b63c618ec45' /&gt;
+
+&lt;img width='1251' height='377' alt='Image' src='https://github.com/user-attachments/assets/3c97ae45-6f50-4cfe-be6a-60d1996c3b9a' /&gt;
+
+犹豫不决，那就起卦！
+
+&lt;img width='1420' height='769' alt='Image' src='https://github.com/user-attachments/assets/d184385e-21a2-4008-883c-185c3022b624' /&gt;
+
+子孙午火持世，今天又午日，财源强有力戌土受生，九四爻辞：可贞，无咎。</description><guid isPermaLink="true">https://code.buxiantang.top/post/ke-xue-de-jin-tou-shi-xuan-xue----shi-fou-ji-xu-chi-you-%EF%BC%9F.html</guid><pubDate>Mon, 15 Dec 2025 09:18:57 +0000</pubDate></item><item><title>🤖 人工智能（AI）替代人类的优势与劣势分析报告</title><link>https://code.buxiantang.top/post/%F0%9F%A4%96%20-ren-gong-zhi-neng-%EF%BC%88AI%EF%BC%89-ti-dai-ren-lei-de-you-shi-yu-lie-shi-fen-xi-bao-gao.html</link><description># 缘由
+目前AI更新迭代极快，我在考虑卜仙堂的未来发展，我将下面的“仙堂博文目录清单”发给AI，让他写了一份《人工智能（AI）替代人类的优势与劣势分析报告》
+
+```markdown
+## 📖 卜仙堂博文目录清单
+
+### 1. 修行指南类
+- **《佛道仙易修行指南》**  
+  强调“学、悟、证、行”的修行方法，帮助修行者避免迷茫与误区。</description><guid isPermaLink="true">https://code.buxiantang.top/post/%F0%9F%A4%96%20-ren-gong-zhi-neng-%EF%BC%88AI%EF%BC%89-ti-dai-ren-lei-de-you-shi-yu-lie-shi-fen-xi-bao-gao.html</guid><pubDate>Mon, 15 Dec 2025 04:51:12 +0000</pubDate></item><item><title>基于gemini gem的绘画提示词“神笔马良”</title><link>https://code.buxiantang.top/post/ji-yu-gemini%20gem-de-hui-hua-ti-shi-ci-%E2%80%9C-shen-bi-ma-liang-%E2%80%9D.html</link><description>### 构建缘由
+
+Gemini的绘画太出圈了。</description><guid isPermaLink="true">https://code.buxiantang.top/post/ji-yu-gemini%20gem-de-hui-hua-ti-shi-ci-%E2%80%9C-shen-bi-ma-liang-%E2%80%9D.html</guid><pubDate>Fri, 12 Dec 2025 06:32:33 +0000</pubDate></item><item><title>量化交易---RCI Ribbon</title><link>https://code.buxiantang.top/post/liang-hua-jiao-yi----RCI%20Ribbon.html</link><description>
+## 📌 RCI Ribbon 指标介绍与使用说明
+
+### 一、什么是 RCI（Rank Correlation Index）
+
+RCI（等级相关指数）是一种衡量价格与时间序列之间相关性的技术指标，类似于 Spearman 等级相关系数。</description><guid isPermaLink="true">https://code.buxiantang.top/post/liang-hua-jiao-yi----RCI%20Ribbon.html</guid><pubDate>Mon, 29 Sep 2025 03:12:15 +0000</pubDate></item><item><title>使用AI指导交易</title><link>https://code.buxiantang.top/post/shi-yong-AI-zhi-dao-jiao-yi.html</link><description># 从交易建议到认知赋能：我如何优化加密货币交易大师提示词
+
+在构建提示词的过程中，我意识到一个关键问题：**提示词不仅是功能设定，更是认知引导的工具**。</description><guid isPermaLink="true">https://code.buxiantang.top/post/shi-yong-AI-zhi-dao-jiao-yi.html</guid><pubDate>Thu, 17 Jul 2025 10:09:55 +0000</pubDate></item><item><title>🍎 Gmeek UI 增强插件使用教程</title><link>https://code.buxiantang.top/post/%F0%9F%8D%8E%20Gmeek%20UI%20-zeng-qiang-cha-jian-shi-yong-jiao-cheng.html</link><description>
+# 🍎 Gmeek UI 增强插件使用教程
+
+## 📦 插件简介
+
+Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 Apple 风格的焕然一新体验，包括：
+
+| 文件名                   | 功能说明                                                                 |
+|--------------------------|--------------------------------------------------------------------------|
+| `GmeekBaseTheme.css`     | 基础布局样式：字体、圆角、卡片排版，兼容原始结构不污染构建样式                          |
+| `GmeekCustomizeCss.js`   | UI 动态增强：卡片结构重构、玻璃拟态样式、深浅模式自适应、渐变背景、标签配色自动对比等功能       |
+
+&gt; 🧠 零依赖、构建无侵入、插拔可选、明暗自动识别、视觉沉浸体验，100% 兼容 Gmeek 原生内容结构。</description><guid isPermaLink="true">https://code.buxiantang.top/post/%F0%9F%8D%8E%20Gmeek%20UI%20-zeng-qiang-cha-jian-shi-yong-jiao-cheng.html</guid><pubDate>Thu, 03 Jul 2025 08:30:11 +0000</pubDate></item><item><title>微信公众号AI智能回复</title><link>https://code.buxiantang.top/post/wei-xin-gong-zhong-hao-AI-zhi-neng-hui-fu.html</link><description># 智能回复
+
+微信公众号支持官方的AI助手了，同样也支持AI的提示词，下面是我自用的提示词，供大家参考。</description><guid isPermaLink="true">https://code.buxiantang.top/post/wei-xin-gong-zhong-hao-AI-zhi-neng-hui-fu.html</guid><pubDate>Wed, 02 Jul 2025 07:02:39 +0000</pubDate></item><item><title>一键安装阿里与 Cloudflare 的 DNS over HTTPS 设置</title><link>https://code.buxiantang.top/post/yi-jian-an-zhuang-a-li-yu-%20Cloudflare%20-de-%20DNS%20over%20HTTPS%20-she-zhi.html</link><description>
+
+# 一键安装阿里与 Cloudflare 的 DNS over HTTPS 设置（带图形界面 + 进度条 + 回滚）
+
+随着网络安全与隐私的关注度不断提升，**DNS over HTTPS（DoH）** 正逐渐成为主流。</description><guid isPermaLink="true">https://code.buxiantang.top/post/yi-jian-an-zhuang-a-li-yu-%20Cloudflare%20-de-%20DNS%20over%20HTTPS%20-she-zhi.html</guid><pubDate>Wed, 25 Jun 2025 01:56:51 +0000</pubDate></item><item><title>基于Cursor开发的“双币赢产品决策助手”</title><link>https://code.buxiantang.top/post/ji-yu-Cursor-kai-fa-de-%E2%80%9C-shuang-bi-ying-chan-pin-jue-ce-zhu-shou-%E2%80%9D.html</link><description>
+
+# 双币赢产品决策助手：让加密货币投资更简单
+
+在加密货币投资领域，双币产品因其独特的收益机制和风险对冲特性而受到越来越多投资者的关注。</description><guid isPermaLink="true">https://code.buxiantang.top/post/ji-yu-Cursor-kai-fa-de-%E2%80%9C-shuang-bi-ying-chan-pin-jue-ce-zhu-shou-%E2%80%9D.html</guid><pubDate>Fri, 23 May 2025 02:10:23 +0000</pubDate></item><item><title>Python Excel 转 Markdown 表格工具</title><link>https://code.buxiantang.top/post/Python%20Excel%20-zhuan-%20Markdown%20-biao-ge-gong-ju.html</link><description>### 技术文档：Python Excel 转 Markdown 表格工具
+
+#### **用途**
+本 Python 脚本用于将 Excel 文件的内容转换为 Markdown 格式的表格，便于在 Markdown 文档中呈现数据。</description><guid isPermaLink="true">https://code.buxiantang.top/post/Python%20Excel%20-zhuan-%20Markdown%20-biao-ge-gong-ju.html</guid><pubDate>Tue, 13 May 2025 08:12:27 +0000</pubDate></item><item><title>使用cloudflare搭建一个个人网站访问统计脚本</title><link>https://code.buxiantang.top/post/shi-yong-cloudflare-da-jian-yi-ge-ge-ren-wang-zhan-fang-wen-tong-ji-jiao-ben.html</link><description>
+# 卜仙堂访问统计系统
+
+这是一个基于 Cloudflare Workers 和 D1 数据库的访问统计系统，用于记录网站的页面浏览量（PV）和独立访客数（UV）。</description><guid isPermaLink="true">https://code.buxiantang.top/post/shi-yong-cloudflare-da-jian-yi-ge-ge-ren-wang-zhan-fang-wen-tong-ji-jiao-ben.html</guid><pubDate>Wed, 30 Apr 2025 09:48:00 +0000</pubDate></item><item><title>方位角的转换，从155°0′0″→E65°S</title><link>https://code.buxiantang.top/post/fang-wei-jiao-de-zhuan-huan-%EF%BC%8C-cong-155%C2%B00%E2%80%B20%E2%80%B3%E2%86%92E65%C2%B0S.html</link><description>## 1. 目标&#13;
+编写一个excel，可以将D3单元格的方位角进行格式转换到E3单元格，转换规则为：D3的单元格角度代表从正北方向，顺时针转动的角度，转换后的角度是两个正向相夹一个锐角的格式，比如说，D3单元格是110，那么转换后的E3单元格将是E20°S,D3单元格为200°，那么E3单元格是S20°W,如果D3单元格是50°，那么E3单元格就是N50°E，如果D3单元格不是整数的角度，那么就四舍五入，E3单元格相夹的角度是整数。</description><guid isPermaLink="true">https://code.buxiantang.top/post/fang-wei-jiao-de-zhuan-huan-%EF%BC%8C-cong-155%C2%B00%E2%80%B20%E2%80%B3%E2%86%92E65%C2%B0S.html</guid><pubDate>Wed, 07 Aug 2024 08:16:31 +0000</pubDate></item><item><title>让chatgpt帮你优化stable diffusion绘图提示词</title><link>https://code.buxiantang.top/post/rang-chatgpt-bang-ni-you-hua-stable%20diffusion-hui-tu-ti-shi-ci.html</link><description>## 一、stable diffusion介绍&#13;
+Stable Diffusion是一种基于深度学习的文本到图像的生成模型。</description><guid isPermaLink="true">https://code.buxiantang.top/post/rang-chatgpt-bang-ni-you-hua-stable%20diffusion-hui-tu-ti-shi-ci.html</guid><pubDate>Mon, 29 Jul 2024 08:04:20 +0000</pubDate></item><item><title>关于我</title><link>https://code.buxiantang.top/post/guan-yu-wo.html</link><description>`Gmeek-html&lt;iframe id='contentFrame' src='https://code.buxiantang.top/file/about.html' frameborder='0' style='border: none;' width='100%'  height='900px' &gt;&lt;/iframe&gt;`
+
+
+。</description><guid isPermaLink="true">https://code.buxiantang.top/post/guan-yu-wo.html</guid><pubDate>Fri, 26 Jul 2024 05:05:01 +0000</pubDate></item><item><title>使用workers代理IP:端口</title><link>https://code.buxiantang.top/post/shi-yong-workers-dai-li-IP--duan-kou.html</link><description>## 一、目的&#13;
+&#13;
+- 通过workers实现访问域名时实际请求url是ip:port&#13;
+- 举个例子：&#13;
+  &#13;
+  - 我需要将ip为123.456.789，端口号为6666，通过域名代理，实现：访问target.example.com，请求的是123.456.789:6666，~~我在绕口令吗？🤣~~&#13;
+&#13;
+## 二、实现&#13;
+&#13;
+1. 创建一个workers，名称随意，比如说`targetworkers`（**为什么是`targetworkers`而不是`target`呢？留给聪明的你回答**）&#13;
+2. 编辑代码：&#13;
+&#13;
+```JavaScript&#13;
+addEventListener('fetch', event =&gt; {&#13;
+  event.respondWith(handleRequest(event.request))&#13;
+})&#13;
+&#13;
+async function handleRequest(request) {&#13;
+  // 目标域名和端口&#13;
+  const targetHost = 'targetworkers.example.com:6666'&#13;
+&#13;
+  // 获取原始请求的 URL 和路径&#13;
+  const url = new URL(request.url)&#13;
+  const targetUrl = `http://${targetHost}${url.pathname}${url.search}`&#13;
+&#13;
+  // 构造新的请求&#13;
+  const proxyRequest = new Request(targetUrl, {&#13;
+    method: request.method,&#13;
+    headers: request.headers,&#13;
+    body: request.body,&#13;
+  })&#13;
+&#13;
+  // 发送请求并返回响应&#13;
+  const response = await fetch(proxyRequest)&#13;
+&#13;
+  // 创建新的响应，保持地址栏不变&#13;
+  return new Response(response.body, {&#13;
+    status: response.status,&#13;
+    statusText: response.statusText,&#13;
+    headers: response.headers,&#13;
+  })&#13;
+}&#13;
+```&#13;
+&#13;
+3. 保存并部署&#13;
+4. 添加自定义域名，将这个workers解析到target.example.com&#13;
+5. 进行DNS解析：使用A记录将`targetworkers.example.com`解析到123.456.789&#13;
+&#13;
+## 三、完成&#13;
+&#13;
+现在访问`target.example.com`就可以打开123.456.789:6666了。</description><guid isPermaLink="true">https://code.buxiantang.top/post/shi-yong-workers-dai-li-IP--duan-kou.html</guid><pubDate>Thu, 25 Jul 2024 09:05:36 +0000</pubDate></item><item><title>友好可靠的虚拟全球信用卡</title><link>https://code.buxiantang.top/post/you-hao-ke-kao-de-xu-ni-quan-qiu-xin-yong-qia.html</link><description># 重要更新，服务商已无，虚拟信用卡建议使用大型国际支持的，牌照靠谱的。</description><guid isPermaLink="true">https://code.buxiantang.top/post/you-hao-ke-kao-de-xu-ni-quan-qiu-xin-yong-qia.html</guid><pubDate>Wed, 24 Jul 2024 06:51:31 +0000</pubDate></item><item><title>我是怎么成为出道仙的呢？</title><link>https://code.buxiantang.top/post/wo-shi-zen-me-cheng-wei-chu-dao-xian-de-ni-%EF%BC%9F.html</link><description>关于这个话题，说来话长。</description><guid isPermaLink="true">https://code.buxiantang.top/post/wo-shi-zen-me-cheng-wei-chu-dao-xian-de-ni-%EF%BC%9F.html</guid><pubDate>Tue, 23 Jul 2024 12:35:27 +0000</pubDate></item><item><title>为博客文章添加目录插件</title><link>https://code.buxiantang.top/post/wei-bo-ke-wen-zhang-tian-jia-mu-lu-cha-jian.html</link><description>这是一个最基本的实现示例。</description><guid isPermaLink="true">https://code.buxiantang.top/post/wei-bo-ke-wen-zhang-tian-jia-mu-lu-cha-jian.html</guid><pubDate>Tue, 23 Jul 2024 11:40:18 +0000</pubDate></item><item><title>闲鱼猪手配置文件解密</title><link>https://code.buxiantang.top/post/xian-yu-zhu-shou-pei-zhi-wen-jian-jie-mi.html</link><description># 闲鱼猪手配置文件解密&#13;
+&#13;
+&gt; 本文只为转载备份，来源`https://www.cnblogs.com/azwhikaru/p/17045056.html`&#13;
+&#13;
+众所周知，有个很好用的 Xposed 模块叫闲鱼猪手，可惜不知道什么原因，作者已经跑路了，好在原作者是把配置文件放在 Gitee 上的，通过 Commit 记录抢救回了作者的最后一次更新。</description><guid isPermaLink="true">https://code.buxiantang.top/post/xian-yu-zhu-shou-pei-zhi-wen-jian-jie-mi.html</guid><pubDate>Tue, 23 Jul 2024 04:31:30 +0000</pubDate></item><item><title>Markdown语法总览</title><link>https://code.buxiantang.top/post/Markdown-yu-fa-zong-lan.html</link><description>## 在线 Markdown 编辑器&#13;
+- 地址：[点击前往](https://markdown.buxiantang.top/)。</description><guid isPermaLink="true">https://code.buxiantang.top/post/Markdown-yu-fa-zong-lan.html</guid><pubDate>Mon, 22 Jul 2024 10:19:52 +0000</pubDate></item><item><title>源泉设计----绿色、免费、快捷、实用的建筑与装饰绘图辅助软件</title><link>https://code.buxiantang.top/post/yuan-quan-she-ji------lv-se-%E3%80%81-mian-fei-%E3%80%81-kuai-jie-%E3%80%81-shi-yong-de-jian-zhu-yu-zhuang-shi-hui-tu-fu-zhu-ruan-jian.html</link><description>## 软件简介&#13;
+&#13;
+&gt; 有效率才是好工具！&#13;
+&#13;
+“源泉建筑与装饰设计CAD工具箱(简称:源泉设计)”是专门针对建筑设计、装饰设计及相关专业的“辅助绘图软件”，它着力于为用户打造了一个简单、易用、快捷而强大的制图环境。</description><guid isPermaLink="true">https://code.buxiantang.top/post/yuan-quan-she-ji------lv-se-%E3%80%81-mian-fei-%E3%80%81-kuai-jie-%E3%80%81-shi-yong-de-jian-zhu-yu-zhuang-shi-hui-tu-fu-zhu-ruan-jian.html</guid><pubDate>Mon, 22 Jul 2024 06:59:26 +0000</pubDate></item><item><title>基于CloudFlare workers应用进行AI绘图</title><link>https://code.buxiantang.top/post/ji-yu-CloudFlare%20workers-ying-yong-jin-xing-AI-hui-tu.html</link><description>## 演示&#13;
+&#13;
+|   |   |   |&#13;
+| :---: | :---: | :---: |&#13;
+|  ![ca6832cf36820f3a0fcfe.png](https://imghosting.buxiantang.top/file/ca6832cf36820f3a0fcfe.png)| ![04beae21d486a3bf87022.png](https://imghosting.buxiantang.top/file/04beae21d486a3bf87022.png) | ![e69b41808e1e6e0ed88ef.png](https://imghosting.buxiantang.top/file/e69b41808e1e6e0ed88ef.png) |&#13;
+| ![a3f47639e1942ddf9e75b.png](https://imghosting.buxiantang.top/file/a3f47639e1942ddf9e75b.png) |![85651a51a2b7c30fba416.png](https://imghosting.buxiantang.top/file/85651a51a2b7c30fba416.png)  | ![ef1264a0cdd944b15466d.png](https://imghosting.buxiantang.top/file/ef1264a0cdd944b15466d.png) |&#13;
+&#13;
+## 演示地址：[demo](https://img.buxiantang.top/)&#13;
+&#13;
+## 部署流程&#13;
+&#13;
+本项目基于：[cloudflare workers应用系列之6:AI 生成图片 Text to Image App](https://51xmi.com/post0715203336)完成二次开发。</description><guid isPermaLink="true">https://code.buxiantang.top/post/ji-yu-CloudFlare%20workers-ying-yong-jin-xing-AI-hui-tu.html</guid><pubDate>Sat, 20 Jul 2024 03:49:43 +0000</pubDate></item><item><title>Hello, world</title><link>https://code.buxiantang.top/post/Hello%2C%20world.html</link><description>This is my first blog, based on github issues，。</description><guid isPermaLink="true">https://code.buxiantang.top/post/Hello%2C%20world.html</guid><pubDate>Sat, 20 Jul 2024 02:14:23 +0000</pubDate></item></channel></rss>

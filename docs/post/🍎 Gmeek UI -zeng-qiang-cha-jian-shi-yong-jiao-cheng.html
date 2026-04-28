@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    <link rel="preconnect" href="https://code.buxiantang.top"><link rel="preconnect" href="https://blog.meekdai.com"><link rel="stylesheet" href="https://code.buxiantang.top/assets/GmeekBaseTheme.css"><script src="https://code.buxiantang.top/assets/GmeekCustomizeCss.js"></script><script src="https://blog.meekdai.com/assets/GmeekVercount.js"></script><script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","na4qnk47pl");</script>
+    <link rel="icon" href="https://code.buxiantang.top/favicon.svg"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="
+# 🍎 Gmeek UI 增强插件使用教程
+
+## 📦 插件简介
+
+Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 Apple 风格的焕然一新体验，包括：
+
+| 文件名                   | 功能说明                                                                 |
+|--------------------------|--------------------------------------------------------------------------|
+| `GmeekBaseTheme.css`     | 基础布局样式：字体、圆角、卡片排版，兼容原始结构不污染构建样式                          |
+| `GmeekCustomizeCss.js`   | UI 动态增强：卡片结构重构、玻璃拟态样式、深浅模式自适应、渐变背景、标签配色自动对比等功能       |
+
+> 🧠 零依赖、构建无侵入、插拔可选、明暗自动识别、视觉沉浸体验，100% 兼容 Gmeek 原生内容结构。">
+<meta property="og:title" content="🍎 Gmeek UI 增强插件使用教程">
+<meta property="og:description" content="
+# 🍎 Gmeek UI 增强插件使用教程
+
+## 📦 插件简介
+
+Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 Apple 风格的焕然一新体验，包括：
+
+| 文件名                   | 功能说明                                                                 |
+|--------------------------|--------------------------------------------------------------------------|
+| `GmeekBaseTheme.css`     | 基础布局样式：字体、圆角、卡片排版，兼容原始结构不污染构建样式                          |
+| `GmeekCustomizeCss.js`   | UI 动态增强：卡片结构重构、玻璃拟态样式、深浅模式自适应、渐变背景、标签配色自动对比等功能       |
+
+> 🧠 零依赖、构建无侵入、插拔可选、明暗自动识别、视觉沉浸体验，100% 兼容 Gmeek 原生内容结构。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://code.buxiantang.top/post/%F0%9F%8D%8E%20Gmeek%20UI%20-zeng-qiang-cha-jian-shi-yong-jiao-cheng.html">
+<meta property="og:image" content="https://code.buxiantang.top/favicon.svg">
+<title>🍎 Gmeek UI 增强插件使用教程</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">🍎 Gmeek UI 增强插件使用教程</h1>
+<div class="title-right">
+    <a href="https://code.buxiantang.top" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/tiengming/tiengming.github.io/issues/19" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>🍎 Gmeek UI 增强插件使用教程</h1>
+<h2>📦 插件简介</h2>
+<p>Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 Apple 风格的焕然一新体验，包括：</p>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>文件名</th>
+<th>功能说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">GmeekBaseTheme.css</code></td>
+<td>基础布局样式：字体、圆角、卡片排版，兼容原始结构不污染构建样式</td>
+</tr>
+<tr>
+<td><code class="notranslate">GmeekCustomizeCss.js</code></td>
+<td>UI 动态增强：卡片结构重构、玻璃拟态样式、深浅模式自适应、渐变背景、标签配色自动对比等功能</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<blockquote>
+<p>🧠 零依赖、构建无侵入、插拔可选、明暗自动识别、视觉沉浸体验，100% 兼容 Gmeek 原生内容结构。</p>
+</blockquote>
+<hr>
+<h2>✨ 功能亮点</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>模块</th>
+<th>功能描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🍏 Apple 风格排版</td>
+<td>使用 SF 字体栈 + 圆角 + 动效 + 阴影构建沉浸式阅读体验</td>
+</tr>
+<tr>
+<td>🧱 卡片结构重构</td>
+<td>将 <code class="notranslate">.SideNav-item</code> 动态转为 <code class="notranslate">.post-card</code>，支持标题/标签/摘要生成</td>
+</tr>
+<tr>
+<td>🧊 玻璃拟态样式</td>
+<td>卡片使用半透明玻璃效果，搭配背景模糊、边框、阴影增强视觉层次</td>
+</tr>
+<tr>
+<td>🌗 主题适配支持</td>
+<td>自动识别 <code class="notranslate">&lt;html data-color-mode&gt;</code> 中的 <code class="notranslate">light</code> / <code class="notranslate">dark</code> / <code class="notranslate">auto</code> 三种模式</td>
+</tr>
+<tr>
+<td>🌈 动态渐变背景</td>
+<td>渐变呼吸背景使用 <code class="notranslate">hue-rotate</code> 动效，明暗模式下自适配颜色主题</td>
+</tr>
+<tr>
+<td>🏷️ 标签配色对比自动识别</td>
+<td>标签从 <code class="notranslate">.Label</code> 提取背景色，并自动计算亮度决定字体使用白色或黑色，确保最佳可读性</td>
+</tr>
+<tr>
+<td>🧼 样式作用域隔离</td>
+<td>插件仅影响 <code class="notranslate">.post-card</code> 区域，正文、评论、页眉页脚、页面结构不被污染</td>
+</tr>
+<tr>
+<td>🎯 支持 Auto 模式偏好判断</td>
+<td>插件可在 <code class="notranslate">data-color-mode="auto"</code> 情况下判断用户系统主题并实时切换（如 macOS 夜间自动切换）</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>更新说明：</h2>
+<h3>v1.1.0（2025-9-28）</h3>
+<ul>
+<li>删除了文章列表卡片中的文章说明，保持简洁，比如下图红框内容：<a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/82575d548c7c3e465af4876772a3e6e9f6b9c30c627ee91a2aed2e95440396f0/68747470733a2f2f66696c65732e636174626f782e6d6f652f396e376876382e706e67"><img src="https://camo.githubusercontent.com/82575d548c7c3e465af4876772a3e6e9f6b9c30c627ee91a2aed2e95440396f0/68747470733a2f2f66696c65732e636174626f782e6d6f652f396e376876382e706e67" alt="红框内容" style="max-width: 100%;"></a></li>
+<li>解决<a href="https://github.com/tiengming/tiengming.github.io/issues/19#issuecomment-3281147970" data-hovercard-type="issue" data-hovercard-url="/tiengming/tiengming.github.io/issues/19/hovercard">此问题</a>，在插件设计时，没有考虑这个功能，疏忽了。点击标签可跳转到标签文章聚合页，鼠标悬浮友好渲染；</li>
+<li>解决<a href="https://github.com/tiengming/tiengming.github.io/issues/19#issuecomment-3289496357" data-hovercard-type="issue" data-hovercard-url="/tiengming/tiengming.github.io/issues/19/hovercard">性能问题</a>，我认为是加载方式不对，会导致<strong>LCP性能问题</strong>；</li>
+</ul>
+<hr>
+<h2>⚙️ 快速使用步骤</h2>
+<h3>配置 <code class="notranslate">config.json</code></h3>
+<p>打开项目根目录下 <code class="notranslate">config.json</code>，在 <code class="notranslate">"allHead"</code> 字段中添加以下内容（直接点击复制然后插入保存即可）：</p>
+<div class="highlight highlight-source-json"><pre class="notranslate"><span class="pl-ii">&lt;link rel=\"preconnect\" href=\"https://code.buxiantang.top\"&gt;&lt;link rel=\"preconnect\" href=\"https://blog.meekdai.com\"&gt;&lt;link rel=\"stylesheet\" href=\"https://code.buxiantang.top/assets/GmeekBaseTheme.css\"&gt;&lt;script src=\"https://code.buxiantang.top/assets/GmeekCustomizeCss.js\"&gt;&lt;/script&gt;</span></pre></div>
+<h2><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/c1e9ff88600ee3ec931979c3059a6bf0dde64f2cfe5cd01f483b38ae91ed8813/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f624d645a79584b2e706e67"><img src="https://camo.githubusercontent.com/c1e9ff88600ee3ec931979c3059a6bf0dde64f2cfe5cd01f483b38ae91ed8813/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f624d645a79584b2e706e67" alt="msedge_FHrCHq7Ru0.png" data-canonical-src="https://pick.buxiantang.top/rest/bMdZyXK.png" style="max-width: 100%;"></a></h2>
+<h2>👇👇👇👇</h2>
+<p><a target="_blank" rel="noopener noreferrer nofollow" href="https://camo.githubusercontent.com/69d0c1e4f028bee9c17ca0d5df8444442fea965015bdc37678642e884e4af816/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f646a6b7879584b2e706e67"><img src="https://camo.githubusercontent.com/69d0c1e4f028bee9c17ca0d5df8444442fea965015bdc37678642e884e4af816/68747470733a2f2f7069636b2e62757869616e74616e672e746f702f726573742f646a6b7879584b2e706e67" alt="msedge_bBQNpnAXyV.png" data-canonical-src="https://pick.buxiantang.top/rest/djkxyXK.png" style="max-width: 100%;"></a></p>
+<ul>
+<li>✅ 确保所有链接以 <code class="notranslate">'单引号'</code> 包裹，避免 Gmeek 构建器解析错误；这里我使用的是转义方法。</li>
+<li>✅ 不需要更改主题模板或任何 HTML 内容结构，插件将自动注入卡片 UI 与渐变背景。</li>
+</ul>
+<hr>
+<h3>② 文件资源部署建议</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>文件名</th>
+<th>路径/CDN 示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">GmeekBaseTheme.css</code></td>
+<td><code class="notranslate">https://code.buxiantang.top/assets/GmeekBaseTheme.css</code></td>
+</tr>
+<tr>
+<td><code class="notranslate">GmeekCustomizeCss.js</code></td>
+<td><code class="notranslate">https://code.buxiantang.top/assets/GmeekCustomizeCss.js</code></td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<blockquote>
+<p>如果只是使用链接引用方式使用，可以跳过。<br>
+推荐部署到自己的 CDN 或项目 <code class="notranslate">/assets/</code> 目录中，可长期缓存、独立版本管理。</p>
+</blockquote>
+<details>
+  <summary>点我展开看`GmeekBaseTheme.css`代码</summary>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-c">/* 🍏 Gmeek Apple 风格基础布局与排版样式 */</span>
+<span class="pl-ent">body</span> {
+  <span class="pl-c1">font-family</span><span class="pl-kos">:</span> -apple-system<span class="pl-kos">,</span> BlinkMacSystemFont<span class="pl-kos">,</span> <span class="pl-s">"San Francisco"</span><span class="pl-kos">,</span> <span class="pl-s">"Helvetica Neue"</span><span class="pl-kos">,</span> sans-serif;
+  <span class="pl-c1">background</span><span class="pl-kos">:</span> transparent;
+  <span class="pl-c1">color</span><span class="pl-kos">:</span> inherit;
+  <span class="pl-c1">max-width</span><span class="pl-kos">:</span> <span class="pl-c1">960<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">margin</span><span class="pl-kos">:</span> auto;
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">24<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">line-height</span><span class="pl-kos">:</span> <span class="pl-c1">1.6</span>;
+  <span class="pl-c1">transition</span><span class="pl-kos">:</span> background <span class="pl-c1">0.3<span class="pl-smi">s</span></span> ease;
+}
+
+.<span class="pl-c1">post-card</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> flex;
+  <span class="pl-c1">flex-direction</span><span class="pl-kos">:</span> column;
+  <span class="pl-c1">border-radius</span><span class="pl-kos">:</span> <span class="pl-c1">20<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">20<span class="pl-smi">px</span></span> <span class="pl-c1">24<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">20<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">box-shadow</span><span class="pl-kos">:</span> <span class="pl-c1">0</span> <span class="pl-c1">8<span class="pl-smi">px</span></span> <span class="pl-c1">24<span class="pl-smi">px</span></span> <span class="pl-en">rgba</span>(<span class="pl-c1">0</span><span class="pl-kos">,</span><span class="pl-c1">0</span><span class="pl-kos">,</span><span class="pl-c1">0</span><span class="pl-kos">,</span><span class="pl-c1">0.1</span>);
+  <span class="pl-c1">background</span><span class="pl-kos">:</span> <span class="pl-en">rgba</span>(<span class="pl-c1">255</span><span class="pl-kos">,</span> <span class="pl-c1">255</span><span class="pl-kos">,</span> <span class="pl-c1">255</span><span class="pl-kos">,</span> <span class="pl-c1">0.2</span>);
+  <span class="pl-c1">backdrop-filter</span><span class="pl-kos">:</span> <span class="pl-en">blur</span>(<span class="pl-c1">16<span class="pl-smi">px</span></span>);
+  <span class="pl-c1">-webkit-backdrop-filter</span><span class="pl-kos">:</span> <span class="pl-en">blur</span>(<span class="pl-c1">16<span class="pl-smi">px</span></span>);
+  <span class="pl-c1">border</span><span class="pl-kos">:</span> <span class="pl-c1">1<span class="pl-smi">px</span></span> solid <span class="pl-en">rgba</span>(<span class="pl-c1">255</span><span class="pl-kos">,</span> <span class="pl-c1">255</span><span class="pl-kos">,</span> <span class="pl-c1">255</span><span class="pl-kos">,</span> <span class="pl-c1">0.15</span>);
+  <span class="pl-c1">text-decoration</span><span class="pl-kos">:</span> none;
+  <span class="pl-c1">transition</span><span class="pl-kos">:</span> all <span class="pl-c1">0.3<span class="pl-smi">s</span></span> ease;
+}
+
+.<span class="pl-c1">post-card</span><span class="pl-kos">:</span><span class="pl-c1">hover</span> {
+  <span class="pl-c1">transform</span><span class="pl-kos">:</span> <span class="pl-en">translateY</span>(<span class="pl-c1">-4<span class="pl-smi">px</span></span>) <span class="pl-en">scale</span>(<span class="pl-c1">1.015</span>);
+  <span class="pl-c1">box-shadow</span><span class="pl-kos">:</span> <span class="pl-c1">0</span> <span class="pl-c1">12<span class="pl-smi">px</span></span> <span class="pl-c1">32<span class="pl-smi">px</span></span> <span class="pl-en">rgba</span>(<span class="pl-c1">0</span><span class="pl-kos">,</span> <span class="pl-c1">0</span><span class="pl-kos">,</span> <span class="pl-c1">0</span><span class="pl-kos">,</span> <span class="pl-c1">0.15</span>);
+}
+
+.<span class="pl-c1">post-meta</span> {
+  <span class="pl-c1">display</span><span class="pl-kos">:</span> flex;
+  <span class="pl-c1">flex-wrap</span><span class="pl-kos">:</span> wrap;
+  <span class="pl-c1">gap</span><span class="pl-kos">:</span> <span class="pl-c1">8<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">font-size</span><span class="pl-kos">:</span> <span class="pl-c1">13<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">10<span class="pl-smi">px</span></span>;
+}
+
+.<span class="pl-c1">post-tag</span> {
+  <span class="pl-c1">border-radius</span><span class="pl-kos">:</span> <span class="pl-c1">999<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">padding</span><span class="pl-kos">:</span> <span class="pl-c1">3<span class="pl-smi">px</span></span> <span class="pl-c1">10<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">font-weight</span><span class="pl-kos">:</span> <span class="pl-c1">500</span>;
+  <span class="pl-c1">margin-right</span><span class="pl-kos">:</span> <span class="pl-c1">6<span class="pl-smi">px</span></span>;
+}
+
+.<span class="pl-c1">post-title</span> {
+  <span class="pl-c1">font-size</span><span class="pl-kos">:</span> <span class="pl-c1">18<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">font-weight</span><span class="pl-kos">:</span> <span class="pl-c1">600</span>;
+  <span class="pl-c1">margin-bottom</span><span class="pl-kos">:</span> <span class="pl-c1">10<span class="pl-smi">px</span></span>;
+}
+
+.<span class="pl-c1">post-summary</span> {
+  <span class="pl-c1">font-size</span><span class="pl-kos">:</span> <span class="pl-c1">14.5<span class="pl-smi">px</span></span>;
+  <span class="pl-c1">line-height</span><span class="pl-kos">:</span> <span class="pl-c1">1.6</span>;
+}</pre></div>
+</details>
+<details>
+  <summary>点我展开看`GmeekCustomizeCss.js`代码</summary>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">(</span><span class="pl-k">function</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-c">// 严格的重复执行保护</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">return</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+  
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"🍏 TiengmingModern 插件启动中... https://code.buxiantang.top/"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">const</span> <span class="pl-s1">themeColors</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+    <span class="pl-c1">light</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">bgGradient</span>: <span class="pl-s">"linear-gradient(135deg, #f4f4f4, #fef2f2, #f4f0ff)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBg</span>: <span class="pl-s">"rgba(255,255,255,0.25)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBorder</span>: <span class="pl-s">"1px solid rgba(255,255,255,0.2)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">title</span>: <span class="pl-s">"#1c1c1e"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">meta</span>: <span class="pl-s">"#888"</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-c1">dark</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">bgGradient</span>: <span class="pl-s">"linear-gradient(135deg, #1a1a2b, #222c3a, #2e3950)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBg</span>: <span class="pl-s">"rgba(32,32,32,0.3)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBorder</span>: <span class="pl-s">"1px solid rgba(255,255,255,0.08)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">title</span>: <span class="pl-s">"#eee"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">meta</span>: <span class="pl-s">"#bbb"</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">getEffectiveMode</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">raw</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">raw</span> <span class="pl-c1">===</span> <span class="pl-s">"light"</span> <span class="pl-c1">||</span> <span class="pl-s1">raw</span> <span class="pl-c1">===</span> <span class="pl-s">"dark"</span><span class="pl-kos">)</span> <span class="pl-k">return</span> <span class="pl-s1">raw</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">matchMedia</span><span class="pl-kos">(</span><span class="pl-s">"(prefers-color-scheme: dark)"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">matches</span> ? <span class="pl-s">"dark"</span> : <span class="pl-s">"light"</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">getTextColor</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">rgb</span> <span class="pl-c1">=</span> <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-en">match</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">\d</span><span class="pl-c1">+</span><span class="pl-c1">/</span>g</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">rgb</span><span class="pl-kos">)</span> <span class="pl-k">return</span> <span class="pl-s">"#fff"</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">r</span><span class="pl-kos">,</span> <span class="pl-s1">g</span><span class="pl-kos">,</span> <span class="pl-s1">b</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-s1">rgb</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-v">Number</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">l</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-c1">0.299</span> <span class="pl-c1">*</span> <span class="pl-s1">r</span> <span class="pl-c1">+</span> <span class="pl-c1">0.587</span> <span class="pl-c1">*</span> <span class="pl-s1">g</span> <span class="pl-c1">+</span> <span class="pl-c1">0.114</span> <span class="pl-c1">*</span> <span class="pl-s1">b</span><span class="pl-kos">)</span> <span class="pl-c1">/</span> <span class="pl-c1">255</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-s1">l</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0.6</span> ? <span class="pl-s">"#000"</span> : <span class="pl-s">"#fff"</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 标签点击处理函数</span>
+  <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">handleTagClick</span> <span class="pl-c1">=</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-s1">event</span><span class="pl-kos">,</span> <span class="pl-s1">tagName</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-s1">event</span><span class="pl-kos">.</span><span class="pl-en">preventDefault</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">event</span><span class="pl-kos">.</span><span class="pl-en">stopPropagation</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">tagUrl</span> <span class="pl-c1">=</span> <span class="pl-s">`tag.html#<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-en">encodeURIComponent</span><span class="pl-kos">(</span><span class="pl-s1">tagName</span><span class="pl-kos">)</span><span class="pl-kos">}</span></span>`</span><span class="pl-kos">;</span>
+    <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">location</span><span class="pl-kos">.</span><span class="pl-c1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">tagUrl</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+  <span class="pl-c">// 初始化背景和样式</span>
+  <span class="pl-k">function</span> <span class="pl-en">initializeBackground</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">existingBg</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.herobgcolor'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">existingBg</span><span class="pl-kos">)</span> <span class="pl-s1">existingBg</span><span class="pl-kos">.</span><span class="pl-en">remove</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"div"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-c1">className</span> <span class="pl-c1">=</span> <span class="pl-s">"herobgcolor"</span><span class="pl-kos">;</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">const</span> <span class="pl-s1">existingStyle</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'#tiengming-modern-styles'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">existingStyle</span><span class="pl-kos">)</span> <span class="pl-s1">existingStyle</span><span class="pl-kos">.</span><span class="pl-en">remove</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">const</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"style"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">style</span><span class="pl-kos">.</span><span class="pl-c1">id</span> <span class="pl-c1">=</span> <span class="pl-s">'tiengming-modern-styles'</span><span class="pl-kos">;</span>
+    <span class="pl-s1">style</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s">`</span>
+<span class="pl-s">      .herobgcolor {</span>
+<span class="pl-s">        position: fixed;</span>
+<span class="pl-s">        top: 0; left: 0;</span>
+<span class="pl-s">        width: 100vw; height: 100vh;</span>
+<span class="pl-s">        z-index: -1;</span>
+<span class="pl-s">        background-size: 600% 600%;</span>
+<span class="pl-s">        animation: hueflow 30s ease infinite;</span>
+<span class="pl-s">        transition: background 0.6s ease;</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">      @keyframes hueflow {</span>
+<span class="pl-s">        0% { filter: hue-rotate(0deg); background-position: 0% 50%; }</span>
+<span class="pl-s">        50% { filter: hue-rotate(180deg); background-position: 100% 50%; }</span>
+<span class="pl-s">        100% { filter: hue-rotate(360deg); background-position: 0% 50%; }</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">      .post-tag {</span>
+<span class="pl-s">        cursor: pointer;</span>
+<span class="pl-s">        transition: all 0.2s ease;</span>
+<span class="pl-s">        border-radius: 4px;</span>
+<span class="pl-s">        padding: 2px 6px;</span>
+<span class="pl-s">        margin-right: 4px;</span>
+<span class="pl-s">        font-size: 0.8em;</span>
+<span class="pl-s">        display: inline-block;</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">      .post-tag:hover {</span>
+<span class="pl-s">        transform: translateY(-1px);</span>
+<span class="pl-s">        box-shadow: 0 2px 8px rgba(0,0,0,0.15);</span>
+<span class="pl-s">        opacity: 0.8;</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">    `</span><span class="pl-kos">;</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">head</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">style</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-s1">bg</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-en">initializeBackground</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">mode</span> <span class="pl-c1">=</span> <span class="pl-en">getEffectiveMode</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">theme</span> <span class="pl-c1">=</span> <span class="pl-s1">themeColors</span><span class="pl-kos">[</span><span class="pl-s1">mode</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span> <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">background</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">bgGradient</span><span class="pl-kos">;</span>
+
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".post-card"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">card</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">background</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">cardBg</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">border</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">cardBorder</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">backdropFilter</span> <span class="pl-c1">=</span> <span class="pl-s">"blur(16px)"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">webkitBackdropFilter</span> <span class="pl-c1">=</span> <span class="pl-s">"blur(16px)"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">boxShadow</span> <span class="pl-c1">=</span> <span class="pl-s">"0 8px 24px rgba(0,0,0,0.12)"</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".post-title"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">meta</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".post-meta"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">title</span><span class="pl-kos">)</span> <span class="pl-s1">title</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">title</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">meta</span><span class="pl-kos">)</span> <span class="pl-s1">meta</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">meta</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-kos">[</span><span class="pl-s">"#header"</span><span class="pl-kos">,</span> <span class="pl-s">"#footer"</span><span class="pl-kos">]</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">sel</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">el</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s1">sel</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">)</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">mode</span> <span class="pl-c1">===</span> <span class="pl-s">"dark"</span> ? <span class="pl-s">"#ddd"</span> : <span class="pl-s">""</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 主题监听器</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">)</span> <span class="pl-c1">===</span> <span class="pl-s">"auto"</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">matchMedia</span><span class="pl-kos">(</span><span class="pl-s">"(prefers-color-scheme: dark)"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">"change"</span><span class="pl-kos">,</span> <span class="pl-s1">applyTheme</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">new</span> <span class="pl-v">MutationObserver</span><span class="pl-kos">(</span><span class="pl-s1">applyTheme</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">observe</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+    <span class="pl-c1">attributes</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span>
+    <span class="pl-c1">attributeFilter</span>: <span class="pl-kos">[</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">]</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+
+
+  <span class="pl-k">function</span> <span class="pl-en">rebuildCards</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-c">// 查找所有可能的文章容器</span>
+    <span class="pl-k">const</span> <span class="pl-s1">possibleSelectors</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>
+      <span class="pl-s">'.SideNav-item'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.Box-row'</span><span class="pl-kos">,</span> 
+      <span class="pl-s">'.d-flex'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.listTitle'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.Label'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[class*="SideNav"]'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[class*="Box"]'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[class*="list"]'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'article'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'.post'</span><span class="pl-kos">,</span>
+      <span class="pl-s">'[href*=".html"]'</span>
+    <span class="pl-kos">]</span><span class="pl-kos">;</span>
+    
+    <span class="pl-s1">possibleSelectors</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">selector</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">elements</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s1">selector</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">elements</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">elements</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&lt;=</span> <span class="pl-c1">5</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+          <span class="pl-s1">elements</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">,</span> <span class="pl-s1">i</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+            <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&lt;</span> <span class="pl-c1">100</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+            <span class="pl-kos">}</span>
+          <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-kos">}</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-c">// 查找包含 listTitle 的父元素</span>
+    <span class="pl-k">const</span> <span class="pl-s1">listTitles</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">'.listTitle'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">listTitles</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">listTitles</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">title</span><span class="pl-kos">,</span> <span class="pl-s1">i</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+
+    <span class="pl-k">let</span> <span class="pl-s1">sideNavItems</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".SideNav-item"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    
+    <span class="pl-c">// 如果没找到，尝试通过 listTitle 找父元素</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">sideNavItems</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">===</span> <span class="pl-c1">0</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-s1">listTitles</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-c">// 假设 listTitle 的父元素就是我们要找的容器</span>
+      <span class="pl-k">const</span> <span class="pl-s1">parents</span> <span class="pl-c1">=</span> <span class="pl-v">Array</span><span class="pl-kos">.</span><span class="pl-en">from</span><span class="pl-kos">(</span><span class="pl-s1">listTitles</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-s1">title</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-c">// 找到有href属性的祖先元素</span>
+        <span class="pl-k">let</span> <span class="pl-s1">current</span> <span class="pl-c1">=</span> <span class="pl-s1">title</span><span class="pl-kos">.</span><span class="pl-c1">parentElement</span><span class="pl-kos">;</span>
+        <span class="pl-k">while</span> <span class="pl-kos">(</span><span class="pl-s1">current</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-c1">!</span><span class="pl-s1">current</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">'href'</span><span class="pl-kos">)</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+          <span class="pl-s1">current</span> <span class="pl-c1">=</span> <span class="pl-s1">current</span><span class="pl-kos">.</span><span class="pl-c1">parentElement</span><span class="pl-kos">;</span>
+          <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">current</span> <span class="pl-c1">===</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">)</span> <span class="pl-k">break</span><span class="pl-kos">;</span>
+        <span class="pl-kos">}</span>
+        <span class="pl-k">return</span> <span class="pl-s1">current</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">filter</span><span class="pl-kos">(</span><span class="pl-v">Boolean</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">parents</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-s1">sideNavItems</span> <span class="pl-c1">=</span> <span class="pl-s1">parents</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span>
+    
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">sideNavItems</span><span class="pl-kos">.</span><span class="pl-c1">length</span> <span class="pl-c1">===</span> <span class="pl-c1">0</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">rebuildCards</span><span class="pl-kos">,</span> <span class="pl-c1">1000</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">return</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+
+
+    <span class="pl-s1">sideNavItems</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">card</span><span class="pl-kos">,</span> <span class="pl-s1">i</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-c">// 从href中提取文章标题作为备用方案</span>
+      <span class="pl-k">let</span> <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".listTitle"</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-c1">innerText</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">title</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-c">// 如果没有listTitle，从href中提取文件名作为标题</span>
+        <span class="pl-k">const</span> <span class="pl-s1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"href"</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">""</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">filename</span> <span class="pl-c1">=</span> <span class="pl-s1">href</span><span class="pl-kos">.</span><span class="pl-en">split</span><span class="pl-kos">(</span><span class="pl-s">'/'</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">pop</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-s">'.html'</span><span class="pl-kos">,</span> <span class="pl-s">''</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">"未命名文章"</span><span class="pl-kos">;</span>
+        <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">filename</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-s">-</span><span class="pl-c1">/</span>g</span><span class="pl-kos">,</span> <span class="pl-s">' '</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">replace</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">\b</span><span class="pl-cce">\w</span><span class="pl-c1">/</span>g</span><span class="pl-kos">,</span> <span class="pl-s1">l</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">l</span><span class="pl-kos">.</span><span class="pl-en">toUpperCase</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span>
+      <span class="pl-k">const</span> <span class="pl-s1">link</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"href"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">labels</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>...<span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".Label"</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">time</span> <span class="pl-c1">=</span> <span class="pl-s1">labels</span><span class="pl-kos">.</span><span class="pl-en">find</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">^</span><span class="pl-cce">\d</span><span class="pl-kos">{</span><span class="pl-c1">4</span><span class="pl-kos">}</span><span class="pl-c1">/</span></span><span class="pl-kos">.</span><span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">""</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">tags</span> <span class="pl-c1">=</span> <span class="pl-s1">labels</span><span class="pl-kos">.</span><span class="pl-en">filter</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">!==</span> <span class="pl-s1">time</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-k">const</span> <span class="pl-s1">tag</span> <span class="pl-c1">=</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">backgroundColor</span> <span class="pl-c1">||</span> <span class="pl-s">"#999"</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">fg</span> <span class="pl-c1">=</span> <span class="pl-en">getTextColor</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">return</span> <span class="pl-s">`&lt;span class="post-tag" style="background-color:<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">bg</span><span class="pl-kos">}</span></span>;color:<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">fg</span><span class="pl-kos">}</span></span>" data-tag="<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tag</span><span class="pl-kos">}</span></span>" onclick="handleTagClick(event, '<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tag</span><span class="pl-kos">}</span></span>')"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tag</span><span class="pl-kos">}</span></span>&lt;/span&gt;`</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">join</span><span class="pl-kos">(</span><span class="pl-s">""</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">newCard</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"a"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">link</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">className</span> <span class="pl-c1">=</span> <span class="pl-s">"post-card"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">animationDelay</span> <span class="pl-c1">=</span> <span class="pl-s">`<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">i</span> <span class="pl-c1">*</span> <span class="pl-c1">60</span><span class="pl-kos">}</span></span>ms`</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">innerHTML</span> <span class="pl-c1">=</span> <span class="pl-s">`</span>
+<span class="pl-s">        &lt;div class="post-meta"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tags</span><span class="pl-kos">}</span></span>&lt;span class="post-date"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">time</span><span class="pl-kos">}</span></span>&lt;/span&gt;&lt;/div&gt;</span>
+<span class="pl-s">        &lt;h2 class="post-title"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">title</span><span class="pl-kos">}</span></span>&lt;/h2&gt;</span>
+<span class="pl-s">      `</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">replaceWith</span><span class="pl-kos">(</span><span class="pl-s1">newCard</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 增强的DOM准备检查</span>
+  <span class="pl-k">function</span> <span class="pl-en">whenReady</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">readyState</span> <span class="pl-c1">===</span> <span class="pl-s">'complete'</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">100</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">readyState</span> <span class="pl-c1">===</span> <span class="pl-s">'interactive'</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">300</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span> <span class="pl-k">else</span> <span class="pl-kos">{</span>
+      <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'DOMContentLoaded'</span><span class="pl-kos">,</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">200</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'load'</span><span class="pl-kos">,</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-en">setTimeout</span><span class="pl-kos">(</span><span class="pl-s1">callback</span><span class="pl-kos">,</span> <span class="pl-c1">100</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-c">// 执行主逻辑</span>
+  <span class="pl-en">whenReady</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-en">rebuildCards</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-c">// 标记完成 - 放在最前面，避免重复执行</span>
+    <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span> <span class="pl-c1">=</span> <span class="pl-c1">true</span><span class="pl-kos">;</span>
+    <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"🍏 TiengmingModern 插件加载完成"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-c">// 页面可见性监听 - 简化逻辑，只处理样式重新应用</span>
+  <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">'visibilitychange'</span><span class="pl-kos">,</span> <span class="pl-k">function</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">hidden</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">existingCards</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.post-card'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">existingBg</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">'.herobgcolor'</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">existingCards</span> <span class="pl-c1">&amp;&amp;</span> <span class="pl-c1">!</span><span class="pl-s1">existingBg</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+        <span class="pl-en">initializeBackground</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+</details>
+<details>
+  <summary>旧版本`GmeekCustomizeCss.js`代码</summary>
+<div class="highlight highlight-source-js"><pre class="notranslate"><span class="pl-kos">(</span><span class="pl-k">function</span> <span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span><span class="pl-kos">)</span> <span class="pl-k">return</span><span class="pl-kos">;</span>
+  <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-c1">__TiengmingModernized</span> <span class="pl-c1">=</span> <span class="pl-c1">true</span><span class="pl-kos">;</span>
+  <span class="pl-smi">console</span><span class="pl-kos">.</span><span class="pl-en">log</span><span class="pl-kos">(</span><span class="pl-s">"🍏 TiengmingModern 插件已启用 https://code.buxiantang.top/"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">const</span> <span class="pl-s1">themeColors</span> <span class="pl-c1">=</span> <span class="pl-kos">{</span>
+    <span class="pl-c1">light</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">bgGradient</span>: <span class="pl-s">"linear-gradient(135deg, #f4f4f4, #fef2f2, #f4f0ff)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBg</span>: <span class="pl-s">"rgba(255,255,255,0.25)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBorder</span>: <span class="pl-s">"1px solid rgba(255,255,255,0.2)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">title</span>: <span class="pl-s">"#1c1c1e"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">summary</span>: <span class="pl-s">"#444"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">meta</span>: <span class="pl-s">"#888"</span>
+    <span class="pl-kos">}</span><span class="pl-kos">,</span>
+    <span class="pl-c1">dark</span>: <span class="pl-kos">{</span>
+      <span class="pl-c1">bgGradient</span>: <span class="pl-s">"linear-gradient(135deg, #1a1a2b, #222c3a, #2e3950)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBg</span>: <span class="pl-s">"rgba(32,32,32,0.3)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">cardBorder</span>: <span class="pl-s">"1px solid rgba(255,255,255,0.08)"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">title</span>: <span class="pl-s">"#eee"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">summary</span>: <span class="pl-s">"#aaa"</span><span class="pl-kos">,</span>
+      <span class="pl-c1">meta</span>: <span class="pl-s">"#bbb"</span>
+    <span class="pl-kos">}</span>
+  <span class="pl-kos">}</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">getEffectiveMode</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">raw</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">raw</span> <span class="pl-c1">===</span> <span class="pl-s">"light"</span> <span class="pl-c1">||</span> <span class="pl-s1">raw</span> <span class="pl-c1">===</span> <span class="pl-s">"dark"</span><span class="pl-kos">)</span> <span class="pl-k">return</span> <span class="pl-s1">raw</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">matchMedia</span><span class="pl-kos">(</span><span class="pl-s">"(prefers-color-scheme: dark)"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-c1">matches</span> ? <span class="pl-s">"dark"</span> : <span class="pl-s">"light"</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">getTextColor</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">rgb</span> <span class="pl-c1">=</span> <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-en">match</span><span class="pl-kos">(</span><span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">\d</span><span class="pl-c1">+</span><span class="pl-c1">/</span>g</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-c1">!</span><span class="pl-s1">rgb</span><span class="pl-kos">)</span> <span class="pl-k">return</span> <span class="pl-s">"#fff"</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-kos">[</span><span class="pl-s1">r</span><span class="pl-kos">,</span> <span class="pl-s1">g</span><span class="pl-kos">,</span> <span class="pl-s1">b</span><span class="pl-kos">]</span> <span class="pl-c1">=</span> <span class="pl-s1">rgb</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-v">Number</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">l</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-c1">0.299</span> <span class="pl-c1">*</span> <span class="pl-s1">r</span> <span class="pl-c1">+</span> <span class="pl-c1">0.587</span> <span class="pl-c1">*</span> <span class="pl-s1">g</span> <span class="pl-c1">+</span> <span class="pl-c1">0.114</span> <span class="pl-c1">*</span> <span class="pl-s1">b</span><span class="pl-kos">)</span> <span class="pl-c1">/</span> <span class="pl-c1">255</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-s1">l</span> <span class="pl-c1">&gt;</span> <span class="pl-c1">0.6</span> ? <span class="pl-s">"#000"</span> : <span class="pl-s">"#fff"</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">el</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"div"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">className</span> <span class="pl-c1">=</span> <span class="pl-s">"herobgcolor"</span><span class="pl-kos">;</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">body</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">style</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"style"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-s1">style</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span> <span class="pl-c1">=</span> <span class="pl-s">`</span>
+<span class="pl-s">      .herobgcolor {</span>
+<span class="pl-s">        position: fixed;</span>
+<span class="pl-s">        top: 0; left: 0;</span>
+<span class="pl-s">        width: 100vw; height: 100vh;</span>
+<span class="pl-s">        z-index: -1;</span>
+<span class="pl-s">        background-size: 600% 600%;</span>
+<span class="pl-s">        animation: hueflow 30s ease infinite;</span>
+<span class="pl-s">        transition: background 0.6s ease;</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">      @keyframes hueflow {</span>
+<span class="pl-s">        0% { filter: hue-rotate(0deg); background-position: 0% 50%; }</span>
+<span class="pl-s">        50% { filter: hue-rotate(180deg); background-position: 100% 50%; }</span>
+<span class="pl-s">        100% { filter: hue-rotate(360deg); background-position: 0% 50%; }</span>
+<span class="pl-s">      }</span>
+<span class="pl-s">    `</span><span class="pl-kos">;</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">head</span><span class="pl-kos">.</span><span class="pl-en">appendChild</span><span class="pl-kos">(</span><span class="pl-s1">style</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">return</span> <span class="pl-s1">el</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-k">const</span> <span class="pl-s1">mode</span> <span class="pl-c1">=</span> <span class="pl-en">getEffectiveMode</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-k">const</span> <span class="pl-s1">theme</span> <span class="pl-c1">=</span> <span class="pl-s1">themeColors</span><span class="pl-kos">[</span><span class="pl-s1">mode</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+
+    <span class="pl-s1">bg</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">background</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">bgGradient</span><span class="pl-kos">;</span>
+
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".post-card"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">card</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">background</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">cardBg</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">border</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">cardBorder</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">backdropFilter</span> <span class="pl-c1">=</span> <span class="pl-s">"blur(16px)"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">webkitBackdropFilter</span> <span class="pl-c1">=</span> <span class="pl-s">"blur(16px)"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">boxShadow</span> <span class="pl-c1">=</span> <span class="pl-s">"0 8px 24px rgba(0,0,0,0.12)"</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".post-title"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">summary</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".post-summary"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">meta</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".post-meta"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">title</span><span class="pl-kos">)</span> <span class="pl-s1">title</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">title</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">summary</span><span class="pl-kos">)</span> <span class="pl-s1">summary</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">summary</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">meta</span><span class="pl-kos">)</span> <span class="pl-s1">meta</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">theme</span><span class="pl-kos">.</span><span class="pl-c1">meta</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-kos">[</span><span class="pl-s">"#header"</span><span class="pl-kos">,</span> <span class="pl-s">"#footer"</span><span class="pl-kos">]</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-s1">sel</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">el</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s1">sel</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">)</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">color</span> <span class="pl-c1">=</span> <span class="pl-s1">mode</span> <span class="pl-c1">===</span> <span class="pl-s">"dark"</span> ? <span class="pl-s">"#ddd"</span> : <span class="pl-s">""</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">if</span> <span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">)</span> <span class="pl-c1">===</span> <span class="pl-s">"auto"</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">matchMedia</span><span class="pl-kos">(</span><span class="pl-s">"(prefers-color-scheme: dark)"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">"change"</span><span class="pl-kos">,</span> <span class="pl-s1">applyTheme</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-k">new</span> <span class="pl-v">MutationObserver</span><span class="pl-kos">(</span><span class="pl-s1">applyTheme</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">observe</span><span class="pl-kos">(</span><span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">,</span> <span class="pl-kos">{</span>
+    <span class="pl-c1">attributes</span>: <span class="pl-c1">true</span><span class="pl-kos">,</span>
+    <span class="pl-c1">attributeFilter</span>: <span class="pl-kos">[</span><span class="pl-s">"data-color-mode"</span><span class="pl-kos">]</span>
+  <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-k">function</span> <span class="pl-en">rebuildCards</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-kos">{</span>
+    <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".SideNav-item"</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">forEach</span><span class="pl-kos">(</span><span class="pl-kos">(</span><span class="pl-s1">card</span><span class="pl-kos">,</span> <span class="pl-s1">i</span><span class="pl-kos">)</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+      <span class="pl-k">const</span> <span class="pl-s1">title</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelector</span><span class="pl-kos">(</span><span class="pl-s">".listTitle"</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-c1">innerText</span> <span class="pl-c1">||</span> <span class="pl-s">"未命名文章"</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">link</span> <span class="pl-c1">=</span> <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">getAttribute</span><span class="pl-kos">(</span><span class="pl-s">"href"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">labels</span> <span class="pl-c1">=</span> <span class="pl-kos">[</span>...<span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">querySelectorAll</span><span class="pl-kos">(</span><span class="pl-s">".Label"</span><span class="pl-kos">)</span><span class="pl-kos">]</span><span class="pl-kos">;</span>
+      <span class="pl-k">const</span> <span class="pl-s1">time</span> <span class="pl-c1">=</span> <span class="pl-s1">labels</span><span class="pl-kos">.</span><span class="pl-en">find</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-pds"><span class="pl-c1">/</span><span class="pl-cce">^</span><span class="pl-cce">\d</span><span class="pl-kos">{</span><span class="pl-c1">4</span><span class="pl-kos">}</span><span class="pl-c1">/</span></span><span class="pl-kos">.</span><span class="pl-en">test</span><span class="pl-kos">(</span><span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">?.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">||</span> <span class="pl-s">""</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">tags</span> <span class="pl-c1">=</span> <span class="pl-s1">labels</span><span class="pl-kos">.</span><span class="pl-en">filter</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span> <span class="pl-c1">!==</span> <span class="pl-s1">time</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-s1">el</span> <span class="pl-c1">=&gt;</span> <span class="pl-kos">{</span>
+        <span class="pl-k">const</span> <span class="pl-s1">tag</span> <span class="pl-c1">=</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">bg</span> <span class="pl-c1">=</span> <span class="pl-s1">el</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">backgroundColor</span> <span class="pl-c1">||</span> <span class="pl-s">"#999"</span><span class="pl-kos">;</span>
+        <span class="pl-k">const</span> <span class="pl-s1">fg</span> <span class="pl-c1">=</span> <span class="pl-en">getTextColor</span><span class="pl-kos">(</span><span class="pl-s1">bg</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+        <span class="pl-k">return</span> <span class="pl-s">`&lt;span class="post-tag" style="background-color:<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">bg</span><span class="pl-kos">}</span></span>;color:<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">fg</span><span class="pl-kos">}</span></span>"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tag</span><span class="pl-kos">}</span></span>&lt;/span&gt;`</span><span class="pl-kos">;</span>
+      <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">join</span><span class="pl-kos">(</span><span class="pl-s">""</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">summary</span> <span class="pl-c1">=</span> <span class="pl-s">`本篇内容涵盖主题「<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">labels</span><span class="pl-kos">.</span><span class="pl-en">map</span><span class="pl-kos">(</span><span class="pl-s1">x</span> <span class="pl-c1">=&gt;</span> <span class="pl-s1">x</span><span class="pl-kos">.</span><span class="pl-c1">textContent</span><span class="pl-kos">.</span><span class="pl-en">trim</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">)</span><span class="pl-kos">.</span><span class="pl-en">join</span><span class="pl-kos">(</span><span class="pl-s">" / "</span><span class="pl-kos">)</span><span class="pl-kos">}</span></span>」，带你深入探索相关知识点。`</span><span class="pl-kos">;</span>
+
+      <span class="pl-k">const</span> <span class="pl-s1">newCard</span> <span class="pl-c1">=</span> <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-en">createElement</span><span class="pl-kos">(</span><span class="pl-s">"a"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">href</span> <span class="pl-c1">=</span> <span class="pl-s1">link</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">className</span> <span class="pl-c1">=</span> <span class="pl-s">"post-card"</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">style</span><span class="pl-kos">.</span><span class="pl-c1">animationDelay</span> <span class="pl-c1">=</span> <span class="pl-s">`<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">i</span> <span class="pl-c1">*</span> <span class="pl-c1">60</span><span class="pl-kos">}</span></span>ms`</span><span class="pl-kos">;</span>
+      <span class="pl-s1">newCard</span><span class="pl-kos">.</span><span class="pl-c1">innerHTML</span> <span class="pl-c1">=</span> <span class="pl-s">`</span>
+<span class="pl-s">        &lt;div class="post-meta"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">tags</span><span class="pl-kos">}</span></span>&lt;span class="post-date"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">time</span><span class="pl-kos">}</span></span>&lt;/span&gt;&lt;/div&gt;</span>
+<span class="pl-s">        &lt;h2 class="post-title"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">title</span><span class="pl-kos">}</span></span>&lt;/h2&gt;</span>
+<span class="pl-s">        &lt;p class="post-summary"&gt;<span class="pl-s1"><span class="pl-kos">${</span><span class="pl-s1">summary</span><span class="pl-kos">}</span></span>&lt;/p&gt;</span>
+<span class="pl-s">      `</span><span class="pl-kos">;</span>
+      <span class="pl-s1">card</span><span class="pl-kos">.</span><span class="pl-en">replaceWith</span><span class="pl-kos">(</span><span class="pl-s1">newCard</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+    <span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+    <span class="pl-en">applyTheme</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+  <span class="pl-kos">}</span>
+
+  <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">readyState</span> <span class="pl-c1">===</span> <span class="pl-s">"loading"</span>
+    ? <span class="pl-smi">window</span><span class="pl-kos">.</span><span class="pl-en">addEventListener</span><span class="pl-kos">(</span><span class="pl-s">"DOMContentLoaded"</span><span class="pl-kos">,</span> <span class="pl-s1">rebuildCards</span><span class="pl-kos">)</span>
+    : <span class="pl-en">rebuildCards</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+
+  <span class="pl-smi">document</span><span class="pl-kos">.</span><span class="pl-c1">documentElement</span><span class="pl-kos">.</span><span class="pl-en">removeAttribute</span><span class="pl-kos">(</span><span class="pl-s">"data-ui-pending"</span><span class="pl-kos">)</span><span class="pl-kos">;</span>
+<span class="pl-kos">}</span><span class="pl-kos">)</span><span class="pl-kos">(</span><span class="pl-kos">)</span><span class="pl-kos">;</span></pre></div>
+</details>
+<hr>
+<h2>🖼️ 效果示意</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>视觉模式</th>
+<th>卡片样式</th>
+<th>渐变背景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌞 明亮模式</td>
+<td>白色半透明卡片 + 黑灰文字 + 原生标签 + 光影</td>
+<td>粉米紫冷调渐变 + hue 动态流动</td>
+</tr>
+<tr>
+<td>🌚 暗黑模式</td>
+<td>深灰玻璃卡片 + 明亮文字 + 白色标签</td>
+<td>深蓝深紫渐变背景 + light glow 效应</td>
+</tr>
+<tr>
+<td>🌓 Auto 模式</td>
+<td>随系统变化自动切换，支持 macOS / Windows / iOS</td>
+<td>插件监听 <code class="notranslate">prefers-color-scheme</code> 并动态应用配色模式</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>🔧 插件加载流程 &amp; 机制</h2>
+<div class="highlight highlight-source-mermaid"><pre class="notranslate"><span class="pl-k">flowchart</span> <span class="pl-c1">TB</span>
+  <span class="pl-ent">A</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>页面加载<span class="pl-pds"><span class="pl-sg">)</span></span></span> <span class="pl-k">--&gt;</span> <span class="pl-ent">B</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>设置 data-ui-pending 隐藏内容<span class="pl-pds"><span class="pl-sg">)</span></span></span>
+  <span class="pl-ent">B</span> <span class="pl-k">--&gt;</span> <span class="pl-ent">C</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>加载插件 JS/CSS<span class="pl-pds"><span class="pl-sg">)</span></span></span>
+  <span class="pl-ent">C</span> <span class="pl-k">--&gt;</span> <span class="pl-ent">D</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>重构 .SideNav-item → .post-card<span class="pl-pds"><span class="pl-sg">)</span></span></span>
+  <span class="pl-ent">D</span> <span class="pl-k">--&gt;</span> <span class="pl-ent">E</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>计算标签颜色 → 自动对比<span class="pl-pds"><span class="pl-sg">)</span></span></span>
+  <span class="pl-ent">E</span> <span class="pl-k">--&gt;</span> <span class="pl-ent">F</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>注入渐变背景 .herobgcolor<span class="pl-pds"><span class="pl-sg">)</span></span></span>
+  <span class="pl-ent">F</span> <span class="pl-k">--&gt;</span> <span class="pl-ent">G</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>判断主题模式：light / dark / auto<span class="pl-pds"><span class="pl-sg">)</span></span></span>
+  <span class="pl-ent">G</span> <span class="pl-k">--&gt;</span> <span class="pl-ent">H</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>应用卡片/文字颜色样式<span class="pl-pds"><span class="pl-sg">)</span></span></span>
+  <span class="pl-ent">H</span> <span class="pl-k">--&gt;</span> <span class="pl-ent">I</span><span class="pl-s"><span class="pl-pds"><span class="pl-sg">(</span></span>淡入主内容：移除 data-ui-pending<span class="pl-pds"><span class="pl-sg">)</span></span></span></pre></div>
+<hr>
+<h2>💡 开发者进阶拓展建议</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>能力方向</th>
+<th>实现方式或建议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔍 封面图接入</td>
+<td>可在 <code class="notranslate">.SideNav-item</code> 上加入 <code class="notranslate">data-cover</code>，或通过规则映射插入 <code class="notranslate">&lt;img class="card-cover"&gt;</code></td>
+</tr>
+<tr>
+<td>✏️ 自定义主题色方案</td>
+<td>修改插件中的 <code class="notranslate">themeColors</code> 配置块，或通过 <code class="notranslate">style</code> 注入设置主题变量</td>
+</tr>
+<tr>
+<td>⏳ 首屏卡片 Skeleton</td>
+<td>使用 <code class="notranslate">#content { opacity: 0 }</code> 加延时加载，可插入骨架屏样式增强用户体验</td>
+</tr>
+<tr>
+<td>🎨 模块复用与封装</td>
+<td>将 JS 拆分为 <code class="notranslate">useTheme()</code>、<code class="notranslate">useCardBuilder()</code> 等函数模块，便于维护与拓展</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>✅ 插件特性总结</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>维度</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🌗 明暗主题兼容</td>
+<td>✅ 支持 light / dark / auto 模式</td>
+</tr>
+<tr>
+<td>🧼 样式隔离</td>
+<td>✅ 仅作用于 <code class="notranslate">.post-card</code> 区域</td>
+</tr>
+<tr>
+<td>💎 UI 视觉细节</td>
+<td>✅ 阴影 / 模糊 / 圆角 / 渐变</td>
+</tr>
+<tr>
+<td>📱 响应式布局支持</td>
+<td>✅ 全面适配手机端显示</td>
+</tr>
+<tr>
+<td>🚀 加载顺滑体验</td>
+<td>✅ 支持内容淡入加载 / 防闪白</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<hr>
+<h2>🔍 实时预览 &amp; 示例</h2>
+<p>👉 在线示例地址：<br>
+<a href="https://code.buxiantang.top/" rel="nofollow">https://code.buxiantang.top/</a></p>
+<hr></div>
+<div style="font-size:small;margin-top:8px;float:right;">🤞转载请注明出处🤞</div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://code.buxiantang.top">Tiengming</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+cmButton=document.getElementById("cmButton");
+    span=document.createElement("span");
+    span.setAttribute("class","Counter");
+    span.innerHTML="26";
+    cmButton.appendChild(span);
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","tiengming/tiengming.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+<script src='https://code.buxiantang.top/assets/backtop.js'></script><script src='https://code.buxiantang.top/assets/articletoc.js'></script><script src='https://code.buxiantang.top/assets/pagination.js'></script><script src='https://code.buxiantang.top/assets/lightbox.js'></script><script>document.querySelectorAll('a').forEach(anchor => {const img = anchor.querySelector('img');if (img && img.hasAttribute('data-canonical-src')) {const canonicalSrc = img.getAttribute('data-canonical-src');anchor.setAttribute('href', canonicalSrc);img.setAttribute('src', canonicalSrc);img.removeAttribute('data-canonical-src');}});</script>
+
+</html>
