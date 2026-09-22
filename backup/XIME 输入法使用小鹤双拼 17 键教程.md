@@ -28,7 +28,7 @@ https://github.com/tiengming/rime-frost-17key/archive/refs/tags/v0.2.zip
 
 ## 方案说明
 
-1. **底包来源**：本方案基于 [`[白霜拼音 (rime-frost)](https://github.com/gaboolic/rime-frost?utm_source=gemini)`](https://github.com/gaboolic/rime-frost?utm_source=gemini) 制作，目前首发小鹤双拼 17 键布局，其他双拼方案后续会陆续补充。
+1. **底包来源**：本方案基于 [白霜拼音 (rime-frost)](https://github.com/gaboolic/rime-frost)制作，目前首发小鹤双拼 17 键布局，其他双拼方案后续会陆续补充。
 2. **版本要求**：请确保 XIME 输入法版本高于 `v2.8.4`，否则可能会遇到部分按键布局或扩展功能无法正常加载的情况。详见[官方文档](https://ime.ximei.me/features/keyboard-config.html#keyboard-qwerty-14-qwerty-17-qwerty-18-%E2%80%94-%E5%90%88%E5%B9%B6%E9%94%AE%E5%B8%83%E5%B1%80-v2-8-4)
 
 ## 视频记录
