@@ -1,5 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Tue, 22 Sep 2026 03:05:14 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster><item><title>XIME 输入法使用小鹤双拼 17 键教程</title><link>https://code.buxiantang.top/post/XIME%20-shu-ru-fa-shi-yong-xiao-he-shuang-pin-%2017%20-jian-jiao-cheng.html</link><description>这份教程的结构已经非常清晰了，步骤直观明了。</description><guid isPermaLink="true">https://code.buxiantang.top/post/XIME%20-shu-ru-fa-shi-yong-xiao-he-shuang-pin-%2017%20-jian-jiao-cheng.html</guid><pubDate>Tue, 22 Sep 2026 03:03:26 +0000</pubDate></item><item><title>Cloudflare Workers 透明反代进阶方案</title><link>https://code.buxiantang.top/post/Cloudflare%20Workers%20-tou-ming-fan-dai-jin-jie-fang-an.html</link><description>Cloudflare Workers 透明反代进阶方案
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Tue, 22 Sep 2026 03:36:55 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster><item><title>XIME 输入法使用小鹤双拼 17 键教程</title><link>https://code.buxiantang.top/post/XIME%20-shu-ru-fa-shi-yong-xiao-he-shuang-pin-%2017%20-jian-jiao-cheng.html</link><description>
+# XIME 输入法小鹤双拼 17 键配置教程
+
+## 准备工作
+
+* **方案压缩包**：[https://github.com/tiengming/rime-frost-17key/archive/refs/tags/v0.2.zip](https://github.com/tiengming/rime-frost-17key/archive/refs/tags/v0.2.zip)（复制URL即可）
+* **输入法客户端**：[[XIME 输入法（Android 版）](https://github.com/ximeiorg/Xime/releases?utm_source=gemini)] *(注：17 键方案需客户端版本在 `v2.8.4` 及以上)*
+
+---
+
+## 方案导入步骤
+
+1. 打开 XIME 输入法设置，依次点击 **“输入方案”** 👉 右上角 **“三个点”** 👉 **“网络导入”**。</description><guid isPermaLink="true">https://code.buxiantang.top/post/XIME%20-shu-ru-fa-shi-yong-xiao-he-shuang-pin-%2017%20-jian-jiao-cheng.html</guid><pubDate>Tue, 22 Sep 2026 03:03:26 +0000</pubDate></item><item><title>Cloudflare Workers 透明反代进阶方案</title><link>https://code.buxiantang.top/post/Cloudflare%20Workers%20-tou-ming-fan-dai-jin-jie-fang-an.html</link><description>Cloudflare Workers 透明反代进阶方案
 
 ### 1. 核心应用场景
 * **域名映射**：将 `a.example.com` 透明代理至 `b.example.com`。</description><guid isPermaLink="true">https://code.buxiantang.top/post/Cloudflare%20Workers%20-tou-ming-fan-dai-jin-jie-fang-an.html</guid><pubDate>Mon, 20 Apr 2026 09:02:13 +0000</pubDate></item><item><title>科学的尽头是玄学--是否继续持有？</title><link>https://code.buxiantang.top/post/ke-xue-de-jin-tou-shi-xuan-xue----shi-fou-ji-xu-chi-you-%EF%BC%9F.html</link><description>&lt;img width='1228' height='412' alt='Image' src='https://github.com/user-attachments/assets/c42bb31a-4899-4840-8dd6-8b63c618ec45' /&gt;
