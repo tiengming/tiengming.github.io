@@ -36,4 +36,5 @@ https://github.com/tiengming/rime-frost-17key/archive/refs/tags/v0.2.zip
 
 ## 视频记录
 
-`Gmeek-html<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=117312568955165&bvid=BV137hk6SE1E&cid=42100066693&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>`
+`Gmeek-html<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=117312568955165&bvid=BV137hk6SE1E&cid=42100066693&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="100%" height="460px"></iframe>`
+
