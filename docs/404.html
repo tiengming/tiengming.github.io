@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - 页面走丢了 · Tiengming</title>
+    <script>
+    (function(){try{var t=localStorage.getItem("meek_theme");
+    if(t==="dark"||t==="auto"||t==="light"){document.documentElement.setAttribute("data-color-mode",t);}}catch(e){}})();
+    </script>
+    <link rel="icon" href="/favicon.svg">
+    <link rel="stylesheet" href="/assets/aurora/tokens.css">
+    <link rel="stylesheet" href="/assets/aurora/theme.css">
+    <style>
+    .nf-main {
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: clamp(40px, 9vw, 90px) var(--space-gutter) 80px;
+        flex: 1;
+        text-align: center;
+    }
+    .nf-code {
+        font-size: clamp(5rem, 18vw, 9rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: 0.04em;
+        margin: 0 0 8px;
+        background: linear-gradient(125deg, var(--au-blue), var(--au-violet) 45%, var(--au-pink) 80%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 18px 44px var(--glow-violet));
+        animation: nf-float 5s var(--ease-in-out) infinite alternate;
+    }
+    @keyframes nf-float {
+        from { transform: translateY(0); }
+        to { transform: translateY(-14px); }
+    }
+    .nf-title {
+        margin: 0 0 8px;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+    .nf-sub {
+        margin: 0 0 30px;
+        color: var(--text-2);
+    }
+    .nf-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 44px;
+    }
+    .nf-recent {
+        border-radius: var(--r-lg);
+        padding: 24px clamp(18px, 4vw, 32px) 28px;
+        text-align: left;
+        animation: rise-in var(--t-slow) var(--ease-out) 0.15s both;
+    }
+    .nf-recent h2 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 14px;
+        font-size: 1.02rem;
+        font-weight: 700;
+    }
+    .nf-recent h2::before {
+        content: "";
+        width: 14px;
+        height: 2px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, var(--au-blue), var(--au-pink));
+    }
+    .nf-recent ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .nf-recent li + li {
+        border-top: 1px dashed var(--border);
+    }
+    .nf-recent a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 4px;
+        color: var(--text-1);
+        font-weight: 500;
+        transition: color var(--t-fast), transform var(--t-fast);
+    }
+    .nf-recent a:hover {
+        color: var(--accent);
+        transform: translateX(3px);
+    }
+    .nf-recent a .date {
+        margin-left: auto;
+        flex: none;
+        color: var(--text-3);
+        font-size: var(--fs-xs);
+        font-variant-numeric: tabular-nums;
+    }
+    .nf-recent .title {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .nf-code { animation: none; }
+    }
+    </style>
+</head>
+<body data-page="single">
+    <div class="aurora-bg" aria-hidden="true">
+        <div class="aurora-blob aurora-blob-a"></div>
+        <div class="aurora-blob aurora-blob-b"></div>
+        <div class="aurora-blob aurora-blob-c"></div>
+        <div class="aurora-noise"></div>
+    </div>
+
+    <main class="nf-main">
+        <div class="nf-code">404</div>
+        <h1 class="nf-title">这一页迷失在极光里了 ✨</h1>
+        <p class="nf-sub">页面不存在或已被移动，不过精彩内容还有很多。</p>
+
+        <div class="nf-actions">
+            <a class="btn-aurora" href="/" style="display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:var(--r-full);color:#fff;font-weight:600;background:linear-gradient(120deg,var(--accent-strong),color-mix(in srgb,var(--au-violet) 85%,var(--accent-strong)));box-shadow:var(--shadow-2),0 12px 32px -10px var(--glow-blue);transition:transform var(--t-fast) var(--ease-spring),box-shadow var(--t-base)">🏠 返回首页</a>
+            <a class="chip" href="/tag.html" style="padding:11px 20px;font-size:0.95rem">🔍 浏览全部文章</a>
+        </div>
+
+        <div class="nf-recent glass">
+            <h2>最新文章</h2>
+            <ul id="nf-list"><li style="color:var(--text-3);padding:10px 4px">加载中…</li></ul>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>Copyright © <span id="year"></span> <a href="/">Tiengming</a></div>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+        "use strict";
+        document.getElementById("year").textContent = new Date().getFullYear();
+
+        var list = document.getElementById("nf-list");
+        fetch("/postList.json", { credentials: "same-origin" })
+            .then(function (r) {
+                if (!r.ok) throw new Error("HTTP " + r.status);
+                return r.json();
+            })
+            .then(function (data) {
+                var posts = [];
+                Object.keys(data).forEach(function (k) {
+                    if (k === "labelColorDict") return;
+                    var p = data[k];
+                    if (p && p.postTitle && p.postUrl) {
+                        posts.push({ title: p.postTitle, url: "/" + p.postUrl, date: p.createdDate || "" });
+                    }
+                });
+                posts.sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+                if (!posts.length) throw new Error("empty");
+                list.textContent = "";
+                posts.slice(0, 5).forEach(function (p) {
+                    var li = document.createElement("li");
+                    var a = document.createElement("a");
+                    a.href = p.url;
+                    var t = document.createElement("span");
+                    t.className = "title";
+                    t.textContent = p.title;
+                    var d = document.createElement("span");
+                    d.className = "date";
+                    d.textContent = p.date;
+                    a.appendChild(t);
+                    a.appendChild(d);
+                    li.appendChild(a);
+                    list.appendChild(li);
+                });
+            })
+            .catch(function () {
+                list.innerHTML = '<li style="color:var(--text-3);padding:10px 4px"><a href="/">暂时无法加载，点此返回首页</a></li>';
+            });
+    })();
+    </script>
+</body>
+</html>
