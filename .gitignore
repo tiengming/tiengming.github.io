@@ -1,0 +1,5 @@
+.preview/
+__pycache__/
+*.pyc
+.DS_Store
+.zcode/
