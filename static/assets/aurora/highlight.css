@@ -1,0 +1,104 @@
+/* ============================================================
+   Aurora Glass — 代码高亮
+   GitHub Markdown API 输出的 .pl-* token 类（starry-night 兼容）
+   代码块底色统一为深色玻璃（见 markdown.css），此处只管 token 色
+   ============================================================ */
+
+.markdown-body .highlight pre,
+.markdown-body pre code,
+.code-block pre code {
+  /* 基础前景 */
+  color: #dbe2ff;
+}
+
+/* 注释 */
+.pl-c,
+.pl-c1,
+.pl-c2,
+.pl-cce,
+.pl-cn,
+.pl-coc,
+.pl-cos {
+  color: #7a83a8;
+  font-style: italic;
+}
+
+/* 关键字 */
+.pl-k,
+.pl-kos,
+.pl-kow {
+  color: #c3a1ff;
+}
+
+/* 字符串 */
+.pl-s,
+.pl-s1,
+.pl-s2,
+.pl-sg,
+.pl-sr,
+.pl-pds,
+.pl-vi,
+.pl-bu {
+  color: #7ce8d5;
+}
+
+/* 常量 / 数字 */
+.pl-c1,
+.pl-mh,
+.pl-mi,
+.pl-md {
+  color: #ffc078;
+}
+
+/* 实体名（函数/类名） */
+.pl-e,
+.pl-en,
+.pl-ent {
+  color: #82aaff;
+}
+
+/* 变量 / 属性 */
+.pl-v,
+.pl-smi,
+.pl-va,
+.pl-vpf {
+  color: #ff9dce;
+}
+
+/* 标点 */
+.pl-pse,
+.pl-dr,
+.pl-corl {
+  color: #aab3d9;
+}
+
+/* 错误 / 删除 */
+.pl-ii,
+.pl-id {
+  color: #ff7b93;
+  background: rgba(255, 123, 147, 0.12);
+}
+
+/* 插入 */
+.pl-mi1 {
+  color: #7ce8d5;
+  background: rgba(124, 232, 213, 0.1);
+}
+
+/* meta */
+.pl-mo,
+.pl-mb,
+.pl-mc,
+.pl-ml,
+.pl-mm,
+.pl-mp,
+.pl-mr,
+.pl-ms,
+.pl-mt {
+  color: #ffd08a;
+}
+
+/* 无 token 的纯代码块（highlight=2）：统一浅一档 */
+.markdown-body pre:not(.has-tokens) code {
+  color: #c6cdea;
+}
