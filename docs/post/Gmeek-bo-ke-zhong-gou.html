@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#f3f4fa"><script>
+    (function(){try{var t=localStorage.getItem("meek_theme");
+    if(t==="dark"||t==="auto"||t==="light"){document.documentElement.setAttribute("data-color-mode",t);
+    var m=document.querySelector('meta[name="theme-color"]');if(m&&t==="dark"){m.setAttribute("content","#0b0e1a");}}}catch(e){}})();
+    </script><link rel="preconnect" href="https://vercount.one"><link rel="preconnect" href="https://utteranc.es"><script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","na4qnk47pl");</script>
+    <link rel="icon" href="https://code.buxiantang.top/favicon.svg">
+    <link rel="stylesheet" href="/assets/aurora/tokens.css">
+    <link rel="stylesheet" href="/assets/aurora/theme.css">
+    
+<meta name="description" content="> [!NOTE]
+> 本文对应的修改已开源：主题模板在 [tiengming/Gmeek 的 aurora 分支](https://github.com/tiengming/Gmeek/tree/aurora)，设计系统与插件在 [tiengming/tiengming.github.io 的 static/assets/](https://github.com/tiengming/tiengming.github.io/tree/aurora/static/assets)。">
+<meta property="og:title" content="Gmeek博客重构">
+<meta property="og:description" content="> [!NOTE]
+> 本文对应的修改已开源：主题模板在 [tiengming/Gmeek 的 aurora 分支](https://github.com/tiengming/Gmeek/tree/aurora)，设计系统与插件在 [tiengming/tiengming.github.io 的 static/assets/](https://github.com/tiengming/tiengming.github.io/tree/aurora/static/assets)。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://code.buxiantang.top/post/Gmeek-bo-ke-zhong-gou.html">
+<meta property="og:image" content="https://code.buxiantang.top/favicon.svg">
+<title>Gmeek博客重构 - Tiengming</title>
+<link rel="stylesheet" href="/assets/aurora/markdown.css">
+<link rel="stylesheet" href="/assets/aurora/highlight.css">
+
+
+</head>
+
+<body data-page="post">
+    <div class="aurora-bg" aria-hidden="true">
+        <div class="aurora-blob aurora-blob-a"></div>
+        <div class="aurora-blob aurora-blob-b"></div>
+        <div class="aurora-blob aurora-blob-c"></div>
+        <div class="aurora-noise"></div>
+    </div>
+
+    <header id="site-header" class="site-header">
+        <div class="site-header-inner"><a class="site-brand" href="/">
+    <span class="site-avatar"><img src="https://code.buxiantang.top/favicon.svg" alt="Tiengming" onerror="this.style.visibility='hidden'"></span>
+    <span class="site-title">Tiengming</span>
+</a>
+<nav class="site-nav">
+    <button class="icon-btn" id="paletteBtn" type="button" title="搜索 (Ctrl K)" aria-label="搜索">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d=""></path></svg>
+        <span class="kbd-hint">K</span>
+    </button>
+    <a class="icon-btn" href="https://nav.buxiantang.top" target="_blank" rel="noopener" title="导航">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d=""></path></svg>
+    </a>
+    
+    <a class="icon-btn" href="/rss.xml" target="_blank" rel="noopener" title="RSS">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d=""></path></svg>
+    </a><button class="icon-btn" id="themeSwitch" type="button" onclick="modeSwitch()" title="切换主题" aria-label="切换主题">
+        <svg class="i-sun" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z"></path></svg>
+        <svg class="i-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z"></path></svg>
+        <svg class="i-sync" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z"></path></svg>
+    </button>
+</nav></div>
+    </header>
+
+    <main id="content" class="site-main">
+<div class="post-layout">
+    <article class="post-article glass">
+        <nav class="post-breadcrumb" aria-label="Breadcrumb">
+            <a href="/"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z"></path></svg>Tiengming</a>
+            <span class="sep">/</span>
+            <span>Gmeek博客重构</span>
+        </nav>
+
+        <h1 class="post-title">Gmeek博客重构</h1>
+
+        <div class="post-meta">
+            <span class="chip">🗓 2026-10-24</span>
+            <a class="chip chip-label" style="--c:#B85790" href="/tag.html#blog">blog</a>
+            <a class="chip chip-label" style="--c:#5E369E" href="/tag.html#使用说明">使用说明</a>
+            <a class="chip chip-label" style="--c:#563C98" href="/tag.html#教程">教程</a>
+            <a class="chip chip-label" style="--c:#aaaaaa" href="/tag.html#主题">主题</a>
+            <div class="post-meta-right"><span class="chip">✍ 约 5572 字</span><a class="chip" href="https://github.com/tiengming/tiengming.github.io/issues/29" target="_blank" rel="noopener">Issue ↗</a></div>
+        </div>
+
+        <div class="markdown-body" id="postBody"><div class="markdown-alert markdown-alert-note"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-info mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>Note</p><p>本文对应的修改已开源：主题模板在 <a href="https://github.com/tiengming/Gmeek/tree/aurora">tiengming/Gmeek 的 aurora 分支</a>，设计系统与插件在 <a href="https://github.com/tiengming/tiengming.github.io/tree/aurora/static/assets">tiengming/tiengming.github.io 的 static/assets/</a>。本文即本站当前正在使用的主题。</p>
+</div>
+<h2>🌌 从「插件增强」到「主题重构」</h2>
+<p>上一篇 <a href="https://code.buxiantang.top/post/%F0%9F%8D%8E%20Gmeek%20UI%20-zeng-qiang-cha-jian-shi-yong-jiao-cheng.html" rel="nofollow">🍎 Gmeek UI 增强插件使用教程</a> 的思路是<strong>纯前端注入</strong>：不动上游模板，靠 <code class="notranslate">GmeekCustomizeCss.js</code> 在浏览器里把 SideNav 列表动态改写成卡片。用了一年，两个问题越来越明显：</p>
+<ol>
+<li><strong>天花板</strong>：运行时改写 DOM 意味着页面先按原样渲染、再被 JS 重排——闪烁、错位、LCP 劣化都源于此，而且视觉深度受模板结构限制；</li>
+<li><strong>维护性</strong>：插件散落成一堆独立 JS，互相不知道对方的存在，谁都能在任何页面加载、谁都能崩。</li>
+</ol>
+<p>这次的答案是彻底换掉地基：</p>
+<ul>
+<li><strong>Fork 模板服务端直出</strong> —— 文章卡片、数字分页、图标、文章 meta 全部在 Jinja 模板渲染期生成，浏览器拿到的就是最终 HTML；</li>
+<li><strong>ES Module 微内核插件体系</strong> —— 页面只加载一个 <code class="notranslate">core.js</code> 入口，功能模块按页面类型注册、按需初始化、单模块崩溃互不影响；</li>
+<li><strong>Aurora 极光玻璃设计系统</strong> —— 设计令牌驱动的完整视觉语言，浅/深/跟随系统三主题全组件统一。</li>
+</ul>
+<p>一句话总结：<strong>上一版是给 Gmeek 化妆，这一版是给它换了一套骨骼。</strong></p>
+<h2>✨ 这一版有什么</h2>
+<h3>🎨 视觉</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>特性</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>极光多层背景</td>
+<td>3 个大型渐变光斑缓慢漂移 + 细噪点纹理，浅/深主题各自调校</td>
+</tr>
+<tr>
+<td>玻璃拟态卡片</td>
+<td>磨砂模糊 + 微光描边 + 接触/环境/辉光三级阴影，hover 上浮点亮顶部渐变亮线</td>
+</tr>
+<tr>
+<td>桌面 3D 倾斜</td>
+<td>卡片随鼠标微倾（仅精确指针设备，自动禁用于触屏）</td>
+</tr>
+<tr>
+<td>滚动渐显</td>
+<td>卡片进入视口时 fade-up + 模糊渐清，同列表按 60ms 交错入场</td>
+</tr>
+<tr>
+<td>页面过渡</td>
+<td>悬停预取 + 跨文档 View Transitions（Chrome 126+ 平滑过渡，其余浏览器自动降级）</td>
+</tr>
+<tr>
+<td>全组件双主题</td>
+<td>导航、目录、灯箱、返回顶部、命令面板……全部跟随 <code class="notranslate">data-color-mode</code> 三态切换</td>
+</tr>
+<tr>
+<td>响应式收敛</td>
+<td>断点统一为 1200 / 768 / 480，流式字号 <code class="notranslate">clamp()</code>，<code class="notranslate">prefers-reduced-motion</code> 全局降级</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h3>🖱️ 交互（全部新增）</h3>
+<ul>
+<li><strong>⌘K / Ctrl+K 命令面板</strong>：任意页面唤出，标题/标签即时搜索，方向键导航回车直达；</li>
+<li><strong>阅读进度条 + 智能导航</strong>：文章页顶部渐变进度条，下滚隐藏导航、上滚浮现；</li>
+<li><strong>图片懒加载 + 模糊渐显</strong>：进入视口才加载，加载中模糊占位、完成后渐显；</li>
+<li><strong>代码块增强</strong>：语言标签 + 一键复制（Clipboard API + 旧浏览器降级）；</li>
+<li><strong>目录 TOC</strong>：≥1200px 桌面右侧粘性目录（当前小节高亮），小屏浮动按钮 + 抽屉。</li>
+</ul>
+<h3>🛠️ 稳定性（这一版顺手修掉的坑）</h3>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>旧版问题</th>
+<th>现状</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code class="notranslate">pagination.js</code> 在每篇文章页对 null 元素必崩，且从未在列表页加载</td>
+<td>数字分页改<strong>服务端渲染</strong>，文章页根本不存在这段代码</td>
+</tr>
+<tr>
+<td><code class="notranslate">articletoc.js</code> 只靠 MutationObserver 触发，脚本加载时 DOM 已静止 → 目录永不渲染</td>
+<td>DOM ready 立即构建，观察器仅作异步内容兜底且限时断开</td>
+</tr>
+<tr>
+<td><code class="notranslate">GmeekCustomizeCss.js</code> 双重初始化 + 无上限 1 秒轮询重试</td>
+<td>卡片由模板直出，轮询代码整个消失</td>
+</tr>
+<tr>
+<td><code class="notranslate">lightbox.js</code> 解绑事件传入 <code class="notranslate">bind</code> 新引用 → 监听器永远移除不掉</td>
+<td>全部具名引用，关闭即真正解绑</td>
+</tr>
+<tr>
+<td>灯箱/返回顶部/目录在深色模式下不可见或错误跟随系统</td>
+<td>全部令牌化，与站点主题三态同步</td>
+</tr>
+<tr>
+<td>所有资源硬编码 <code class="notranslate">https://code.buxiantang.top</code> 绝对地址</td>
+<td>全站相对路径，换域名零成本</td>
+</tr>
+<tr>
+<td><code class="notranslate">lunar.js</code>（435KB）等 3 个文件从未被引用</td>
+<td>已删除，<code class="notranslate">static/assets</code> 从 474KB 减到 132KB</td>
+</tr>
+<tr>
+<td>浏览量脚本依赖作者博客域名外链加载</td>
+<td>自托管 + 失败静默降级</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<h2>🏗️ 架构一览</h2>
+<pre lang="text" class="notranslate"><code class="notranslate">你的博客仓库（如 xxx.github.io）                你的 Gmeek fork（aurora 分支）
+├─ config.json      ← GMEEK_VERSION:"aurora"   ├─ templates/  6 个 Aurora 模板
+├─ static/assets/                                 │   （服务端直出卡片/分页/图标）
+│   ├─ aurora/  设计系统（4 个 CSS）              ├─ Gmeek.py    仅 5 处附加改动
+│   └─ gm/      插件（core.js + 10 个模块）       └─ AURORA.md   改动清单/同步/回滚
+└─ .github/workflows/Gmeek.yml ← 构建源指向 fork
+</code></pre>
+<p>浏览器视角：每个页面只加载 <strong>4 个 CSS + 1 个 JS 入口</strong>（<code class="notranslate">/assets/gm/core.js</code>），其余模块由内核按页面类型动态 <code class="notranslate">import()</code>。</p>
+<h2>🚀 接入指南（四步，约 10 分钟）</h2>
+<p>前提：你已经有一个能正常运行的 <a href="https://github.com/Meekdai/Gmeek">Gmeek</a> 博客。</p>
+<h3>第 ① 步：Fork 我的 Gmeek</h3>
+<p>打开 <a href="https://github.com/tiengming/Gmeek">tiengming/Gmeek</a>，点右上角 <strong>Fork</strong>。<code class="notranslate">aurora</code> 分支会随仓库一起带过去，什么都不用改。</p>
+<div class="markdown-alert markdown-alert-tip"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-light-bulb mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg>Tip</p><p>改动集中在 <code class="notranslate">templates/</code> 与 Gmeek.py 的 5 处附加行，细节见 fork 里的 <code class="notranslate">AURORA.md</code>。如果你已有自己的 fork，也可以只 cherry-pick aurora 分支的提交。</p>
+</div>
+<h3>第 ② 步：拷贝主题资产</h3>
+<p>从 <a href="https://github.com/tiengming/tiengming.github.io/tree/aurora/static/assets">tiengming.github.io 的 static/assets</a> 把两个目录复制到你博客仓库的 <code class="notranslate">static/assets/</code> 下：</p>
+<pre lang="text" class="notranslate"><code class="notranslate">static/assets/aurora/   # tokens.css theme.css markdown.css highlight.css
+static/assets/gm/       # core.js + 10 个功能模块
+</code></pre>
+<p>可选：<code class="notranslate">static/404.html</code>（极光风 404 页）和 <code class="notranslate">static/file/about.html</code>（配套关于页）也一并拷走。<strong>所有引用都是相对路径，不需要替换任何域名。</strong></p>
+<h3>第 ③ 步：修改 config.json</h3>
+<p>对照修改这几处（完整示例见<a href="https://github.com/tiengming/tiengming.github.io/blob/aurora/config.json">仓库 config.json</a>）：</p>
+<div class="highlight highlight-source-json"><pre class="notranslate">{
+    <span class="pl-ent">"GMEEK_VERSION"</span>: <span class="pl-s"><span class="pl-pds">"</span>aurora<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"allHead"</span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;link rel=<span class="pl-cce">\"</span>preconnect<span class="pl-cce">\"</span> href=<span class="pl-cce">\"</span>https://vercount.one<span class="pl-cce">\"</span>&gt;<span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"script"</span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"style"</span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"head"</span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"indexScript"</span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,
+    <span class="pl-ent">"indexStyle"</span>: <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>
+}</pre></div>
+<div class="markdown-alert markdown-alert-important"><p class="markdown-alert-title"><svg data-component="Octicon" class="octicon octicon-report mr-2" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path></svg>Important</p><p>旧版教程里往 <code class="notranslate">allHead</code> / <code class="notranslate">script</code> 塞样式和插件的那套做法<strong>全部废弃</strong>——设计系统由模板自动引入，插件由 <code class="notranslate">base.html</code> 统一加载 <code class="notranslate">core.js</code>。你自己的统计代码（如 Clarity）继续放 <code class="notranslate">allHead</code> 即可。</p>
+</div>
+<h3>第 ④ 步：修改 workflow 的构建源</h3>
+<p>编辑 <code class="notranslate">.github/workflows/Gmeek.yml</code> 的 Clone 步骤，把上游地址换成你的 fork：</p>
+<div class="highlight highlight-source-yaml"><pre class="notranslate">      - <span class="pl-ent">name</span>: <span class="pl-s">Clone source code</span>
+        <span class="pl-ent">run</span>: <span class="pl-s">|</span>
+<span class="pl-s">          BRANCH=$(jq -r '.GMEEK_VERSION' config.json)</span>
+<span class="pl-s">          git clone --depth 1 --branch "$BRANCH" https://github.com/&lt;你的用户名&gt;/Gmeek.git /opt/Gmeek</span></pre></div>
+<p><code class="notranslate">GMEEK_VERSION</code> 的语义变为<strong>分支名</strong>：<code class="notranslate">aurora</code> 用本主题，改回 <code class="notranslate">last</code> 即回退上游 main。</p>
+<h3>✅ 验证</h3>
+<p>提交推送 main，Action 构建完成后刷新站点：首屏出现极光渐变与 hero 大标题、按 <code class="notranslate">Ctrl+K</code> 能唤出命令面板、文章页右侧出现目录，就说明接入成功。</p>
+<h2>🎨 定制指南</h2>
+<p><strong>换一套配色</strong>：只动 <code class="notranslate">tokens.css</code> 顶部的极光原色即可全站生效——</p>
+<div class="highlight highlight-source-css"><pre class="notranslate"><span class="pl-kos">:</span><span class="pl-c1">root</span> {
+  <span class="pl-s1">--au-blue</span><span class="pl-kos">:</span> <span class="pl-pds"><span class="pl-kos">#</span>7aa8ff</span>;   <span class="pl-c">/* 换成你的主色 */</span>
+  <span class="pl-s1">--au-violet</span><span class="pl-kos">:</span> <span class="pl-pds"><span class="pl-kos">#</span>b39dff</span>;
+  <span class="pl-s1">--au-pink</span><span class="pl-kos">:</span> <span class="pl-pds"><span class="pl-kos">#</span>ff9dce</span>;
+  <span class="pl-s1">--au-teal</span><span class="pl-kos">:</span> <span class="pl-pds"><span class="pl-kos">#</span>7ce8d5</span>;
+}</pre></div>
+<p><strong>调整插件</strong>：<code class="notranslate">gm/core.js</code> 底部有一张模块清单，删掉不想要的模块名（如 <code class="notranslate">"vercount"</code>）即完成裁剪；每个模块头部注释写明了它负责的功能与生效页面。</p>
+<p><strong>其他常用项</strong>：每页文章数 <code class="notranslate">onePageListNum</code>、代码高亮配色在 <code class="notranslate">highlight.css</code>、玻璃模糊强度 <code class="notranslate">--glass-blur</code>、断点在 <code class="notranslate">theme.css</code> 底部媒体查询。</p>
+<h2>❓ 常见问题</h2>
+<p><strong>Q：改了 config.json，但只编辑了某篇 issue，感觉没生效？</strong><br>
+Gmeek 的单篇重建（<code class="notranslate">runOne</code>）会优先沿用 <code class="notranslate">blogBase.json</code> 里缓存的旧配置。推送一次 main（或等每日定时全量重建）即可刷新缓存，这是 Gmeek 原有行为，不是主题的问题。</p>
+<p><strong>Q：如何跟随上游 Gmeek 更新？</strong><br>
+在 fork 里 <code class="notranslate">git fetch upstream &amp;&amp; git merge upstream/main</code>。冲突集中在 <code class="notranslate">templates/</code>（我们重写过），对照 <a href="https://github.com/tiengming/Gmeek/blob/aurora/AURORA.md">AURORA.md</a> 的差异表逐个套用即可。</p>
+<p><strong>Q：如何回滚？</strong><br>
+三步：config.json 的 <code class="notranslate">GMEEK_VERSION</code> 改回 <code class="notranslate">last</code> → workflow 克隆地址改回 <code class="notranslate">Meekdai/Gmeek</code> → 删掉 <code class="notranslate">static/assets/{aurora,gm}</code>。推完即恢复上游原版构建。</p>
+<p><strong>Q：为什么每页只有一个 <code class="notranslate">&lt;script&gt;</code>？</strong><br>
+<code class="notranslate">core.js</code> 是 ES Module（天然 defer、严格模式），它在 DOM 就绪后按页面类型动态加载所需模块——文章页的灯箱代码永远不会出现在首页，反之亦然。这也是旧版「分页脚本在文章页崩溃」这类问题从根上消失的原因。</p>
+<h2>🙏 鸣谢</h2>
+<p>主题底座与构建器来自 <a href="https://github.com/Meekdai/Gmeek">Meekdai/Gmeek</a>——一个把 GitHub Issues 变成博客的优雅项目；本站的灯箱交互也源自早年间向上游提交的 <a href="https://github.com/Meekdai/Gmeek/pull/151" data-hovercard-type="pull_request" data-hovercard-url="/Meekdai/Gmeek/pull/151/hovercard">lightbox 插件</a>。这一版是在它之上的一次彻底重塑，欢迎交流与反馈。</p></div>
+
+        <div class="post-body-bottom">
+            <span class="grow"></span>
+            <span>🤞转载请注明出处🤞</span>
+        </div>
+    </article>
+
+    <aside id="toc-root" class="post-toc glass" aria-label="Gmeek博客重构 目录"></aside>
+</div>
+
+
+<div id="comments-mount" class="comments-mount glass" data-repo="tiengming/tiengming.github.io">
+    <button class="gm-comments-btn" id="cmButton" type="button">
+        <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true"><path d=""></path></svg>
+        评论</button>
+</div>
+
+</main>
+
+    <footer id="footer" class="site-footer"><div class="footer-inner">
+    <div>Copyright © <span id="copyrightYear"></span> <a href="/">Tiengming</a></div>
+    <div><span id="runday"></span>
+        <span id="site-views"></span>
+        Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank" rel="noopener">Gmeek</a> · Aurora Theme
+    </div>
+</div>
+
+<script>
+(function () {
+    "use strict";
+    var now = new Date();
+    var y = document.getElementById("copyrightYear");
+    if (y) { y.textContent = now.getFullYear(); }
+
+    var start = "";
+    var r = document.getElementById("runday");
+    if (start && r) {
+        var diff = now.getTime() - new Date(start).getTime();
+        if (diff > 0) {
+            r.textContent = "网站运行 " + Math.floor(diff / 86400000) + " 天" + " · ";
+        }
+    }
+})();
+</script></footer><script>
+    function modeSwitch(){
+        var el=document.documentElement;
+        var cur=el.getAttribute("data-color-mode");
+        var next=cur==="light"?"dark":cur==="dark"?"auto":"light";
+        try{localStorage.setItem("meek_theme",next);}catch(e){}
+        el.setAttribute("data-color-mode",next);
+        var m=document.querySelector('meta[name="theme-color"]');
+        if(m){m.setAttribute("content",next==="dark"?"#0b0e1a":"#f3f4fa");}
+    }
+    </script>
+    <script type="module" src="/assets/gm/core.js"></script>
+</body>
+</html>
