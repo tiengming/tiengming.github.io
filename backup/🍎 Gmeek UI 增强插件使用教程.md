@@ -1,6 +1,9 @@
 
 # 🍎 Gmeek UI 增强插件使用教程
 
+> [!IMPORTANT]
+> 本插件已过时，旧版里往 `allHead` / `script` 塞样式和插件的那套做法**全部废弃**——设计系统由模板自动引入，插件由 `base.html` 统一加载 `core.js`。 [新版本介绍](https://code.buxiantang.top/post/Gmeek-bo-ke-zhong-gou.html)
+
 ## 📦 插件简介
 
 Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 Apple 风格的焕然一新体验，包括：

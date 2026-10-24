@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Sat, 24 Oct 2026 13:26:36 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster><item><title>Gmeek博客重构</title><link>https://code.buxiantang.top/post/Gmeek-bo-ke-zhong-gou.html</link><description>&gt; [!NOTE]
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>Tiengming</title><link>https://code.buxiantang.top</link><description>发现世界上所有美好的事物，分享有趣的东西</description><copyright>Tiengming</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://code.buxiantang.top/favicon.svg</url><title>avatar</title><link>https://code.buxiantang.top</link></image><lastBuildDate>Sat, 24 Oct 2026 13:44:14 +0000</lastBuildDate><managingEditor>Tiengming</managingEditor><ttl>60</ttl><webMaster>Tiengming</webMaster><item><title>Gmeek博客重构</title><link>https://code.buxiantang.top/post/Gmeek-bo-ke-zhong-gou.html</link><description>&gt; [!NOTE]
 &gt; 本文对应的修改已开源：主题模板在 [tiengming/Gmeek 的 aurora 分支](https://github.com/tiengming/Gmeek/tree/aurora)，设计系统与插件在 [tiengming/tiengming.github.io 的 static/assets/](https://github.com/tiengming/tiengming.github.io/tree/aurora/static/assets)。</description><guid isPermaLink="true">https://code.buxiantang.top/post/Gmeek-bo-ke-zhong-gou.html</guid><pubDate>Sat, 24 Oct 2026 13:26:17 +0000</pubDate></item><item><title>XIME 输入法使用小鹤双拼 17 键教程</title><link>https://code.buxiantang.top/post/XIME%20-shu-ru-fa-shi-yong-xiao-he-shuang-pin-%2017%20-jian-jiao-cheng.html</link><description>
 # XIME 输入法小鹤双拼 17 键配置教程
 
@@ -43,16 +43,8 @@ RCI（等级相关指数）是一种衡量价格与时间序列之间相关性�
 在构建提示词的过程中，我意识到一个关键问题：**提示词不仅是功能设定，更是认知引导的工具**。</description><guid isPermaLink="true">https://code.buxiantang.top/post/shi-yong-AI-zhi-dao-jiao-yi.html</guid><pubDate>Thu, 17 Jul 2025 10:09:55 +0000</pubDate></item><item><title>🍎 Gmeek UI 增强插件使用教程</title><link>https://code.buxiantang.top/post/%F0%9F%8D%8E%20Gmeek%20UI%20-zeng-qiang-cha-jian-shi-yong-jiao-cheng.html</link><description>
 # 🍎 Gmeek UI 增强插件使用教程
 
-## 📦 插件简介
-
-Gmeek UI 插件通过纯前端增强的方式，为 Gmeek 框架博客带来 Apple 风格的焕然一新体验，包括：
-
-| 文件名                   | 功能说明                                                                 |
-|--------------------------|--------------------------------------------------------------------------|
-| `GmeekBaseTheme.css`     | 基础布局样式：字体、圆角、卡片排版，兼容原始结构不污染构建样式                          |
-| `GmeekCustomizeCss.js`   | UI 动态增强：卡片结构重构、玻璃拟态样式、深浅模式自适应、渐变背景、标签配色自动对比等功能       |
-
-&gt; 🧠 零依赖、构建无侵入、插拔可选、明暗自动识别、视觉沉浸体验，100% 兼容 Gmeek 原生内容结构。</description><guid isPermaLink="true">https://code.buxiantang.top/post/%F0%9F%8D%8E%20Gmeek%20UI%20-zeng-qiang-cha-jian-shi-yong-jiao-cheng.html</guid><pubDate>Thu, 03 Jul 2025 08:30:11 +0000</pubDate></item><item><title>微信公众号AI智能回复</title><link>https://code.buxiantang.top/post/wei-xin-gong-zhong-hao-AI-zhi-neng-hui-fu.html</link><description># 智能回复
+&gt; [!IMPORTANT]
+&gt; 本插件已过时，旧版里往 `allHead` / `script` 塞样式和插件的那套做法**全部废弃**——设计系统由模板自动引入，插件由 `base.html` 统一加载 `core.js`。</description><guid isPermaLink="true">https://code.buxiantang.top/post/%F0%9F%8D%8E%20Gmeek%20UI%20-zeng-qiang-cha-jian-shi-yong-jiao-cheng.html</guid><pubDate>Thu, 03 Jul 2025 08:30:11 +0000</pubDate></item><item><title>微信公众号AI智能回复</title><link>https://code.buxiantang.top/post/wei-xin-gong-zhong-hao-AI-zhi-neng-hui-fu.html</link><description># 智能回复
 
 微信公众号支持官方的AI助手了，同样也支持AI的提示词，下面是我自用的提示词，供大家参考。</description><guid isPermaLink="true">https://code.buxiantang.top/post/wei-xin-gong-zhong-hao-AI-zhi-neng-hui-fu.html</guid><pubDate>Wed, 02 Jul 2025 07:02:39 +0000</pubDate></item><item><title>一键安装阿里与 Cloudflare 的 DNS over HTTPS 设置</title><link>https://code.buxiantang.top/post/yi-jian-an-zhuang-a-li-yu-%20Cloudflare%20-de-%20DNS%20over%20HTTPS%20-she-zhi.html</link><description>
 
