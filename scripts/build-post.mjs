@@ -5,8 +5,10 @@
 
 import { spawnSync } from "node:child_process";
 import { main as lazyImgs } from "./lazy-imgs.mjs";
+import { main as legacyRedirects } from "./legacy-redirects.mjs";
 
 await lazyImgs("dist");
+await legacyRedirects("dist", "legacy");
 
 if (process.env.SKIP_PAGEFIND !== "1") {
   // pagefind 在 Task 8 接入后启用；CLI 不存在时静默跳过
