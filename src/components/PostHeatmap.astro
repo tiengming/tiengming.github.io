@@ -1,5 +1,5 @@
 ---
-/** 发文热力图：按年-月统计（构建期计算，真实数据；滚动进入时 60ms 交错点亮） */
+/** 折腾热力 · GitHub 贡献图式 —— 周列×7 天行，真实发文数据，列波浪入场 */
 import type { Post } from "../utils/posts";
 
 interface Props {
@@ -7,54 +7,90 @@ interface Props {
 }
 const { posts } = Astro.props;
 
-const byMonth = new Map<string, number>();
+// 按天计数
+const byDay = new Map<string, number>();
 for (const p of posts) {
-  const k = `${p.data.pubDate.getUTCFullYear()}-${String(p.data.pubDate.getUTCMonth() + 1).padStart(2, "0")}`;
-  byMonth.set(k, (byMonth.get(k) ?? 0) + 1);
+  const k = p.data.pubDate.toISOString().slice(0, 10);
+  byDay.set(k, (byDay.get(k) ?? 0) + 1);
 }
-const years = [...new Set([...byMonth.keys()].map((k) => Number(k.slice(0, 4))))].sort();
-const max = Math.max(...byMonth.values(), 1);
-const MONTHS = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
-const level = (n: number) => (n === 0 ? 0 : Math.ceil((n / max) * 4));
+const days = [...byDay.values()];
+const max = Math.max(...days, 1);
+const level = (n: number) => (n === 0 ? 0 : Math.max(1, Math.ceil((n / max) * 4)));
+
+// 网格：从首篇所在周的周日 到 本周末
+const today = new Date();
+const first = posts.reduce(
+  (min, p) => (p.data.pubDate < min ? p.data.pubDate : min),
+  posts[0]?.data.pubDate ?? today,
+);
+const start = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth(), first.getUTCDate()));
+start.setUTCDate(start.getUTCDate() - start.getUTCDay()); // 回到周日
+const end = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+end.setUTCDate(end.getUTCDate() + (6 - end.getUTCDay())); // 到本周六
+
+const weeks: { key: string; count: number; level: number }[][] = [];
+const monthMarks: { col: number; label: string }[] = [];
+let cursor = new Date(start);
+let lastMonth = -1;
+for (let w = 0; cursor <= end; w++) {
+  const col: { key: string; count: number; level: number }[] = [];
+  for (let d = 0; d < 7; d++) {
+    const k = cursor.toISOString().slice(0, 10);
+    const count = byDay.get(k) ?? 0;
+    col.push({ key: k, count, level: level(count) });
+    cursor = new Date(cursor);
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+  weeks.push(col);
+  const month = col[3].key ? Number(col[3].key.slice(5, 7)) : lastMonth; // 以周四判定月份归属
+  if (month !== lastMonth) {
+    monthMarks.push({ col: w, label: `${month}月` });
+    lastMonth = month;
+  }
+}
+const totalWeeks = weeks.length;
+const lit = days.length;
+const WEEKDAY_LABELS = new Map([[1, "一"], [3, "三"], [5, "五"]]);
 ---
 
 <section class="heatmap-wrap" aria-label="折腾热力图">
   <h2 class="sec-title">折腾热力</h2>
+  <p class="hm-sub nums">首篇至今 {lit} 个有产出的日子</p>
+
   <div class="hm-scroll">
-    <div class="hm-grid" style={`--cols:${years.length}`}>
-      <span class="hm-corner"></span>
+    <div class="hm-grid" style={`--cols:${totalWeeks}`} data-reveal>
       {
-        years.map((y) => (
-          <span class="hm-year nums">
-            {y}
+        monthMarks.map((m) => (
+          <span class="hm-month nums" style={`grid-column:${m.col + 2};grid-row:1`}>
+            {m.label}
           </span>
         ))
       }
       {
-        MONTHS.map((m, mi) => (
-          <>
-            <span class="hm-month">{m}</span>
-            {years.map((y) => {
-              const k = `${y}-${String(mi + 1).padStart(2, "0")}`;
-              const n = byMonth.get(k) ?? 0;
-              return (
-                <span
-                  class:list={["hm-cell", `lv${level(n)}`, n > 0 && "has"]}
-                  style={`--i:${years.indexOf(y) * 12 + mi}`}
-                  data-reveal
-                  title={`${k}：${n > 0 ? `${n} 篇` : "沉寂"}`}
-                />
-              );
-            })}
-          </>
+        [...WEEKDAY_LABELS.entries()].map(([d, label]) => (
+          <span class="hm-weekday" style={`grid-column:1;grid-row:${d + 2}`}>
+            {label}
+          </span>
         ))
+      }
+      {
+        weeks.map((col, w) =>
+          col.map((cell, d) => (
+            <span
+              class:list={["hm-cell", `lv${cell.level}`, cell.count > 0 && "has"]}
+              style={`grid-column:${w + 2};grid-row:${d + 2};--w:${w};--d:${d}`}
+              title={cell.count > 0 ? `${cell.key} · ${cell.count} 篇` : `${cell.key} · 沉寂`}
+            />
+          )),
+        )
       }
     </div>
   </div>
+
   <div class="hm-legend" aria-hidden="true">
-    <span class="hm-legend-label">沉寂</span>
+    <span class="hm-legend-label">少</span>
     {[0, 1, 2, 3, 4].map((l) => <span class:list={["hm-cell", "lv" + l, "sm"]} />)}
-    <span class="hm-legend-label">高产</span>
+    <span class="hm-legend-label">多</span>
   </div>
 </section>
 
@@ -66,58 +102,88 @@ const level = (n: number) => (n === 0 ? 0 : Math.ceil((n / max) * 4));
   }
   .sec-title {
     font-size: var(--fs-xl);
-    margin-bottom: 20px;
+    margin-bottom: 4px;
+  }
+  .hm-sub {
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+    margin-bottom: 18px;
   }
   .hm-scroll {
     overflow-x: auto;
     scrollbar-width: thin;
+    padding-bottom: 4px;
   }
   .hm-grid {
     display: grid;
-    grid-template-columns: 3.2em repeat(var(--cols), 1fr);
-    gap: 4px;
-    min-width: min(100%, 24rem);
-    align-items: stretch;
-  }
-  .hm-year {
-    text-align: center;
-    color: var(--c-fg-subtle);
-    font-size: var(--fs-xs);
-    padding-bottom: 2px;
+    grid-template-rows: 1.4em repeat(7, 12px);
+    grid-auto-columns: 12px;
+    grid-auto-flow: column dense;
+    gap: 3px;
+    width: max-content;
+    min-width: 100%;
   }
   .hm-month {
+    align-self: end;
     color: var(--c-fg-subtle);
     font-size: var(--fs-xs);
     white-space: nowrap;
-    align-self: center;
   }
+  .hm-weekday {
+    align-self: center;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-xs);
+  }
+
   .hm-cell {
-    aspect-ratio: 1;
-    border-radius: 3px;
-    background: var(--c-surface-2);
-    transition: transform var(--mo-fast) var(--mo-ease);
+    width: 12px;
+    height: 12px;
+    border-radius: 2.5px;
+    background: color-mix(in oklch, var(--c-surface-2) 82%, var(--c-fg-subtle) 6%);
+    /* 波浪入场：列 × 天 交错；容器 reveal-in 后才播放 */
+    animation: hm-pop 0.35s var(--mo-ease) both;
+    animation-play-state: paused;
+    animation-delay: calc(var(--w) * 14ms + var(--d) * 8ms);
+  }
+  :global(.reveal-in) .hm-cell {
+    animation-play-state: running;
+  }
+  @keyframes hm-pop {
+    from {
+      opacity: 0;
+      transform: scale(0.35);
+    }
+  }
+  .hm-cell.lv1 { background: color-mix(in oklch, var(--c-accent) 26%, var(--c-surface-2)); }
+  .hm-cell.lv2 { background: color-mix(in oklch, var(--c-accent) 48%, var(--c-surface-2)); }
+  .hm-cell.lv3 { background: color-mix(in oklch, var(--c-accent) 72%, var(--c-surface-2)); }
+  .hm-cell.lv4 { background: var(--c-accent); }
+  .hm-cell.has:hover {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 1.5px var(--c-accent);
   }
   .hm-cell.sm {
     width: 12px;
-    aspect-ratio: 1;
+    height: 12px;
+    animation: none;
   }
-  .hm-cell.lv1 { background: color-mix(in oklch, var(--c-accent) 22%, var(--c-surface-2)); }
-  .hm-cell.lv2 { background: color-mix(in oklch, var(--c-accent) 45%, var(--c-surface-2)); }
-  .hm-cell.lv3 { background: color-mix(in oklch, var(--c-accent) 70%, var(--c-surface-2)); }
-  .hm-cell.lv4 { background: var(--c-accent); }
-  .hm-cell.has:hover {
-    transform: scale(1.25);
-  }
+
   .hm-legend {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     justify-content: flex-end;
     margin-top: 10px;
   }
   .hm-legend-label {
     color: var(--c-fg-subtle);
     font-size: var(--fs-xs);
-    margin: 0 3px;
+    margin: 0 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hm-cell {
+      animation: none;
+    }
   }
 </style>

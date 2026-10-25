@@ -1,22 +1,27 @@
 ---
-/** 访问统计与分析：按 site.ts features 注入（vercount 计数 + MS Clarity） */
+/** 站点统计：全部可插拔（site.ts features.analytics / counter），空值即不注入 */
 import site from "../config/site";
-const clarity = site.features.analytics.clarity;
+const { cloudflare, umami, clarity } = site.features.analytics;
 const vercount = site.features.counter === "vercount";
 ---
 
 {
-  vercount && (
-    <script is:inline async src="https://vercount.one/js" />
+  vercount && <script is:inline async src="https://vercount.one/js" />
+}
+
+{
+  cloudflare && (
+    <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: cloudflare })} />
   )
 }
 
 {
+  umami && <script is:inline defer src={umami.src} data-website-id={umami.websiteId} />
+}
+
+{
   clarity && (
-    <script
-      is:inline
-      define:vars={{ clarityId: clarity }}
-    >
+    <script is:inline define:vars={{ clarityId: clarity }}>
       (function (c, l, a, r, i, t, y) {
         c[a] =
           c[a] ||

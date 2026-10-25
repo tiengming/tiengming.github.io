@@ -42,9 +42,19 @@ export interface SiteConfig {
     /** 评论区：utterances 直接复用文章 issue 的评论线程；需在仓库安装 utterances app */
     comments: { provider: "utterances" | "off"; repo?: string };
     search: boolean;
-    /** 访问计数 */
+    /** 访问计数（页脚公开数字，busuanzi 兼容协议） */
     counter: "vercount" | "off";
-    analytics: { clarity?: string };
+    /**
+     * 站点分析（可多开，全部可插拔）：
+     * - cloudflare: Cloudflare Web Analytics 的 token（CF 控制台 → Analytics & Logs → Web Analytics → 添加站点后 JS 代码片段里的 cfwml-token）
+     * - umami: { src: 'https://cloud.umami.is/script.js', websiteId: '…' }（Umami Cloud 或自托管）
+     * - clarity: Microsoft Clarity 的项目 ID
+     */
+    analytics: {
+      cloudflare?: string;
+      umami?: { src: string; websiteId: string };
+      clarity?: string;
+    };
     rss: boolean;
   };
   theme: {

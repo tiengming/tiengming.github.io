@@ -40,7 +40,13 @@ const site: SiteConfig = {
     comments: { provider: "utterances", repo: "tiengming/tiengming.github.io" },
     search: true,
     counter: "vercount",
-    analytics: { clarity: "na4qnk47pl" },
+    analytics: {
+      // Cloudflare Web Analytics：CF 控制台 → 你的域名 → Web Analytics → 手动安装，复制 cfwml-token 填入
+      cloudflare: "",
+      // Umami Cloud（免费档）：cloud.umami.is → Add website → 拿到 script.js 地址与 data-website-id
+      // umami: { src: "https://cloud.umami.is/script.js", websiteId: "xxxxxxxx-xxxx" },
+      clarity: "na4qnk47pl",
+    },
     rss: true,
   },
   theme: {
