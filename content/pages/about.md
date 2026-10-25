@@ -1,7 +1,7 @@
 ---
 title: "关于我"
 pubDate: 2024-07-26T05:05:01Z
-updatedDate: 2026-10-25T15:21:32Z
+updatedDate: 2026-10-25T15:23:32Z
 issueNumber: 11
 comments: 0
 labels: ["about"]
