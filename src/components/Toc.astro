@@ -61,6 +61,7 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
   }
   .toc-item a {
     display: block;
+    position: relative;
     padding: 5px 0 5px 12px;
     border-left: 2px solid transparent;
     color: var(--c-fg-subtle);
@@ -78,6 +79,35 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
   .toc-item a.active {
     color: var(--c-accent-strong);
     border-left-color: var(--c-accent);
+  }
+  /* 涟漪呼吸：当前阅读章节的声呐式扩散环（代替竖向进度条） */
+  .toc-item a.active::after {
+    content: "";
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: var(--c-accent);
+    animation: toc-ripple 2.2s var(--mo-ease-soft) infinite;
+  }
+  @keyframes toc-ripple {
+    0% {
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--c-accent) 45%, transparent);
+    }
+    70% {
+      box-shadow: 0 0 0 9px transparent;
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .toc-item a.active::after {
+      animation: none;
+    }
   }
 
   /* 桌面右轨（order/grid-column 由本组件自管：Astro 作用域下父组件子选择器不命中） */

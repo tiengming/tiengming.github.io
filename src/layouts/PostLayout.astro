@@ -24,6 +24,7 @@ const archived = props.labels.includes(site.issues.archivedLabel);
 ---
 
 <BaseLayout title={props.title} description={desc} ogType="article">
+  <div class="read-progress" aria-hidden="true"><i></i></div>
   <script
     type="application/ld+json"
     set:html={JSON.stringify({
@@ -81,10 +82,57 @@ const archived = props.labels.includes(site.issues.archivedLabel);
   import { attachLightbox } from "../scripts/lightbox";
   document.addEventListener("astro:page-load", () => {
     attachLightbox(document);
+
+    // 阅读进度：按文章元素自身范围计算（页脚/评论不计入）
+    const w = window as unknown as { __tmReadBound?: boolean };
+    const update = () => {
+      const bar = document.querySelector<HTMLElement>(".read-progress i");
+      const article = document.querySelector<HTMLElement>("article.post");
+      if (!bar || !article) return;
+      const rect = article.getBoundingClientRect();
+      const total = rect.height - innerHeight;
+      const passed = Math.min(Math.max(-rect.top, 0), Math.max(total, 1));
+      bar.style.transform = `scaleX(${total > 0 ? (passed / total).toFixed(4) : "0"})`;
+    };
+    if (!w.__tmReadBound) {
+      w.__tmReadBound = true;
+      let ticking = false;
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            update();
+            ticking = false;
+          });
+        },
+        { passive: true },
+      );
+    }
+    update();
   });
 </script>
 
 <style>
+  /* 横向阅读进度条：文章滚动进度（scaleX 变换，零重排） */
+  .read-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    z-index: 55;
+    pointer-events: none;
+  }
+  .read-progress i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--c-accent), var(--c-accent-strong));
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
   .container {
     max-width: var(--w-wide);
     margin: 0 auto;
