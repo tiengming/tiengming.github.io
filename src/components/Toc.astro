@@ -73,7 +73,7 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
     border-left-color: var(--c-accent);
   }
 
-  /* 桌面右轨 */
+  /* 桌面右轨（order/grid-column 由本组件自管：Astro 作用域下父组件子选择器不命中） */
   .toc-rail {
     position: sticky;
     top: 96px;
@@ -81,13 +81,13 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
     max-height: calc(100dvh - 140px);
     overflow-y: auto;
     scrollbar-width: thin;
-  }
-  .toc-rail {
     display: none;
   }
   @media (min-width: 1100px) {
     .toc-rail {
       display: block;
+      order: 2;
+      grid-column: 2;
     }
     .toc-mobile {
       display: none;

@@ -89,11 +89,15 @@ const id = props.issueNumber;
     line-height: 1.35;
   }
 
-  /* 桌面三区：正文 44rem + 右轨目录；目录在 <1100px 时移动端抽屉化（见 Toc） */
+  /* 桌面三区：正文 44rem 主列 + 右轨目录；目录在 <1100px 时移动端抽屉化（见 Toc）。
+     注意：order 各自写在所属组件里（Astro 作用域下跨组件子选择器不命中） */
   .post-body {
     display: block;
     max-width: var(--w-prose);
     margin: 0 auto;
+  }
+  .prose {
+    min-width: 0;
   }
   @media (min-width: 1100px) {
     .post-body {
@@ -103,14 +107,9 @@ const id = props.issueNumber;
       max-width: none;
       justify-content: center;
     }
-    .post-body > .toc-rail {
-      order: 2;
-    }
-    .post-body > .prose {
+    .prose {
       order: 1;
-    }
-    .post-body > .toc-mobile {
-      display: none;
+      grid-column: 1;
     }
   }
 
