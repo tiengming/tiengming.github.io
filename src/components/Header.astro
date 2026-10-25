@@ -29,6 +29,17 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     </nav>
 
     <div class="header-actions">
+      {
+        site.features.search && (
+          <button id="palette-trigger" type="button" class="icon-btn search-btn" aria-label="搜索（Ctrl+K）">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.8-3.8" />
+            </svg>
+            <kbd class="search-kbd">⌘K</kbd>
+          </button>
+        )
+      }
       <slot name="actions" />
       <ThemeToggle />
     </div>
@@ -100,6 +111,28 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     display: flex;
     align-items: center;
     gap: 4px;
+  }
+  .search-btn {
+    width: auto;
+    gap: 8px;
+    padding: 0 10px;
+  }
+  .search-btn svg {
+    width: 16px;
+    height: 16px;
+    position: static;
+    opacity: 1;
+  }
+  .search-kbd {
+    font-family: var(--ft-mono);
+    font-size: 0.68rem;
+    color: var(--c-fg-subtle);
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .search-kbd {
+      display: inline;
+    }
   }
 
   @media (max-width: 640px) {

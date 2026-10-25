@@ -23,7 +23,7 @@ const id = props.issueNumber;
 ---
 
 <BaseLayout title={props.title} description={desc} ogType="article">
-  <article class="post container">
+  <article class="post container" data-pagefind-body>
     <header class="post-head" transition:name={`post-card-${id}`}>
       <h1 class="post-title" transition:name={`post-title-${id}`}>{props.title}</h1>
       <PostMeta
