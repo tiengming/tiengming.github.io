@@ -1,0 +1,109 @@
+---
+interface Props {
+  page: number; // 当前页（1 起）
+  total: number; // 总页数
+  base?: string; // 首页路径
+}
+const { page, total, base = "/" } = Astro.props;
+const href = (p: number) => (p === 1 ? base : `${base === "/" ? "/page/" : `${base}page/`}${p}/`);
+const window = 2;
+const items: (number | "…")[] = [];
+for (let p = 1; p <= total; p++) {
+  if (p === 1 || p === total || Math.abs(p - page) <= window) items.push(p);
+  else if (items.at(-1) !== "…") items.push("…");
+}
+---
+
+{
+  total > 1 && (
+    <nav class="pagination" aria-label="分页">
+      {page > 1 ? (
+        <a class="page-link" href={href(page - 1)} rel="prev" aria-label="上一页">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" />
+          </svg>
+        </a>
+      ) : (
+        <span class="page-link disabled" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" />
+          </svg>
+        </span>
+      )}
+
+      {items.map((it) =>
+        it === "…" ? (
+          <span class="page-ellipsis" aria-hidden="true">…</span>
+        ) : it === page ? (
+          <span class="page-link current nums" aria-current="page">
+            {it}
+          </span>
+        ) : (
+          <a class="page-link nums" href={href(it)}>
+            {it}
+          </a>
+        ),
+      )}
+
+      {page < total ? (
+        <a class="page-link" href={href(page + 1)} rel="next" aria-label="下一页">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </a>
+      ) : (
+        <span class="page-link disabled" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </span>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 48px 0 16px;
+  }
+  .page-link {
+    display: grid;
+    place-items: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 6px;
+    border-radius: var(--rd-card);
+    color: var(--c-fg-muted);
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    background: color-mix(in oklch, var(--c-surface) 70%, transparent);
+    box-shadow: var(--sh-contact);
+    transition: background-color var(--mo-fast) var(--mo-ease), color var(--mo-fast) var(--mo-ease), transform var(--mo-fast) var(--mo-ease);
+  }
+  a.page-link:hover {
+    background: var(--c-surface-2);
+    color: var(--c-fg);
+    transform: translateY(-1px);
+  }
+  .page-link.current {
+    background: var(--c-accent);
+    color: var(--c-on-accent);
+    font-weight: 600;
+  }
+  .page-link.disabled {
+    opacity: 0.35;
+    box-shadow: none;
+  }
+  .page-link svg {
+    width: 16px;
+    height: 16px;
+  }
+  .page-ellipsis {
+    color: var(--c-fg-subtle);
+    padding: 0 2px;
+  }
+</style>

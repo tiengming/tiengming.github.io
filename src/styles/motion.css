@@ -1,0 +1,22 @@
+/* ============================================================
+   入场动效态类（由 scripts/reveal.ts 注入/移除，无 JS 保持可见）
+   ============================================================ */
+
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+}
+
+.reveal-in {
+  transition: opacity var(--mo-scene) var(--mo-ease), transform var(--mo-scene) var(--mo-ease),
+    filter var(--mo-scene) var(--mo-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-hidden {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

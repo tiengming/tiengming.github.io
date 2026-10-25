@@ -1,0 +1,161 @@
+---
+import type { Post } from "../utils/posts";
+import { excerpt, fmtDate } from "../utils/posts";
+
+interface Props {
+  post: Post;
+  index?: number;
+}
+const { post, index = 0 } = Astro.props;
+const d = post.data;
+const id = d.issueNumber;
+---
+
+<a
+  class="post-card"
+  href={`/p/${id}/`}
+  data-tilt
+  data-reveal
+  style={`--i:${Math.min(index, 8)}`}
+  transition:name={`post-card-${id}`}
+>
+  <span class="card-topline" aria-hidden="true"></span>
+  <time class="post-date nums" datetime={d.pubDate.toISOString()}>{fmtDate(d.pubDate)}</time>
+  <div class="post-card-main">
+    <h2 class="post-card-title" transition:name={`post-title-${id}`}>{d.title}</h2>
+    <p class="post-card-excerpt">{excerpt(post.body)}</p>
+    <div class="post-card-meta">
+      {
+        d.labels.slice(0, 4).map((l) => (
+          <span class="chip">
+            <span class="chip-dot" aria-hidden="true" />
+            {l}
+          </span>
+        ))
+      }
+      <span class="post-card-comments nums" aria-label={`${d.comments} 条评论`}>{d.comments} 评论</span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .post-card {
+    position: relative;
+    display: flex;
+    gap: 18px;
+    padding: 22px 24px;
+    border-radius: var(--rd-card);
+    background: color-mix(in oklch, var(--c-surface) 82%, transparent);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--sh-card);
+    transform-style: preserve-3d;
+    transition: box-shadow var(--mo-slow) var(--mo-ease), transform var(--mo-slow) var(--mo-ease);
+  }
+  /* 悬停：三层阴影绽放 + 上浮；辉光顶线仅此刻出现（伪元素 opacity，不动画 box-shadow） */
+  .post-card:hover,
+  .post-card:focus-visible {
+    box-shadow: var(--sh-card-hover);
+    transform: translateY(-3px);
+  }
+  .card-topline {
+    position: absolute;
+    inset: 0 12% auto 12%;
+    height: 1px;
+    border-radius: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-accent), transparent);
+    opacity: 0;
+    transition: opacity var(--mo-slow) var(--mo-ease);
+    pointer-events: none;
+  }
+  .post-card:hover .card-topline,
+  .post-card:focus-visible .card-topline {
+    opacity: 0.85;
+  }
+
+  /* 编辑刊签名动作：侧挂竖排日期 */
+  .post-date {
+    writing-mode: vertical-rl;
+    font-size: var(--fs-xs);
+    letter-spacing: 0.14em;
+    color: var(--c-fg-subtle);
+    border-left: 1px solid var(--c-border);
+    padding-left: 12px;
+    align-self: stretch;
+    white-space: nowrap;
+  }
+
+  .post-card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+  .post-card-title {
+    margin: 0;
+    font-size: var(--fs-xl);
+    line-height: 1.35;
+    transition: color var(--mo-fast) var(--mo-ease);
+  }
+  .post-card:hover .post-card-title {
+    color: var(--c-accent-strong);
+  }
+  .post-card-excerpt {
+    color: var(--c-fg-muted);
+    font-size: var(--fs-sm);
+    line-height: 1.75;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .post-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 10px;
+    border-radius: var(--rd-pill);
+    background: var(--c-accent-soft);
+    color: var(--c-accent-strong);
+    font-size: var(--fs-xs);
+    line-height: 1.7;
+  }
+  .chip-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .post-card-comments {
+    margin-left: auto;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-xs);
+  }
+
+  @media (max-width: 640px) {
+    .post-card {
+      flex-direction: row-reverse;
+      gap: 12px;
+      padding: 18px;
+    }
+    .post-date {
+      writing-mode: horizontal-tb;
+      border-left: none;
+      border-right: 1px solid var(--c-border);
+      padding: 0 10px 0 0;
+      letter-spacing: 0.06em;
+    }
+    .post-card-title {
+      font-size: var(--fs-lg);
+    }
+  }
+</style>

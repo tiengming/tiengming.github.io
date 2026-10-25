@@ -1,0 +1,59 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import Pagination from "../../components/Pagination.astro";
+import { allPosts } from "../../utils/posts";
+import { PAGE_SIZE } from "../index.astro";
+
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  const total = Math.ceil(posts.length / PAGE_SIZE);
+  return Array.from({ length: total }, (_, i) => i + 1)
+    .filter((p) => p > 1)
+    .map((p) => ({ params: { page: String(p) } }));
+}
+
+const page = Number(Astro.params.page);
+const posts = await allPosts();
+const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+const pagePosts = posts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+---
+
+<BaseLayout title={`第 ${page} 页`}>
+  <div class="container">
+    <header class="list-head" aria-label="文章列表">
+      <h1 class="list-title" data-reveal style="--i:0">文章</h1>
+      <p class="list-page nums" data-reveal style="--i:1">第 {page} 页 / 共 {totalPages} 页</p>
+    </header>
+
+    <section class="post-list" aria-label="文章列表">
+      {pagePosts.map((p, i) => <PostCard post={p} index={i + 2} />)}
+    </section>
+
+    <Pagination page={page} total={totalPages} />
+  </div>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: var(--w-prose);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .list-head {
+    padding: 56px 0 36px;
+  }
+  .list-title {
+    font-size: var(--fs-2xl);
+  }
+  .list-page {
+    margin-top: 6px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+  }
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+</style>

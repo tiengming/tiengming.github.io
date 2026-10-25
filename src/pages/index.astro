@@ -1,19 +1,63 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import PostCard from "../components/PostCard.astro";
+import Pagination from "../components/Pagination.astro";
+import { allPosts, tagCounts } from "../utils/posts";
 import site from "../config/site";
+
+export const PAGE_SIZE = 6;
+
+const posts = await allPosts();
+const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+const pagePosts = posts.slice(0, PAGE_SIZE);
+const tagTotal = tagCounts(posts).length;
 ---
 
 <BaseLayout>
-  <section class="hero landing">
-    <h1>{site.site.title}</h1>
-    <p>{site.site.subtitle}</p>
-  </section>
+  <div class="container">
+    <section class="hero" aria-label="站点介绍">
+      <h1 class="hero-title" data-reveal style="--i:0">{site.site.title}</h1>
+      <p class="hero-sub" data-reveal style="--i:1">{site.site.subtitle}</p>
+      <p class="hero-count nums" data-reveal style="--i:2">{posts.length} 篇文章，{tagTotal} 个标签</p>
+    </section>
+
+    <section class="post-list" aria-label="文章列表">
+      {pagePosts.map((p, i) => <PostCard post={p} index={i + 3} />)}
+    </section>
+
+    <Pagination page={1} total={totalPages} />
+  </div>
 </BaseLayout>
 
 <style>
-  .landing {
+  .container {
     max-width: var(--w-prose);
     margin: 0 auto;
-    padding: 96px 20px;
+    padding: 0 20px;
+  }
+  .hero {
+    padding: 72px 0 48px;
+  }
+  .hero-title {
+    font-size: clamp(var(--fs-2xl), 6vw, var(--fs-3xl));
+    line-height: 1.25;
+  }
+  .hero-sub {
+    margin-top: 10px;
+    color: var(--c-fg-muted);
+    font-size: var(--fs-lg);
+    font-family: var(--ft-display);
+    line-height: 1.7;
+  }
+  .hero-count {
+    margin-top: 14px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+    letter-spacing: 0.04em;
+  }
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 </style>

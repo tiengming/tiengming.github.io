@@ -55,5 +55,16 @@ const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.default
       <slot />
     </main>
     <Footer />
+    <script>
+      // 景深舞台岛：滚动渐显 + 3D 倾斜（全站一次绑定，ClientRouter 换页后重扫）
+      import { attachReveal } from "../scripts/reveal";
+      import { attachTilt } from "../scripts/tilt";
+      const initStage = () => {
+        attachReveal();
+        attachTilt();
+      };
+      initStage();
+      document.addEventListener("astro:page-load", initStage);
+    </script>
   </body>
 </html>
