@@ -1,1 +1,105 @@
-/* Task 1 填充 */
+/* ============================================================
+   极光光场 —— 签名动作「景深舞台」的背景层
+   事实源: DESIGN.md §1/§3；brief 指定（v1 血统），限域使用：
+   仅背景光场与浮层毛玻璃；光斑 transform-only 动画
+   ============================================================ */
+
+.aurora-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  will-change: transform;
+}
+
+.aurora-blob-a {
+  width: 52vw;
+  height: 52vw;
+  top: -18vw;
+  left: -12vw;
+  background: oklch(0.75 0.12 175);
+  opacity: var(--aurora-alpha);
+  animation: aurora-drift-a 88s var(--mo-ease-soft) infinite alternate;
+}
+
+.aurora-blob-b {
+  width: 44vw;
+  height: 44vw;
+  top: 28vh;
+  right: -16vw;
+  background: oklch(0.72 0.1 200);
+  opacity: var(--aurora-alpha-2);
+  animation: aurora-drift-b 74s var(--mo-ease-soft) infinite alternate;
+}
+
+.aurora-blob-c {
+  width: 38vw;
+  height: 38vw;
+  bottom: -14vw;
+  left: 22vw;
+  background: oklch(0.55 0.09 190);
+  opacity: calc(var(--aurora-alpha-2) * 0.9);
+  animation: aurora-drift-c 96s var(--mo-ease-soft) infinite alternate;
+}
+
+@keyframes aurora-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(9vw, 7vh, 0) scale(1.12); }
+}
+@keyframes aurora-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.05); }
+  to   { transform: translate3d(-8vw, -6vh, 0) scale(0.94); }
+}
+@keyframes aurora-drift-c {
+  from { transform: translate3d(0, 0, 0) scale(0.96); }
+  to   { transform: translate3d(6vw, -9vh, 0) scale(1.1); }
+}
+
+/* 细噪点：压住渐变的塑料感（feTurbulence data-uri） */
+.aurora-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* 移动端：两斑、小半径，保帧率 */
+@media (max-width: 640px) {
+  .aurora-blob {
+    filter: blur(56px);
+  }
+  .aurora-blob-c {
+    display: none;
+  }
+  .aurora-blob-a {
+    width: 72vw;
+    height: 72vw;
+  }
+  .aurora-blob-b {
+    width: 60vw;
+    height: 60vw;
+  }
+}
+
+/* 弱动效：光斑静止（保留存在感，不位移） */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-blob {
+    animation: none;
+  }
+}
+
+/* 弱透明：光斑退场，背景回归纯色 */
+@media (prefers-reduced-transparency: reduce) {
+  .aurora-blob {
+    display: none;
+  }
+}

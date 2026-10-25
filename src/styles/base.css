@@ -1,1 +1,134 @@
-/* Task 1 填充 */
+/* ============================================================
+   基线排版与无障碍 —— 事实源: DESIGN.md §2/§5
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--ft-body);
+  font-size: var(--fs-base);
+  line-height: 1.85;
+  color: var(--c-fg);
+  background: var(--c-bg);
+  min-height: 100dvh;
+  overflow-wrap: break-word;
+  text-underline-offset: 0.2em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 跳转链接：键盘可达性 */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 8px 14px;
+  border-radius: var(--rd-card);
+  background: var(--c-accent);
+  color: var(--c-on-accent);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--mo-base) var(--mo-ease);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* 焦点环：box-shadow 方案，双主题可见 */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--c-bg), 0 0 0 4px var(--c-accent);
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--c-accent-soft);
+  color: var(--c-accent-strong);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--ft-display);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+/* 标题归属感：题上间距 > 题下间距 */
+h2 { margin-top: 2.2em; margin-bottom: 0.5em; font-size: var(--fs-xl); }
+h3 { margin-top: 1.8em; margin-bottom: 0.4em; font-size: var(--fs-lg); }
+
+p + p {
+  margin-top: 0.9em;
+}
+
+a {
+  color: var(--c-accent-strong);
+  text-decoration-color: color-mix(in oklch, var(--c-accent) 45%, transparent);
+  text-decoration-thickness: 1px;
+  transition: color var(--mo-fast) var(--mo-ease), text-decoration-color var(--mo-fast) var(--mo-ease);
+}
+a:hover {
+  color: var(--c-accent);
+  text-decoration-color: var(--c-accent);
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--ft-mono);
+  font-size: 0.92em;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background: var(--c-border);
+  margin: 2.5em auto;
+  width: 100%;
+}
+
+/* 数字表格化 */
+.nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 弱动效总门控：入场渐显由 JS 注入隐藏态，此处兜底剩余动效 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,1 +1,161 @@
-/* Task 1 填充 */
+/* ============================================================
+   不言堂 v2 · 设计令牌 —— 事实源: DESIGN.md §3/§4
+   命名: --c-* 色 / --sh-* 阴影 / --mo-* 动效 / --rd-* 圆角 / --ft-* 字体 / --fs-* 字阶
+   ============================================================ */
+
+/* ---------- 字体栈 ---------- */
+:root {
+  --ft-display: "LXGW WenKai", "Kaiti SC", "STKaiti", "KaiTi", "楷体", serif;
+  --ft-body: system-ui, "PingFang SC", "HarmonyOS Sans SC", "MiSans", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --ft-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+
+  /* 字阶: major third 1.250, base 17px */
+  --fs-xs: 0.8rem;      /* 13.6 辅助说明 */
+  --fs-sm: 0.8824rem;   /* 15   meta/标签 */
+  --fs-base: 1.0625rem; /* 17   正文 */
+  --fs-lg: 1.3281rem;   /* 21.3 h3 */
+  --fs-xl: 1.6602rem;   /* 26.6 h2 */
+  --fs-2xl: 2.0752rem;  /* 33.2 h1/文章题 */
+  --fs-3xl: 2.5938rem;  /* 41.5 站名上限(clamp 流式) */
+
+  /* 圆角: 仅两档 */
+  --rd-card: 10px;
+  --rd-pill: 999px;
+
+  /* 动效标尺 */
+  --mo-fast: 120ms;
+  --mo-base: 200ms;
+  --mo-slow: 320ms;
+  --mo-scene: 560ms;
+  --mo-ease: cubic-bezier(0.16, 1, 0.3, 1);      /* expo-out 进入 */
+  --mo-ease-soft: cubic-bezier(0.65, 0, 0.35, 1); /* 柔和往复 */
+
+  /* 内容列宽 */
+  --w-prose: 44rem;
+  --w-wide: 60rem;
+}
+
+/* ---------- 亮色 · 冷纸（默认） ---------- */
+:root {
+  color-scheme: light;
+
+  --c-bg: oklch(0.977 0.004 160);
+  --c-surface: oklch(0.995 0.002 160);
+  --c-surface-2: oklch(0.955 0.006 160);
+  --c-fg: oklch(0.235 0.018 255);
+  --c-fg-muted: oklch(0.47 0.02 250);
+  --c-fg-subtle: oklch(0.6 0.015 250);
+  --c-border: oklch(0.895 0.008 160);
+  --c-accent: oklch(0.52 0.105 172);
+  --c-accent-strong: oklch(0.44 0.1 172);
+  --c-accent-soft: oklch(0.92 0.045 172);
+  --c-on-accent: oklch(0.985 0.005 160);
+
+  --c-success: oklch(0.55 0.12 150);
+  --c-warning: oklch(0.62 0.13 75);
+  --c-error: oklch(0.55 0.19 25);
+
+  /* 三层 elevation（brief 核心）：接触 + 环境 = 静止；+ 绽放 = 悬停 */
+  --sh-contact: 0 1px 2px oklch(0.25 0.02 258 / 0.2);
+  --sh-ambient: 0 10px 32px oklch(0.25 0.02 258 / 0.12);
+  --sh-bloom: 0 24px 64px oklch(0.52 0.105 172 / 0.16);
+  --sh-card: var(--sh-contact), var(--sh-ambient);
+  --sh-card-hover: var(--sh-contact), var(--sh-ambient), var(--sh-bloom);
+
+  /* 极光三斑不透明度 */
+  --aurora-alpha: 0.11;
+  --aurora-alpha-2: 0.09;
+}
+
+/* ---------- 暗色 · 墨（auto 态跟随系统） ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --c-bg: oklch(0.165 0.012 258);
+    --c-surface: oklch(0.205 0.014 258);
+    --c-surface-2: oklch(0.245 0.016 258);
+    --c-fg: oklch(0.925 0.008 250);
+    --c-fg-muted: oklch(0.7 0.012 250);
+    --c-fg-subtle: oklch(0.56 0.012 250);
+    --c-border: oklch(0.3 0.014 255);
+    --c-accent: oklch(0.8 0.125 172);
+    --c-accent-strong: oklch(0.86 0.11 168);
+    --c-accent-soft: oklch(0.28 0.05 175);
+    --c-on-accent: oklch(0.16 0.02 258);
+
+    --c-success: oklch(0.75 0.13 150);
+    --c-warning: oklch(0.8 0.13 80);
+    --c-error: oklch(0.72 0.16 25);
+
+    /* 暗模式阴影=吸光；层级主靠表面明度阶 */
+    --sh-contact: 0 1px 2px oklch(0.05 0.01 258 / 0.5);
+    --sh-ambient: 0 12px 36px oklch(0.05 0.01 258 / 0.45);
+    --sh-bloom: 0 24px 64px oklch(0.05 0.02 258 / 0.4);
+    --sh-card: var(--sh-contact), var(--sh-ambient);
+    --sh-card-hover: var(--sh-contact), var(--sh-ambient), var(--sh-bloom);
+
+    --aurora-alpha: 0.14;
+    --aurora-alpha-2: 0.11;
+  }
+}
+
+/* ---------- 暗色 · 墨（手动指定态） ---------- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --c-bg: oklch(0.165 0.012 258);
+  --c-surface: oklch(0.205 0.014 258);
+  --c-surface-2: oklch(0.245 0.016 258);
+  --c-fg: oklch(0.925 0.008 250);
+  --c-fg-muted: oklch(0.7 0.012 250);
+  --c-fg-subtle: oklch(0.56 0.012 250);
+  --c-border: oklch(0.3 0.014 255);
+  --c-accent: oklch(0.8 0.125 172);
+  --c-accent-strong: oklch(0.86 0.11 168);
+  --c-accent-soft: oklch(0.28 0.05 175);
+  --c-on-accent: oklch(0.16 0.02 258);
+
+  --c-success: oklch(0.75 0.13 150);
+  --c-warning: oklch(0.8 0.13 80);
+  --c-error: oklch(0.72 0.16 25);
+
+  --sh-contact: 0 1px 2px oklch(0.05 0.01 258 / 0.5);
+  --sh-ambient: 0 12px 36px oklch(0.05 0.01 258 / 0.45);
+  --sh-bloom: 0 24px 64px oklch(0.05 0.02 258 / 0.4);
+  --sh-card: var(--sh-contact), var(--sh-ambient);
+  --sh-card-hover: var(--sh-contact), var(--sh-ambient), var(--sh-bloom);
+
+  --aurora-alpha: 0.14;
+  --aurora-alpha-2: 0.11;
+}
+
+/* ---------- 亮色 · 手动指定态（覆盖系统暗色） ---------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --c-bg: oklch(0.977 0.004 160);
+  --c-surface: oklch(0.995 0.002 160);
+  --c-surface-2: oklch(0.955 0.006 160);
+  --c-fg: oklch(0.235 0.018 255);
+  --c-fg-muted: oklch(0.47 0.02 250);
+  --c-fg-subtle: oklch(0.6 0.015 250);
+  --c-border: oklch(0.895 0.008 160);
+  --c-accent: oklch(0.52 0.105 172);
+  --c-accent-strong: oklch(0.44 0.1 172);
+  --c-accent-soft: oklch(0.92 0.045 172);
+  --c-on-accent: oklch(0.985 0.005 160);
+
+  --c-success: oklch(0.55 0.12 150);
+  --c-warning: oklch(0.62 0.13 75);
+  --c-error: oklch(0.55 0.19 25);
+
+  --sh-contact: 0 1px 2px oklch(0.25 0.02 258 / 0.2);
+  --sh-ambient: 0 10px 32px oklch(0.25 0.02 258 / 0.12);
+  --sh-bloom: 0 24px 64px oklch(0.52 0.105 172 / 0.16);
+  --sh-card: var(--sh-contact), var(--sh-ambient);
+  --sh-card-hover: var(--sh-contact), var(--sh-ambient), var(--sh-bloom);
+
+  --aurora-alpha: 0.11;
+  --aurora-alpha-2: 0.09;
+}

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "lxgw-wenkai-webfont/lxgwwenkai-regular.css";
+@import "lxgw-wenkai-webfont/lxgwwenkai-bold.css";
 @import "./tokens.css";
 @import "./base.css";
 @import "./aurora.css";
