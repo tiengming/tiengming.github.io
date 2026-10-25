@@ -23,6 +23,20 @@ const id = props.issueNumber;
 ---
 
 <BaseLayout title={props.title} description={desc} ogType="article">
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: props.title,
+      datePublished: props.pubDate.toISOString(),
+      dateModified: (props.updatedDate ?? props.pubDate).toISOString(),
+      keywords: props.labels.join(","),
+      url: `${site.site.url}/p/${id}/`,
+      mainEntityOfPage: `${site.site.url}/p/${id}/`,
+      author: { "@type": "Person", name: site.author.name, url: site.site.url },
+    })}
+  />
   <article class="post container" data-pagefind-body>
     <header class="post-head" transition:name={`post-card-${id}`}>
       <h1 class="post-title" transition:name={`post-title-${id}`}>{props.title}</h1>

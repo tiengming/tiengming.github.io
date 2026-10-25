@@ -5,6 +5,7 @@ import Footer from "../components/Footer.astro";
 import AuroraField from "../components/AuroraField.astro";
 import { ClientRouter } from "astro:transitions";
 import CommandPalette from "../components/CommandPalette.astro";
+import Counters from "../components/Counters.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -38,6 +39,17 @@ const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.default
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="zh_CN" />
     <meta name="twitter:card" content="summary" />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Person",
+        name: site.author.name,
+        url: site.site.url,
+        email: `mailto:${site.author.email}`,
+        description: site.author.bio,
+      })}
+    />
     <ClientRouter />
     <script is:inline>
       // 主题防闪：首帧样式应用前落 data-theme / data-mode（auto 不设 theme，走系统媒体查询）
@@ -58,6 +70,7 @@ const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.default
       <slot />
     </main>
     <Footer />
+    <Counters />
     <CommandPalette />
     <script data-astro-rerun>
       // 景深舞台岛：滚动渐显 + 3D 倾斜（ClientRouter 换页后经 astro-rerun 重扫）

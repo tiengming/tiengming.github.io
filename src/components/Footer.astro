@@ -21,6 +21,14 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
       }
     </nav>
     <p class="footer-copy nums">© {year} {site.author.name}</p>
+    {
+      site.features.counter === "vercount" && (
+        <p class="footer-visit nums" aria-label="访问统计">
+          <span id="busuanzi_container_site_pv" class="bc">访问 <span id="busuanzi_value_site_pv" class="nums">-</span></span>
+          <span id="busuanzi_container_site_uv" class="bc">访客 <span id="busuanzi_value_site_uv" class="nums">-</span></span>
+        </p>
+      )
+    }
   </div>
 </footer>
 
@@ -59,5 +67,19 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
   .footer-copy {
     color: var(--c-fg-subtle);
     font-size: var(--fs-xs);
+  }
+  .footer-visit {
+    display: flex;
+    gap: 14px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-xs);
+  }
+  .footer-visit .bc {
+    visibility: hidden;
+  }
+  /* vercount 写入数值后显示容器 */
+  .footer-visit .bc:has(#busuanzi_value_site_pv:not(:empty)),
+  .footer-visit .bc:has(#busuanzi_value_site_uv:not(:empty)) {
+    visibility: visible;
   }
 </style>
