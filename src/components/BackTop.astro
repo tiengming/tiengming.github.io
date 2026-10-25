@@ -56,7 +56,9 @@
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let ticking = false;
     const update = () => {
-      btn.classList.toggle("show", window.scrollY > window.innerHeight * 0.6);
+      const show = window.scrollY > window.innerHeight * 0.6;
+      btn.classList.toggle("show", show);
+      btn.hidden = !show; // hidden 属性必须同步移除，否则永远 display:none
       ticking = false;
     };
     if (!btn.dataset.bound) {
