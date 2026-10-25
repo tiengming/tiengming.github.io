@@ -112,15 +112,14 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
   }
 </style>
 
-<script>
-  // 滚动后玻璃态（rAF 节流）
-  const header = document.getElementById("site-header");
+<script data-astro-rerun>
+  // 滚动后玻璃态（rAF 节流）；每次换页重绑，元素动态查询避免捕获旧节点
   let ticking = false;
   const onScroll = () => {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      header?.classList.toggle("scrolled", window.scrollY > 8);
+      document.getElementById("site-header")?.classList.toggle("scrolled", window.scrollY > 8);
       ticking = false;
     });
   };

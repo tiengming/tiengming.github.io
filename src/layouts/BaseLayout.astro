@@ -3,6 +3,7 @@ import site from "../config/site";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import AuroraField from "../components/AuroraField.astro";
+import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 
 interface Props {
@@ -36,6 +37,7 @@ const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.default
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="zh_CN" />
     <meta name="twitter:card" content="summary" />
+    <ClientRouter />
     <script is:inline>
       // 主题防闪：首帧样式应用前落 data-theme / data-mode（auto 不设 theme，走系统媒体查询）
       (function () {
@@ -55,16 +57,12 @@ const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.default
       <slot />
     </main>
     <Footer />
-    <script>
-      // 景深舞台岛：滚动渐显 + 3D 倾斜（全站一次绑定，ClientRouter 换页后重扫）
+    <script data-astro-rerun>
+      // 景深舞台岛：滚动渐显 + 3D 倾斜（ClientRouter 换页后经 astro-rerun 重扫）
       import { attachReveal } from "../scripts/reveal";
       import { attachTilt } from "../scripts/tilt";
-      const initStage = () => {
-        attachReveal();
-        attachTilt();
-      };
-      initStage();
-      document.addEventListener("astro:page-load", initStage);
+      attachReveal();
+      attachTilt();
     </script>
   </body>
 </html>

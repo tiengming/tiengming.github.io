@@ -57,7 +57,7 @@ const initial = site.theme.defaultMode;
   :global(html[data-mode="dark"]) .i-moon { opacity: 1; }
 </style>
 
-<script>
+<script data-astro-rerun>
   const ORDER = ["auto", "light", "dark"] as const;
   const LABELS: Record<string, string> = { auto: "切换主题（当前跟随系统）", light: "切换主题（当前浅色）", dark: "切换主题（当前深色）" };
 
@@ -76,8 +76,7 @@ const initial = site.theme.defaultMode;
     try {
       localStorage.setItem("tm-theme", mode);
     } catch {}
-    const btn = document.getElementById("theme-toggle");
-    btn?.setAttribute("aria-label", LABELS[mode]);
+    document.getElementById("theme-toggle")?.setAttribute("aria-label", LABELS[mode]);
   }
 
   // 初始化：把持久化值（或缺省）反映到 data-mode 供图标状态用

@@ -117,8 +117,8 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
   }
 </style>
 
-<script>
-  // scrollspy：视口内最末标题即当前项
+<script data-astro-rerun>
+  // scrollspy：视口内最末标题即当前项（换页后重绑）
   const links = new Map<string, HTMLAnchorElement>();
   document.querySelectorAll<HTMLAnchorElement>(".toc-rail .toc-item a").forEach((a) => {
     const id = decodeURIComponent(a.hash.slice(1));

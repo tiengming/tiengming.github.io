@@ -8,6 +8,8 @@ export default defineConfig({
   site: "https://code.buxiantang.top",
   compressHTML: true,
   integrations: [sitemap()],
+  // ClientRouter 页面默认 hover 预取全部内链
+  prefetch: { prefetchAll: true, defaultStrategy: "hover" },
   markdown: {
     // 默认 Sätteri 处理器：GFM 与智能标点默认开启
     shikiConfig: {

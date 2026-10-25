@@ -1,0 +1,44 @@
+/* ============================================================
+   跨页视图过渡 —— 事实源: DESIGN.md §5 动效
+   旧页 160ms 退场，新页 320ms expo-out 入场；仅 opacity/transform
+   共享元素（post-card-N / post-title-N）由浏览器自动形变
+   ============================================================ */
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+::view-transition-old(root) {
+  animation: vt-out 160ms var(--mo-ease) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in 320ms var(--mo-ease) both;
+}
+
+/* 共享元素形变用更柔的时长 */
+::view-transition-group(*),
+::view-transition-image-pair(*),
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: inherit;
+  mix-blend-mode: normal;
+}
+
+/* 弱动效：过渡动画归零（仍完成状态切换） */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

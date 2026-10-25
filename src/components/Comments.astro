@@ -63,7 +63,7 @@ const repo = site.features.comments.repo ?? "";
   .comments-skeleton .w80 { width: 80%; }
 </style>
 
-<script>
+<script data-astro-rerun>
   const mounts = document.querySelectorAll<HTMLElement>(".comments-mount");
   if (mounts.length > 0) {
     const io = new IntersectionObserver(
@@ -102,9 +102,10 @@ const repo = site.features.comments.repo ?? "";
     s.setAttribute("label", "💬comment");
     mount.appendChild(s);
 
-    // 手动切主题后同步评论区主题
+    // 手动切主题后同步评论区主题（全局单 interval，换页重挂不堆积）
+    clearInterval((window as unknown as { __tmThemeTimer?: number }).__tmThemeTimer);
     let last = currentTheme();
-    setInterval(() => {
+    (window as unknown as { __tmThemeTimer?: number }).__tmThemeTimer = window.setInterval(() => {
       const now = currentTheme();
       if (now === last) return;
       last = now;
