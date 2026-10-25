@@ -1,13 +1,22 @@
 ---
-/** 技能光谱 · 雷达图 —— 维度与数值在 site.ts 的 about.skillAxes 配置（3-8 轴自适应） */
+/** 技能光谱 · 雷达图 —— 维度与数值在 site.ts 的 about.skillAxes 配置（3-8 轴自适应，
+    viewBox 按轴数与最长标签动态计算，任意配置不裁切） */
 import site from "../config/site";
 
 const AXES = site.about.skillAxes;
-
-const CX = 180;
-const CY = 172;
-const R = 106;
 const N = AXES.length;
+const R = 104;
+
+// 自适应画布：按最长标签与轴数决定边距/字号
+const fontSize = N > 6 ? 12.5 : 14;
+const longest = Math.max(...AXES.map((a) => a.label.length), 2);
+const marginX = 30 + longest * fontSize * 1.04;
+const marginY = 26 + fontSize * 1.2;
+const VBW = Math.ceil(2 * (R + marginX));
+const VBH = Math.ceil(2 * (R + marginY) + 14);
+const CX = VBW / 2;
+const CY = VBH / 2;
+
 const pt = (r: number, i: number) => {
   const a = (-90 + (360 / N) * i) * (Math.PI / 180);
   return [CX + r * Math.cos(a), CY + r * Math.sin(a)] as const;
@@ -17,14 +26,14 @@ const rings = [R, R * 0.75, R * 0.5, R * 0.25].map(ring);
 const polygon = AXES.map((a, i) => pt((R * a.value) / 100, i).map((n) => n.toFixed(1)).join(",")).join(" ");
 const dots = AXES.map((a, i) => ({ ...a, x: pt((R * a.value) / 100, i)[0].toFixed(1), y: pt((R * a.value) / 100, i)[1].toFixed(1) }));
 const labels = AXES.map((a, i) => {
-  const [x, y] = pt(R + 36, i);
-  return { ...a, x: x.toFixed(1), y: (y + 1).toFixed(1), anchor: x < CX - 6 ? "end" : x > CX + 6 ? "start" : "middle" as const };
+  const [x, y] = pt(R + 28, i);
+  return { ...a, x: x.toFixed(1), y: (y + fontSize * 0.36).toFixed(1), anchor: x < CX - 6 ? "end" : x > CX + 6 ? "start" : "middle" as const };
 });
 ---
 
 <section class="radar-wrap" aria-label="技能光谱">
   <h2 class="sec-title">技能光谱</h2>
-  <svg class="radar" viewBox="0 0 360 330" role="img" aria-label={AXES.map((a) => `${a.label} ${a.value}%`).join("，")}>
+  <svg class="radar" viewBox={`0 0 ${VBW} ${VBH}`} role="img" aria-label={AXES.map((a) => `${a.label} ${a.value}%`).join("，")}>
     <defs>
       <radialGradient id="jadeGlow" cx="50%" cy="50%" r="65%">
         <stop offset="0%" stop-color="var(--c-accent)" stop-opacity="0.30" />
@@ -52,7 +61,7 @@ const labels = AXES.map((a, i) => {
 
     {
       labels.map((l, i) => (
-        <text class="label" style={`--d:${i}`} x={l.x} y={l.y} text-anchor={l.anchor} dominant-baseline="middle">
+        <text class="label" style={`--d:${i};font-size:${fontSize}px`} x={l.x} y={l.y} text-anchor={l.anchor} dominant-baseline="middle">
           {l.label}
         </text>
       ))
@@ -63,14 +72,11 @@ const labels = AXES.map((a, i) => {
 
 <style>
   .radar-wrap {
-    margin-top: 72px;
-    padding-top: 32px;
-    border-top: 1px solid var(--c-border);
     text-align: center;
   }
   .sec-title {
     font-size: var(--fs-xl);
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
   .radar {
     width: min(100%, 380px);
@@ -139,7 +145,6 @@ const labels = AXES.map((a, i) => {
   }
   .label {
     fill: var(--c-fg-muted);
-    font-size: 14px;
     font-family: var(--ft-display);
     opacity: 0;
     animation: radar-fade 0.5s var(--mo-ease) forwards;

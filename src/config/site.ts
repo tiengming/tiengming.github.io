@@ -44,7 +44,7 @@ const site: SiteConfig = {
       { label: "边缘网络", value: 93 },
       { label: "AI 工程", value: 88 },
       { label: "量化研究", value: 74 },
-      { label: "玄学修行", value: 66 },
+      { label: "玄学修行", value: 90 },
     ],
     contacts: [
       { label: "GitHub", href: "https://github.com/tiengming", note: "@tiengming" },

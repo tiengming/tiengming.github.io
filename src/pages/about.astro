@@ -9,6 +9,8 @@ import Comments from "../components/Comments.astro";
 import { allPosts, tagCounts } from "../utils/posts";
 import site from "../config/site";
 
+const contacts = site.about.contacts;
+
 const about = (await getCollection("pages")).find((p) => p.id === "about");
 if (!about) {
   Astro.response.status = 404;
@@ -44,9 +46,9 @@ const stats = [
           </div>
         </div>
 
-        <div class="about-duo">
+        <div class:list={["about-duo", contacts.length === 0 && "solo"]}>
           <SkillRadar />
-          <ContactCard />
+          {contacts.length > 0 && <ContactCard />}
         </div>
         <PostHeatmap posts={posts} />
 
@@ -80,16 +82,23 @@ const stats = [
   .post-body {
     margin-top: 20px;
   }
-  /* 底部双栏：技能光谱 与 找到我 并列（窄屏退化为上下） */
+  /* 底部双栏：分隔线/上边距由容器统一提供，两栏顶边严格对齐（窄屏退化为上下） */
   .about-duo {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0 40px;
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid var(--c-border);
   }
   @media (min-width: 900px) {
     .about-duo {
       grid-template-columns: 1.25fr 1fr;
       align-items: start;
+      column-gap: 48px;
     }
+  }
+  /* 未配置联系方式时，雷达独占整行 */
+  .about-duo.solo {
+    grid-template-columns: 1fr;
   }
 </style>
