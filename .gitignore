@@ -1,5 +1,15 @@
-.preview/
-__pycache__/
-*.pyc
+# build output
+dist/
+# generated types
+.astro/
+# dependencies
+node_modules/
+# logs
+npm-debug.log*
+# environment
+.env
+.env.*
+# OS
 .DS_Store
-.zcode/
+# SDD 工作区（执行台账，不入库）
+.superpowers/
