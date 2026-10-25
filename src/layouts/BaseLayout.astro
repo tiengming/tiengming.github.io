@@ -72,12 +72,16 @@ const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.default
     <Footer />
     <Counters />
     <CommandPalette />
-    <script data-astro-rerun>
-      // 景深舞台岛：滚动渐显 + 3D 倾斜（ClientRouter 换页后经 astro-rerun 重扫）
+    <script>
+      // 景深舞台岛：滚动渐显 + 3D 倾斜。
+      // 注意：data-astro-rerun 会使脚本走 is:inline（不转译不打包），禁用；
+      // ClientRouter 下 astro:page-load 在首载与每次换页各触发一次，作为唯一初始化入口。
       import { attachReveal } from "../scripts/reveal";
       import { attachTilt } from "../scripts/tilt";
-      attachReveal();
-      attachTilt();
+      document.addEventListener("astro:page-load", () => {
+        attachReveal();
+        attachTilt();
+      });
     </script>
   </body>
 </html>

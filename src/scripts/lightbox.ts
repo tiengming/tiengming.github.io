@@ -27,6 +27,7 @@ export function attachLightbox(root: ParentNode = document): void {
     overlay.role = "dialog";
     overlay.ariaModal = "true";
     overlay.ariaLabel = "图片预览（点击或按 Esc 关闭）";
+    overlay.tabIndex = -1;
 
     const clone = img.cloneNode(true) as HTMLElement;
     clone.removeAttribute("tabindex");

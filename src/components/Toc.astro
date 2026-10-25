@@ -117,14 +117,15 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
   }
 </style>
 
-<script data-astro-rerun>
-  // scrollspy：视口内最末标题即当前项（换页后重绑）
-  const links = new Map<string, HTMLAnchorElement>();
-  document.querySelectorAll<HTMLAnchorElement>(".toc-rail .toc-item a").forEach((a) => {
-    const id = decodeURIComponent(a.hash.slice(1));
-    links.set(id, a);
-  });
-  if (links.size > 0) {
+<script>
+  // scrollspy：视口内最末标题即当前项（astro:page-load 首载与换页各初始化一次）
+  document.addEventListener("astro:page-load", () => {
+    const links = new Map<string, HTMLAnchorElement>();
+    document.querySelectorAll<HTMLAnchorElement>(".toc-rail .toc-item a").forEach((a) => {
+      const id = decodeURIComponent(a.hash.slice(1));
+      links.set(id, a);
+    });
+    if (links.size === 0) return;
     const active = new IntersectionObserver(
       (entries) => {
         for (const en of entries) {
@@ -139,5 +140,5 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
       const h = document.getElementById(id);
       if (h) active.observe(h);
     });
-  }
+  });
 </script>

@@ -63,8 +63,9 @@ const repo = site.features.comments.repo ?? "";
   .comments-skeleton .w80 { width: 80%; }
 </style>
 
-<script data-astro-rerun>
-  const mounts = document.querySelectorAll<HTMLElement>(".comments-mount");
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const mounts = document.querySelectorAll<HTMLElement>(".comments-mount");
   if (mounts.length > 0) {
     const io = new IntersectionObserver(
       (entries) => {
@@ -111,5 +112,6 @@ const repo = site.features.comments.repo ?? "";
       last = now;
       mount.querySelector("iframe")?.contentWindow?.postMessage({ type: "set-theme", theme: now }, "https://utteranc.es");
     }, 800);
-  }
+    }
+  });
 </script>

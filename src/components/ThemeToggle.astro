@@ -57,7 +57,7 @@ const initial = site.theme.defaultMode;
   :global(html[data-mode="dark"]) .i-moon { opacity: 1; }
 </style>
 
-<script data-astro-rerun>
+<script>
   const ORDER = ["auto", "light", "dark"] as const;
   const LABELS: Record<string, string> = { auto: "切换主题（当前跟随系统）", light: "切换主题（当前浅色）", dark: "切换主题（当前深色）" };
 
@@ -79,19 +79,21 @@ const initial = site.theme.defaultMode;
     document.getElementById("theme-toggle")?.setAttribute("aria-label", LABELS[mode]);
   }
 
-  // 初始化：把持久化值（或缺省）反映到 data-mode 供图标状态用
-  const saved = (() => {
-    try {
-      return localStorage.getItem("tm-theme");
-    } catch {
-      return null;
-    }
-  })();
-  document.documentElement.dataset.mode = saved || document.getElementById("theme-toggle")?.dataset.initial || "auto";
-  document.getElementById("theme-toggle")?.setAttribute("aria-label", LABELS[currentMode()]);
+  // 初始化 + 换页重绑（astro:page-load 首载与每次导航各一次）
+  document.addEventListener("astro:page-load", () => {
+    const saved = (() => {
+      try {
+        return localStorage.getItem("tm-theme");
+      } catch {
+        return null;
+      }
+    })();
+    document.documentElement.dataset.mode = saved || document.getElementById("theme-toggle")?.dataset.initial || "auto";
+    document.getElementById("theme-toggle")?.setAttribute("aria-label", LABELS[currentMode()]);
 
-  document.getElementById("theme-toggle")?.addEventListener("click", () => {
-    const next = ORDER[(ORDER.indexOf(currentMode() as (typeof ORDER)[number]) + 1) % ORDER.length];
-    apply(next);
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+      const next = ORDER[(ORDER.indexOf(currentMode() as (typeof ORDER)[number]) + 1) % ORDER.length];
+      apply(next);
+    });
   });
 </script>

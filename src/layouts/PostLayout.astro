@@ -64,9 +64,11 @@ const id = props.issueNumber;
   </article>
 </BaseLayout>
 
-<script data-astro-rerun>
+<script>
   import { attachLightbox } from "../scripts/lightbox";
-  attachLightbox(document);
+  document.addEventListener("astro:page-load", () => {
+    attachLightbox(document);
+  });
 </script>
 
 <style>
