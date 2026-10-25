@@ -17,6 +17,7 @@ function mkIssue(n, over = {}) {
     comments: 3,
     html_url: `https://github.com/example/repo/issues/${n}`,
     state: "open",
+    user: { login: "tiengming" },
     ...over,
   };
 }
@@ -53,7 +54,7 @@ test("mirrorDir 经 syncAll：全量镜像并删除 stale 文件（closed issue 
   writeFileSync(join(posts, "99.md"), "---\ntitle: 旧文\n---\n"); // stale：issue 99 不存在
   writeFileSync(join(posts, "not-a-post.txt"), "keep");           // 非 md，不删
 
-  await syncAll({ fetchImpl: null, issues: [mkIssue(1), mkIssue(2)], dir });
+  await syncAll({ fetchImpl: null, issues: [mkIssue(1), mkIssue(2)], dir, ownerLogin: "tiengming" });
 
   const files = readdirSync(posts).sort();
   assert.deepEqual(files, ["1.md", "2.md", "not-a-post.txt"]);
@@ -63,7 +64,7 @@ test("mirrorDir 经 syncAll：全量镜像并删除 stale 文件（closed issue 
 test("syncAll：带 about 标签的 issue 进 pages/about.md 且不进 posts", async () => {
   const dir = mkdtempSync(join(tmpdir(), "sync-"));
   const about = mkIssue(30, { title: "关于我", labels: [{ name: "about" }] });
-  await syncAll({ fetchImpl: null, issues: [mkIssue(1), about], dir });
+  await syncAll({ fetchImpl: null, issues: [mkIssue(1), about], dir, ownerLogin: "tiengming" });
 
   assert.ok(existsSync(join(dir, "pages", "about.md")));
   assert.ok(!existsSync(join(dir, "posts", "30.md")));
@@ -122,6 +123,19 @@ test("renderPost：Gmeek 旧约定 `Gmeek-html<X>` 还原为裸 HTML（iframe �
 test("renderPost：普通代码 span（无 Gmeek-html 前缀）不受影响", () => {
   const { content } = renderPost(mkIssue(28, { body: "`code span` 保留" }));
   assert.match(content, /`code span` 保留/);
+});
+
+test("syncAll：只镜像仓库所有者的 issue（陌生人开的 issue 被过滤，防止他人发文）", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "sync-"));
+  const mine = mkIssue(50);
+  const stranger = mkIssue(51, { user: { login: "someone-else" } });
+  const strangerNoUser = mkIssue(52, { user: undefined });
+  await syncAll({ fetchImpl: null, issues: [mine, stranger, strangerNoUser], dir, ownerLogin: "tiengming" });
+
+  assert.ok(existsSync(join(dir, "posts", "50.md")));
+  assert.ok(!existsSync(join(dir, "posts", "51.md")));
+  assert.ok(!existsSync(join(dir, "posts", "52.md")), "无 user 字段的异常条目同样拒绝");
+  rmSync(dir, { recursive: true, force: true });
 });
 
 test("parseArgs：--repo/--token/--out/--about-label 与默认值", () => {

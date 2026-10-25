@@ -1,29 +1,79 @@
 ---
 import { getCollection, render } from "astro:content";
-import PostLayout from "../layouts/PostLayout.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import StatsStrip from "../components/StatsStrip.astro";
+import SkillRadar from "../components/SkillRadar.astro";
+import PostHeatmap from "../components/PostHeatmap.astro";
+import Comments from "../components/Comments.astro";
+import { allPosts, tagCounts } from "../utils/posts";
+import site from "../config/site";
 
 const about = (await getCollection("pages")).find((p) => p.id === "about");
 if (!about) {
-  // 关于 issue 尚未创建时不构建该路由（404 兜底）
   Astro.response.status = 404;
 }
-const { Content, headings } = about ? await render(about) : { Content: () => null as never, headings: [] as never };
+const { Content } = about ? await render(about) : { Content: () => null as never };
 const d = about?.data;
+
+const posts = await allPosts();
+const firstYear = posts.length > 0 ? Math.min(...posts.map((p) => p.data.pubDate.getUTCFullYear())) : new Date().getUTCFullYear();
+const years = new Date().getUTCFullYear() - firstYear + 1;
+const stats = [
+  { label: "文章", value: posts.length },
+  { label: "标签", value: tagCounts(posts).length },
+  { label: "折腾年头", value: years },
+  { label: "好奇心", value: 100, suffix: "%" },
+];
 ---
 
 {
   about && d && (
-    <PostLayout
-      title={d.title}
-      pubDate={d.pubDate}
-      updatedDate={d.updatedDate}
-      labels={d.labels}
-      issueNumber={d.issueNumber}
-      comments={d.comments}
-      source={d.source}
-      headings={headings.filter((h) => h.depth === 2 || h.depth === 3)}
-    >
-      <Content />
-    </PostLayout>
+    <BaseLayout title={d.title} ogType="profile">
+      <article class="post container">
+        <header class="post-head" data-reveal style="--i:0">
+          <h1 class="post-title">{d.title}</h1>
+          <p class="post-bio">{site.author.bio}</p>
+        </header>
+
+        <StatsStrip stats={stats} />
+
+        <div class="post-body">
+          <div class="prose">
+            <Content />
+          </div>
+        </div>
+
+        <SkillRadar />
+        <PostHeatmap posts={posts} />
+
+        <Comments issueNumber={d.issueNumber} />
+      </article>
+    </BaseLayout>
   )
 }
+
+<style>
+  .container {
+    max-width: var(--w-prose);
+    margin: 0 auto;
+    padding: 56px 20px 0;
+  }
+  .post-head {
+    margin: 0 auto 8px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .post-title {
+    font-size: clamp(var(--fs-xl), 4.6vw, var(--fs-2xl));
+    line-height: 1.35;
+  }
+  .post-bio {
+    margin-top: 10px;
+    color: var(--c-fg-muted);
+    font-family: var(--ft-display);
+    font-size: var(--fs-lg);
+  }
+  .post-body {
+    margin-top: 20px;
+  }
+</style>

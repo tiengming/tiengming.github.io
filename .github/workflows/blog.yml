@@ -22,6 +22,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # 守门：非所有者开的 issue 自动关闭（本仓库 issue 即文章入口，不接受他人发文）
+  gate:
+    name: Guard stranger issues
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'issues' && github.event.action == 'opened' && github.event.repository.owner.id != github.event.sender.id }}
+    permissions:
+      issues: write
+    steps:
+      - name: Close issue from non-owner
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$NUMBER" --repo "$REPO" --reason "not planned" \
+            --comment "本仓库的 issue 是博客文章入口，仅接受仓库所有者发布内容。想交流请在任一文章下的评论区留言，感谢理解。"
+
   build:
     name: Sync & Build
     runs-on: ubuntu-latest

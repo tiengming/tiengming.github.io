@@ -1,0 +1,92 @@
+---
+/** 关于页统计条：数字进入视口后滚动增长（弱动效直接显示终值） */
+interface Props {
+  stats: { label: string; value: number; suffix?: string }[];
+}
+const { stats } = Astro.props;
+---
+
+<div class="stats-strip" role="list" aria-label="站点统计">
+  {
+    stats.map((s, i) => (
+      <div class="stat" role="listitem" data-stat={s.value} data-suffix={s.suffix ?? ""} style={`--i:${i}`} data-reveal>
+        <span class="stat-value nums" aria-label={`${s.label} ${s.value}${s.suffix ?? ""}`}>0</span>
+        <span class="stat-label">{s.label}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 28px 0 8px;
+  }
+  .stat {
+    padding: 18px 12px 14px;
+    border-radius: var(--rd-card);
+    background: color-mix(in oklch, var(--c-surface) 78%, transparent);
+    box-shadow: var(--sh-card);
+    text-align: center;
+    transition: transform var(--mo-base) var(--mo-ease), box-shadow var(--mo-base) var(--mo-ease);
+  }
+  .stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sh-card-hover);
+  }
+  .stat-value {
+    display: block;
+    font-family: var(--ft-mono);
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: var(--c-accent-strong);
+    line-height: 1.2;
+  }
+  .stat-label {
+    display: block;
+    margin-top: 6px;
+    color: var(--c-fg-muted);
+    font-size: var(--fs-sm);
+  }
+  @media (max-width: 640px) {
+    .stats-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelectorAll<HTMLElement>("[data-stat]").forEach((el) => {
+      const target = Number(el.dataset.stat);
+      const suffix = el.dataset.suffix ?? "";
+      const span = el.querySelector(".stat-value") as HTMLElement;
+      const render = (v: number) => (span.textContent = `${v}${suffix}`);
+      if (reduced || target === 0) {
+        render(target);
+        return;
+      }
+      render(0);
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (!entries[0].isIntersecting) return;
+          io.disconnect();
+          const t0 = performance.now();
+          const dur = 900;
+          const tick = (t: number) => {
+            const p = Math.min((t - t0) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 3);
+            render(Math.round(target * eased));
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        },
+        { threshold: 0.4 },
+      );
+      io.observe(el);
+    });
+  });
+</script>

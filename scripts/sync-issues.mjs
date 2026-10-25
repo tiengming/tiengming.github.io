@@ -116,11 +116,16 @@ export function mirrorDir(issues, dir, aboutLabel = "about") {
 /**
  * 全量同步：先取全（或直接使用注入的 issues），后落盘。
  * 取数失败在写盘前抛出——现有目录保持原样。
+ * ownerLogin：只镜像该作者的 issue（陌生人开 issue 无法混入站点）。
  */
-export async function syncAll({ fetchImpl, issues = null, dir, aboutLabel = "about", repo, token }) {
-  const list = issues ?? (await fetchIssues({ repo, token, fetchImpl }));
+export async function syncAll({ fetchImpl, issues = null, dir, aboutLabel = "about", repo, token, ownerLogin }) {
+  const owner = ownerLogin ?? (repo ? repo.split("/")[0] : undefined);
+  const list = (issues ?? (await fetchIssues({ repo, token, fetchImpl }))).filter(
+    (it) => owner && it.user?.login === owner,
+  );
   mirrorDir(list, dir, aboutLabel);
-  return { posts: list.filter((i) => !(i.labels ?? []).some((l) => l.name === aboutLabel)).length, pages: list.length - list.filter((i) => !(i.labels ?? []).some((l) => l.name === aboutLabel)).length };
+  const posts = list.filter((i) => !(i.labels ?? []).some((l) => l.name === aboutLabel));
+  return { posts: posts.length, pages: list.length - posts.length };
 }
 
 export function parseArgs(argv) {
