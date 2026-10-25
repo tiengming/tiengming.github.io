@@ -6,6 +6,7 @@ issueNumber: 11
 comments: 0
 labels: ["about"]
 source: https://github.com/tiengming/tiengming.github.io/issues/11
+pinned: true
 ---
 
 「不言堂」取自 *桃李不言，下自成蹊* ——不吆喝，把东西做好，路自然有人走。
