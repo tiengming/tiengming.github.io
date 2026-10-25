@@ -97,8 +97,16 @@ const stats = [
       column-gap: 48px;
     }
   }
-  /* 未配置联系方式时，雷达独占整行 */
+  /* 未配置联系方式时，雷达独占整行并水平居中 */
   .about-duo.solo {
     grid-template-columns: 1fr;
+  }
+  .about-duo.solo .radar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .about-duo.solo .radar {
+    margin: 0 auto;
   }
 </style>

@@ -29,6 +29,10 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
         </p>
       )
     }
+    <!-- 主题署名：属主题本体而非配置，套用本模板请保留此行（版权行/文案/链接在 site.ts 可自行修改） -->
+    <p class="footer-theme">
+      Theme · <a href="https://github.com/tiengming/tiengming.github.io" rel="noopener" target="_blank">不言堂 / 墨玉</a> by Tiengming
+    </p>
   </div>
 </footer>
 
@@ -81,5 +85,18 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
   .footer-visit .bc:has(#busuanzi_value_site_pv:not(:empty)),
   .footer-visit .bc:has(#busuanzi_value_site_uv:not(:empty)) {
     visibility: visible;
+  }
+  .footer-theme {
+    margin-top: 6px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-xs);
+    opacity: 0.85;
+  }
+  .footer-theme a {
+    color: var(--c-fg-subtle);
+    text-decoration-color: color-mix(in oklch, var(--c-accent) 40%, transparent);
+  }
+  .footer-theme a:hover {
+    color: var(--c-accent-strong);
   }
 </style>

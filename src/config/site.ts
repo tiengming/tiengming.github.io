@@ -40,7 +40,7 @@ const site: SiteConfig = {
   about: {
     // 技能光谱：value 0-100，随时增删维度（3-8 轴皆可渲染）
     skillAxes: [
-      { label: "前端", value: 82 },
+      { label: "编程开发", value: 82 },
       { label: "边缘网络", value: 93 },
       { label: "AI 工程", value: 88 },
       { label: "量化研究", value: 74 },
