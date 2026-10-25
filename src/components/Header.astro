@@ -42,8 +42,32 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
       }
       <slot name="actions" />
       <ThemeToggle />
+      <button id="nav-toggle" type="button" class="icon-btn nav-toggle" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-nav">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
     </div>
   </div>
+
+  <nav id="mobile-nav" class="mobile-nav" aria-label="移动端导航" hidden>
+    {
+      site.nav.map((item) =>
+        isExternal(item.href) ? (
+          <a href={item.href} rel="noopener" target="_blank">
+            {item.label}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 17 17 7M9 7h8v8" />
+            </svg>
+          </a>
+        ) : (
+          <a href={item.href} aria-current={Astro.url.pathname === item.href ? "page" : undefined}>
+            {item.label}
+          </a>
+        ),
+      )
+    }
+  </nav>
 </header>
 
 <style>
@@ -143,7 +167,73 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
       padding: 10px 16px;
     }
   }
+
+  /* 汉堡按钮与玻璃下拉抽屉：仅移动端 */
+  .nav-toggle {
+    display: none;
+  }
+  @media (max-width: 640px) {
+    .nav-toggle {
+      display: grid;
+    }
+  }
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 16px 14px;
+    background: color-mix(in oklch, var(--c-bg) 82%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    backdrop-filter: blur(16px) saturate(1.3);
+    box-shadow: var(--sh-contact);
+  }
+  .mobile-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--rd-card);
+    color: var(--c-fg);
+    text-decoration: none;
+    font-size: var(--fs-base);
+    font-family: var(--ft-display);
+  }
+  .mobile-nav a:hover,
+  .mobile-nav a[aria-current="page"] {
+    background: var(--c-accent-soft);
+    color: var(--c-accent-strong);
+  }
+  .mobile-nav a svg {
+    width: 16px;
+    height: 16px;
+    color: var(--c-fg-subtle);
+  }
 </style>
+
+<script>
+  // 移动端菜单抽屉开合（astro:page-load 重绑；换页自动收起）
+  document.addEventListener("astro:page-load", () => {
+    const btn = document.getElementById("nav-toggle");
+    const nav = document.getElementById("mobile-nav");
+    if (!btn || !nav) return;
+    nav.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-label", "打开菜单");
+    btn.onclick = () => {
+      const open = nav.hidden;
+      nav.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      btn.setAttribute("aria-label", open ? "收起菜单" : "打开菜单");
+    };
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !nav.hidden) {
+        nav.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+      }
+    });
+  });
+</script>
 
 <script>
   // 滚动后玻璃态（rAF 节流）。window 级监听全局只绑一次，元素动态查询避免捕获旧节点。

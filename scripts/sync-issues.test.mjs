@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { renderPost, renderPage, fetchIssues, syncAll, parseArgs, restoreLegacyHtml } from "./sync-issues.mjs";
+import { renderPost, renderPage, fetchIssues, syncAll, parseArgs, restoreLegacyHtml, parsePinnedNumbers } from "./sync-issues.mjs";
 
 /** 构造最小 GitHub issue 形状 */
 function mkIssue(n, over = {}) {
@@ -136,6 +136,20 @@ test("syncAll：只镜像仓库所有者的 issue（陌生人开的 issue 被过
   assert.ok(!existsSync(join(dir, "posts", "51.md")));
   assert.ok(!existsSync(join(dir, "posts", "52.md")), "无 user 字段的异常条目同样拒绝");
   rmSync(dir, { recursive: true, force: true });
+});
+
+test("parsePinnedNumbers：GraphQL 响应解析出置顶 issue 编号", () => {
+  const res = { data: { repository: { pinnedIssues: { nodes: [{ issue: { number: 30 } }, { issue: { number: 29 } }] } } } };
+  assert.deepEqual(parsePinnedNumbers(res), [30, 29]);
+  assert.deepEqual(parsePinnedNumbers({ data: null }), []);
+  assert.deepEqual(parsePinnedNumbers(null), []);
+});
+
+test("renderPost：置顶文章带 pinned: true，未置顶无该字段", () => {
+  const pinned = renderPost(mkIssue(30), new Set([30]));
+  assert.match(pinned.content, /^pinned: true$/m);
+  const normal = renderPost(mkIssue(5), new Set([30]));
+  assert.doesNotMatch(normal.content, /^pinned:/m);
 });
 
 test("parseArgs：--repo/--token/--out/--about-label 与默认值", () => {

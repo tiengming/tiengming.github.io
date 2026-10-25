@@ -5,6 +5,7 @@ import Footer from "../components/Footer.astro";
 import AuroraField from "../components/AuroraField.astro";
 import { ClientRouter } from "astro:transitions";
 import CommandPalette from "../components/CommandPalette.astro";
+import BackTop from "../components/BackTop.astro";
 import Counters from "../components/Counters.astro";
 import "../styles/global.css";
 
@@ -70,6 +71,7 @@ const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.default
       <slot />
     </main>
     <Footer />
+    <BackTop />
     <Counters />
     <CommandPalette />
     <script>

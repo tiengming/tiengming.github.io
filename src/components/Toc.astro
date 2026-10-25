@@ -1,5 +1,5 @@
 ---
-/** 目录：桌面右轨 sticky + 移动端 <details> 抽屉（无 JS 可用），scrollspy 高亮 */
+/** 目录：桌面右轨 sticky；移动端左下浮钮 → 底部抽屉（多层级浮层） */
 interface Heading {
   depth: number;
   slug: string;
@@ -26,8 +26,15 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
         </ul>
       </nav>
 
-      <details class="toc toc-mobile">
-        <summary>目录</summary>
+      {/* 移动端：浮动按钮 + 底部抽屉 */}
+      <button id="toc-fab" type="button" class="toc-fab" aria-label="打开目录" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
+        </svg>
+      </button>
+      <div class="toc-backdrop" hidden />
+      <div class="toc-sheet" role="dialog" aria-modal="true" aria-label="文章目录" hidden>
+        <p class="toc-sheet-title">目录</p>
         <ul>
           {visible.map((h) => (
             <li class:list={["toc-item", { sub: h.depth === 3 }]}>
@@ -35,7 +42,7 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
             </li>
           ))}
         </ul>
-      </details>
+      </div>
     </>
   )
 }
@@ -83,62 +90,149 @@ const visible = headings.filter((h) => h.depth === 2 || h.depth === 3);
     scrollbar-width: thin;
     display: none;
   }
+  .toc-fab,
+  .toc-backdrop,
+  .toc-sheet {
+    display: none;
+  }
   @media (min-width: 1100px) {
     .toc-rail {
       display: block;
       order: 2;
       grid-column: 2;
     }
-    .toc-mobile {
-      display: none;
+  }
+  @media (max-width: 1099.98px) {
+    .toc-fab {
+      display: grid;
+      place-items: center;
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      z-index: 60;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: color-mix(in oklch, var(--c-surface) 88%, transparent);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      color: var(--c-fg-muted);
+      box-shadow: var(--sh-card);
+      cursor: pointer;
+      transition: color var(--mo-fast) var(--mo-ease), box-shadow var(--mo-base) var(--mo-ease);
+    }
+    .toc-fab:hover {
+      color: var(--c-accent-strong);
+      box-shadow: var(--sh-card-hover);
+    }
+    .toc-fab svg {
+      width: 20px;
+      height: 20px;
+    }
+    .toc-backdrop {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: color-mix(in oklch, var(--c-bg) 62%, transparent);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      animation: toc-fade 160ms var(--mo-ease) both;
+    }
+    .toc-sheet {
+      display: block;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 71;
+      max-height: 60dvh;
+      overflow-y: auto;
+      padding: 14px 18px calc(20px + env(safe-area-inset-bottom));
+      border-radius: var(--rd-card) var(--rd-card) 0 0;
+      background: color-mix(in oklch, var(--c-surface) 92%, transparent);
+      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      backdrop-filter: blur(18px) saturate(1.3);
+      box-shadow: var(--sh-card-hover);
+      animation: toc-rise 240ms var(--mo-ease) both;
+    }
+    .toc-sheet .toc-item a {
+      padding: 9px 0 9px 12px;
+      font-size: var(--fs-sm);
     }
   }
-
-  /* 移动端抽屉 */
-  .toc-mobile {
-    margin: 20px 0 8px;
-    border: 1px solid var(--c-border);
-    border-radius: var(--rd-card);
-    background: color-mix(in oklch, var(--c-surface) 70%, transparent);
-    box-shadow: var(--sh-contact);
+  .toc-sheet-title {
+    font-family: var(--ft-display);
+    font-size: var(--fs-lg);
+    margin: 2px 0 8px;
   }
-  .toc-mobile summary {
-    cursor: pointer;
-    padding: 10px 16px;
-    font-size: var(--fs-sm);
-    color: var(--c-fg-muted);
-    user-select: none;
+  @keyframes toc-fade {
+    from {
+      opacity: 0;
+    }
   }
-  .toc-mobile[open] summary {
-    border-bottom: 1px solid var(--c-border);
+  @keyframes toc-rise {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
   }
-  .toc-mobile ul {
-    padding: 8px 16px 12px;
+  @media (prefers-reduced-motion: reduce) {
+    .toc-backdrop,
+    .toc-sheet {
+      animation: none;
+    }
   }
 </style>
 
 <script>
-  // scrollspy：视口内最末标题即当前项（astro:page-load 首载与换页各初始化一次）
+  // scrollspy（右轨）+ 移动端抽屉开合
   document.addEventListener("astro:page-load", () => {
     const links = new Map<string, HTMLAnchorElement>();
     document.querySelectorAll<HTMLAnchorElement>(".toc-rail .toc-item a").forEach((a) => {
       const id = decodeURIComponent(a.hash.slice(1));
       links.set(id, a);
     });
-    if (links.size === 0) return;
-    const active = new IntersectionObserver(
-      (entries) => {
-        for (const en of entries) {
-          if (!en.isIntersecting) continue;
-          links.forEach((a) => a.classList.remove("active"));
-          links.get(en.target.id)?.classList.add("active");
-        }
-      },
-      { rootMargin: "-15% 0px -70% 0px" },
-    );
-    links.forEach((_, id) => {
-      const h = document.getElementById(id);
-      if (h) active.observe(h);
+    if (links.size > 0) {
+      const active = new IntersectionObserver(
+        (entries) => {
+          for (const en of entries) {
+            if (!en.isIntersecting) continue;
+            links.forEach((a) => a.classList.remove("active"));
+            links.get(en.target.id)?.classList.add("active");
+          }
+        },
+        { rootMargin: "-15% 0px -70% 0px" },
+      );
+      links.forEach((_, id) => {
+        const h = document.getElementById(id);
+        if (h) active.observe(h);
+      });
+    }
+
+    const fab = document.getElementById("toc-fab");
+    const sheet = document.querySelector<HTMLElement>(".toc-sheet");
+    const backdrop = document.querySelector<HTMLElement>(".toc-backdrop");
+    if (!fab || !sheet || !backdrop) return;
+    const close = () => {
+      sheet!.hidden = true;
+      backdrop!.hidden = true;
+      document.body.style.overflow = "";
+      fab!.setAttribute("aria-expanded", "false");
+    };
+    fab.onclick = () => {
+      sheet.hidden = false;
+      backdrop.hidden = false;
+      document.body.style.overflow = "hidden";
+      fab.setAttribute("aria-expanded", "true");
+      sheet.querySelector<HTMLAnchorElement>("a")?.focus();
+    };
+    backdrop.onclick = close;
+    sheet.querySelectorAll("a").forEach((a) => (a.onclick = close));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !sheet.hidden) close();
     });
   });
 </script>

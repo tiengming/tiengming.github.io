@@ -3,11 +3,15 @@ import site from "../config/site";
 
 export type Post = CollectionEntry<"posts">;
 
-/** 全部文章（应用 excludeLabels 过滤），pubDate 降序 */
+/** 全部文章（应用 excludeLabels 过滤）：置顶优先，其后 pubDate 降序 */
 export async function allPosts(): Promise<Post[]> {
   return (await getCollection("posts"))
     .filter((p) => !p.data.labels.some((l) => site.issues.excludeLabels.includes(l)))
-    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+    .sort(
+      (a, b) =>
+        Number(b.data.pinned ?? false) - Number(a.data.pinned ?? false) ||
+        b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+    );
 }
 
 /** 带归档标签的文章视为「已过时」 */

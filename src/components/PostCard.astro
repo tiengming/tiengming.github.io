@@ -27,6 +27,16 @@ const archived = isArchived(post);
     <p class="post-card-excerpt">{excerpt(post.body)}</p>
     <div class="post-card-meta">
       {
+        d.pinned && (
+          <span class="chip chip-pinned">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 17v5M9 3h6l1 7 2.5 2.5V15H5.5v-2.5L8 10 9 3Z" />
+            </svg>
+            置顶
+          </span>
+        )
+      }
+      {
         archived && (
           <span class="chip chip-archived">
             <span class="chip-dot" aria-hidden="true" />
@@ -147,6 +157,16 @@ const archived = isArchived(post);
   .chip-archived {
     background: color-mix(in oklch, var(--c-warning) 18%, var(--c-surface-2));
     color: var(--c-warning);
+  }
+  .chip-pinned {
+    gap: 5px;
+    background: var(--c-accent-soft);
+    color: var(--c-accent-strong);
+    font-weight: 500;
+  }
+  .chip-pinned svg {
+    width: 12px;
+    height: 12px;
   }
   /* 归档文章：整体退半档，仍在流中可读 */
   .post-card.archived .post-card-title,

@@ -18,9 +18,9 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 /** frontmatter 字段块（YAML，值经 JSON 序列化保证安全引用） */
-function frontmatter(issue) {
+function frontmatter(issue, pinned = new Set()) {
   const labels = (issue.labels ?? []).map((l) => l.name).filter(Boolean);
-  return [
+  const lines = [
     "---",
     `title: ${JSON.stringify(issue.title ?? `Issue #${issue.number}`)}`,
     `pubDate: ${issue.created_at}`,
@@ -29,8 +29,10 @@ function frontmatter(issue) {
     `comments: ${issue.comments ?? 0}`,
     `labels: [${labels.map((l) => JSON.stringify(l)).join(", ")}]`,
     `source: ${issue.html_url}`,
-    "---",
-  ].join("\n");
+  ];
+  if (pinned.has(issue.number)) lines.push("pinned: true");
+  lines.push("---");
+  return lines.join("\n");
 }
 
 /**
@@ -41,18 +43,42 @@ export function restoreLegacyHtml(body) {
   return body.replace(/`Gmeek-html([\s\S]*?)`/g, "$1");
 }
 
-/** issue → posts/{number}.md；空正文只产出 frontmatter */
-export function renderPost(issue) {
-  const fm = frontmatter(issue);
+/** issue → posts/{number}.md；空正文只产出 frontmatter；pinned 为置顶编号集合 */
+export function renderPost(issue, pinned = new Set()) {
+  const fm = frontmatter(issue, pinned);
   const body = issue.body ? `\n\n${restoreLegacyHtml(issue.body)}` : "\n";
   return { path: `posts/${issue.number}.md`, content: fm + body };
 }
 
 /** issue → pages/{name}.md（关于页等特殊页面） */
-export function renderPage(issue, name) {
-  const fm = frontmatter(issue);
+export function renderPage(issue, name, pinned = new Set()) {
+  const fm = frontmatter(issue, pinned);
   const body = issue.body ? `\n\n${restoreLegacyHtml(issue.body)}` : "\n";
   return { path: `pages/${name}.md`, content: fm + body };
+}
+
+/** GraphQL pinnedIssues 响应 → 置顶编号数组（异常形状一律返回空） */
+export function parsePinnedNumbers(res) {
+  const nodes = res?.data?.repository?.pinnedIssues?.nodes;
+  if (!Array.isArray(nodes)) return [];
+  return nodes.map((n) => n?.issue?.number).filter((n) => Number.isInteger(n));
+}
+
+/** 拉取 GitHub pin 状态（GraphQL，需 token；失败静默返回空集——置顶是增强，不阻断同步） */
+export async function fetchPinned({ repo, token, fetchImpl = fetch }) {
+  const [owner, name] = repo.split("/");
+  const query = `query($o:String!,$n:String!){repository(owner:$o,name:$n){pinnedIssues(first:6){nodes{issue{number}}}}}`;
+  try {
+    const res = await fetchImpl("https://api.github.com/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ query, variables: { o: owner, n: name } }),
+    });
+    if (!res.ok) return new Set();
+    return new Set(parsePinnedNumbers(await res.json()));
+  } catch {
+    return new Set();
+  }
 }
 
 /**
@@ -87,7 +113,7 @@ function atomicWrite(file, content) {
 }
 
 /** 目录镜像：只删本工具管理的命名空间（posts/\d+.md 与 pages/about.md） */
-export function mirrorDir(issues, dir, aboutLabel = "about") {
+export function mirrorDir(issues, dir, aboutLabel = "about", pinned = new Set()) {
   const postsDir = join(dir, "posts");
   const pagesDir = join(dir, "pages");
   mkdirSync(postsDir, { recursive: true });
@@ -97,7 +123,7 @@ export function mirrorDir(issues, dir, aboutLabel = "about") {
   let aboutWritten = false;
   for (const issue of issues) {
     const isAbout = (issue.labels ?? []).some((l) => l.name === aboutLabel);
-    const { path, content } = isAbout ? renderPage(issue, "about") : renderPost(issue);
+    const { path, content } = isAbout ? renderPage(issue, "about", pinned) : renderPost(issue, pinned);
     atomicWrite(join(dir, path), content);
     if (isAbout) aboutWritten = true;
     else kept.add(`${issue.number}.md`);
@@ -118,12 +144,14 @@ export function mirrorDir(issues, dir, aboutLabel = "about") {
  * 取数失败在写盘前抛出——现有目录保持原样。
  * ownerLogin：只镜像该作者的 issue（陌生人开 issue 无法混入站点）。
  */
-export async function syncAll({ fetchImpl, issues = null, dir, aboutLabel = "about", repo, token, ownerLogin }) {
+export async function syncAll({ fetchImpl, issues = null, dir, aboutLabel = "about", repo, token, ownerLogin, pinned = null }) {
   const owner = ownerLogin ?? (repo ? repo.split("/")[0] : undefined);
   const list = (issues ?? (await fetchIssues({ repo, token, fetchImpl }))).filter(
     (it) => owner && it.user?.login === owner,
   );
-  mirrorDir(list, dir, aboutLabel);
+  // 置顶：外部注入或按 token 拉取；失败/无 token → 空集（不阻断）
+  const pinnedSet = pinned ?? (token && repo ? await fetchPinned({ repo, token, fetchImpl }) : new Set());
+  mirrorDir(list, dir, aboutLabel, pinnedSet);
   const posts = list.filter((i) => !(i.labels ?? []).some((l) => l.name === aboutLabel));
   return { posts: posts.length, pages: list.length - posts.length };
 }

@@ -12,6 +12,7 @@ const posts = defineCollection({
     issueNumber: z.number().int(),
     comments: z.number().int().default(0),
     source: z.string().url(),
+    pinned: z.boolean().default(false),
   }),
 });
 
