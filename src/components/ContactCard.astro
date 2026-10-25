@@ -1,0 +1,99 @@
+---
+/** 「找到我」卡片 —— 条目在 site.ts 的 about.contacts 配置 */
+import site from "../config/site";
+const contacts = site.about.contacts;
+const isEmail = (href: string) => href.startsWith("mailto:");
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+---
+
+<section class="contact-card" aria-label="找到我">
+  <h2 class="sec-title">找到我</h2>
+  <ul class="contact-list" role="list">
+    {
+      contacts.map((c, i) => (
+        <li style={`--i:${i}`} data-reveal>
+          <a
+            class="contact-item"
+            href={c.href}
+            {...(isExternal(c.href) ? { rel: "noopener", target: "_blank" } : {})}
+          >
+            <span class="contact-label">{c.label}</span>
+            {c.note && <span class="contact-note">{c.note}</span>}
+            <svg class="contact-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M7 17 17 7M9 7h8v8" />
+            </svg>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="contact-hint">也欢迎在任一文章的评论区（issue 讨论串）冒泡。</p>
+</section>
+
+<style>
+  .contact-card {
+    padding-top: 32px;
+    border-top: 1px solid var(--c-border);
+    text-align: left;
+  }
+  .sec-title {
+    font-size: var(--fs-xl);
+    margin-bottom: 16px;
+  }
+  .contact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    border-radius: var(--rd-card);
+    background: color-mix(in oklch, var(--c-surface) 78%, transparent);
+    box-shadow: var(--sh-card);
+    text-decoration: none;
+    color: var(--c-fg);
+    transition: transform var(--mo-base) var(--mo-ease), box-shadow var(--mo-base) var(--mo-ease);
+  }
+  .contact-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sh-card-hover);
+  }
+  .contact-label {
+    font-family: var(--ft-display);
+    font-size: var(--fs-lg);
+    flex: none;
+  }
+  .contact-note {
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .contact-arrow {
+    width: 15px;
+    height: 15px;
+    margin-left: auto;
+    color: var(--c-accent);
+    flex: none;
+    opacity: 0;
+    transform: translate(-3px, 3px);
+    transition: opacity var(--mo-base) var(--mo-ease), transform var(--mo-base) var(--mo-ease);
+  }
+  .contact-item:hover .contact-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  .contact-hint {
+    margin-top: 14px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-xs);
+    line-height: 1.7;
+  }
+</style>

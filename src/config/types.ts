@@ -37,6 +37,15 @@ export interface SiteConfig {
     aboutLabel: string;
     /** 带任一此标签的 issue 不进入文章列表 */
     excludeLabels: string[];
+    /** 带此标签的文章标记为「已过时/归档」：文章页出横幅、卡片挂徽标，内容保留 */
+    archivedLabel: string;
+  };
+  /** 关于页配置：技能光谱维度与联系方式卡片 */
+  about: {
+    /** 雷达图轴，value 为 0-100；顺序即图中顺时针方向 */
+    skillAxes: { label: string; value: number }[];
+    /** 「找到我」卡片条目 */
+    contacts: { label: string; href: string; note?: string }[];
   };
   features: {
     /** 评论区：utterances 直接复用文章 issue 的评论线程；需在仓库安装 utterances app */

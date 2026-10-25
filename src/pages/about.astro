@@ -4,6 +4,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import StatsStrip from "../components/StatsStrip.astro";
 import SkillRadar from "../components/SkillRadar.astro";
 import PostHeatmap from "../components/PostHeatmap.astro";
+import ContactCard from "../components/ContactCard.astro";
 import Comments from "../components/Comments.astro";
 import { allPosts, tagCounts } from "../utils/posts";
 import site from "../config/site";
@@ -43,7 +44,10 @@ const stats = [
           </div>
         </div>
 
-        <SkillRadar />
+        <div class="about-duo">
+          <SkillRadar />
+          <ContactCard />
+        </div>
         <PostHeatmap posts={posts} />
 
         <Comments issueNumber={d.issueNumber} />
@@ -75,5 +79,17 @@ const stats = [
   }
   .post-body {
     margin-top: 20px;
+  }
+  /* 底部双栏：技能光谱 与 找到我 并列（窄屏退化为上下） */
+  .about-duo {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0 40px;
+  }
+  @media (min-width: 900px) {
+    .about-duo {
+      grid-template-columns: 1.25fr 1fr;
+      align-items: start;
+    }
   }
 </style>

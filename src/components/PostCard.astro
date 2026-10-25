@@ -1,6 +1,6 @@
 ---
 import type { Post } from "../utils/posts";
-import { excerpt, fmtDate } from "../utils/posts";
+import { excerpt, fmtDate, isArchived } from "../utils/posts";
 
 interface Props {
   post: Post;
@@ -9,10 +9,11 @@ interface Props {
 const { post, index = 0 } = Astro.props;
 const d = post.data;
 const id = d.issueNumber;
+const archived = isArchived(post);
 ---
 
 <a
-  class="post-card"
+  class:list={["post-card", archived && "archived"]}
   href={`/p/${id}/`}
   data-tilt
   data-reveal
@@ -25,6 +26,14 @@ const id = d.issueNumber;
     <h2 class="post-card-title" transition:name={`post-title-${id}`}>{d.title}</h2>
     <p class="post-card-excerpt">{excerpt(post.body)}</p>
     <div class="post-card-meta">
+      {
+        archived && (
+          <span class="chip chip-archived">
+            <span class="chip-dot" aria-hidden="true" />
+            已归档
+          </span>
+        )
+      }
       {
         d.labels.slice(0, 4).map((l) => (
           <span class="chip">
@@ -134,6 +143,15 @@ const id = d.issueNumber;
     border-radius: 50%;
     background: currentColor;
     opacity: 0.7;
+  }
+  .chip-archived {
+    background: color-mix(in oklch, var(--c-warning) 18%, var(--c-surface-2));
+    color: var(--c-warning);
+  }
+  /* 归档文章：整体退半档，仍在流中可读 */
+  .post-card.archived .post-card-title,
+  .post-card.archived .post-card-excerpt {
+    opacity: 0.62;
   }
   .post-card-comments {
     margin-left: auto;

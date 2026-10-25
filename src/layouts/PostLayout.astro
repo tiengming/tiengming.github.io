@@ -20,6 +20,7 @@ interface Props {
 const props = Astro.props;
 const desc = excerpt(String(Astro.slots.render("default") ?? ""), 110) || site.site.description;
 const id = props.issueNumber;
+const archived = props.labels.includes(site.issues.archivedLabel);
 ---
 
 <BaseLayout title={props.title} description={desc} ogType="article">
@@ -48,6 +49,18 @@ const id = props.issueNumber;
         source={props.source}
       />
     </header>
+
+    {
+      archived && (
+        <aside class="archived-banner" role="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v4.5M12 16h.01" />
+          </svg>
+          本文内容已过时，仅供存档参考；最新进展见首页。
+        </aside>
+      )
+    }
 
     <div class="post-body">
       <Toc headings={props.headings} />
@@ -87,6 +100,26 @@ const id = props.issueNumber;
   .post-title {
     font-size: clamp(var(--fs-xl), 4.6vw, var(--fs-2xl));
     line-height: 1.35;
+  }
+
+  .archived-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: var(--w-prose);
+    margin: 0 auto 20px;
+    padding: 10px 16px;
+    border-left: 2px solid var(--c-warning);
+    border-radius: 0 var(--rd-card) var(--rd-card) 0;
+    background: color-mix(in oklch, var(--c-warning) 10%, transparent);
+    color: var(--c-fg-muted);
+    font-size: var(--fs-sm);
+  }
+  .archived-banner svg {
+    width: 17px;
+    height: 17px;
+    flex: none;
+    color: var(--c-warning);
   }
 
   /* 桌面三区：正文 44rem 主列 + 右轨目录；目录在 <1100px 时移动端抽屉化（见 Toc）。

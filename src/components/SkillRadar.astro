@@ -1,16 +1,12 @@
 ---
-/** 技能光谱 · 雷达图 —— 借鉴 ECharts radar 的质感：径向渐变填充、晕点、数值标签 */
-const AXES = [
-  { label: "前端", value: 82 },
-  { label: "边缘网络", value: 93 },
-  { label: "AI 工程", value: 88 },
-  { label: "量化研究", value: 74 },
-  { label: "玄学修行", value: 66 },
-];
+/** 技能光谱 · 雷达图 —— 维度与数值在 site.ts 的 about.skillAxes 配置（3-8 轴自适应） */
+import site from "../config/site";
+
+const AXES = site.about.skillAxes;
 
 const CX = 180;
-const CY = 168;
-const R = 108;
+const CY = 172;
+const R = 106;
 const N = AXES.length;
 const pt = (r: number, i: number) => {
   const a = (-90 + (360 / N) * i) * (Math.PI / 180);
@@ -21,7 +17,7 @@ const rings = [R, R * 0.75, R * 0.5, R * 0.25].map(ring);
 const polygon = AXES.map((a, i) => pt((R * a.value) / 100, i).map((n) => n.toFixed(1)).join(",")).join(" ");
 const dots = AXES.map((a, i) => ({ ...a, x: pt((R * a.value) / 100, i)[0].toFixed(1), y: pt((R * a.value) / 100, i)[1].toFixed(1) }));
 const labels = AXES.map((a, i) => {
-  const [x, y] = pt(R + 34, i);
+  const [x, y] = pt(R + 36, i);
   return { ...a, x: x.toFixed(1), y: (y + 1).toFixed(1), anchor: x < CX - 6 ? "end" : x > CX + 6 ? "start" : "middle" as const };
 });
 ---

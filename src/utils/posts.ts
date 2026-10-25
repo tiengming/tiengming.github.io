@@ -10,6 +10,9 @@ export async function allPosts(): Promise<Post[]> {
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
+/** 带归档标签的文章视为「已过时」 */
+export const isArchived = (post: Post) => post.data.labels.includes(site.issues.archivedLabel);
+
 /** 标签 → 文章数（按计数降序、同数按名称） */
 export function tagCounts(posts: Post[]): [string, number][] {
   const m = new Map<string, number>();

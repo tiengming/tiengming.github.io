@@ -35,6 +35,22 @@ const site: SiteConfig = {
   issues: {
     aboutLabel: "about",
     excludeLabels: [],
+    archivedLabel: "归档",
+  },
+  about: {
+    // 技能光谱：value 0-100，随时增删维度（3-8 轴皆可渲染）
+    skillAxes: [
+      { label: "前端", value: 82 },
+      { label: "边缘网络", value: 93 },
+      { label: "AI 工程", value: 88 },
+      { label: "量化研究", value: 74 },
+      { label: "玄学修行", value: 66 },
+    ],
+    contacts: [
+      { label: "GitHub", href: "https://github.com/tiengming", note: "@tiengming" },
+      { label: "邮箱", href: "mailto:tiengming@qq.com", note: "tiengming@qq.com" },
+      { label: "网址导航", href: "https://nav.buxiantang.top", note: "自用的工具集散地" },
+    ],
   },
   features: {
     comments: { provider: "utterances", repo: "tiengming/tiengming.github.io" },
