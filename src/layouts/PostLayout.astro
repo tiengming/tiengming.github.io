@@ -1,0 +1,136 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import PostMeta from "../components/PostMeta.astro";
+import Toc from "../components/Toc.astro";
+import Comments from "../components/Comments.astro";
+import site from "../config/site";
+import { excerpt } from "../utils/posts";
+
+interface Props {
+  title: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  labels: string[];
+  issueNumber: number;
+  comments: number;
+  source: string;
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const props = Astro.props;
+const desc = excerpt(String(Astro.slots.render("default") ?? ""), 110) || site.site.description;
+const id = props.issueNumber;
+---
+
+<BaseLayout title={props.title} description={desc} ogType="article">
+  <article class="post container">
+    <header class="post-head" transition:name={`post-card-${id}`}>
+      <h1 class="post-title" transition:name={`post-title-${id}`}>{props.title}</h1>
+      <PostMeta
+        pubDate={props.pubDate}
+        updatedDate={props.updatedDate}
+        labels={props.labels}
+        comments={props.comments}
+        source={props.source}
+      />
+    </header>
+
+    <div class="post-body">
+      <Toc headings={props.headings} />
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+
+    <footer class="post-foot">
+      <p class="post-bottom">{site.footer.text} · <a href={props.source} rel="noopener" target="_blank">在 GitHub 上编辑</a></p>
+    </footer>
+
+    <Comments issueNumber={id} />
+  </article>
+</BaseLayout>
+
+<script>
+  import { attachLightbox } from "../scripts/lightbox";
+  const initPost = () => attachLightbox(document);
+  initPost();
+  document.addEventListener("astro:page-load", initPost);
+</script>
+
+<style>
+  .container {
+    max-width: var(--w-wide);
+    margin: 0 auto;
+    padding: 56px 20px 0;
+  }
+
+  .post-head {
+    max-width: var(--w-prose);
+    margin: 0 auto 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .post-title {
+    font-size: clamp(var(--fs-xl), 4.6vw, var(--fs-2xl));
+    line-height: 1.35;
+  }
+
+  /* 桌面三区：正文 44rem + 右轨目录；目录在 <1100px 时移动端抽屉化（见 Toc） */
+  .post-body {
+    display: block;
+    max-width: var(--w-prose);
+    margin: 0 auto;
+  }
+  @media (min-width: 1100px) {
+    .post-body {
+      display: grid;
+      grid-template-columns: minmax(0, 44rem) 200px;
+      gap: 56px;
+      max-width: none;
+      justify-content: center;
+    }
+    .post-body > .toc-rail {
+      order: 2;
+    }
+    .post-body > .prose {
+      order: 1;
+    }
+    .post-body > .toc-mobile {
+      display: none;
+    }
+  }
+
+  .post-foot {
+    max-width: var(--w-prose);
+    margin: 56px auto 0;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+    text-align: center;
+  }
+  .post-foot a {
+    color: var(--c-accent-strong);
+  }
+
+  /* 灯箱浮层（多层级最上） */
+  :global(.lightbox) {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+    background: color-mix(in oklch, var(--c-bg) 82%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    cursor: zoom-out;
+  }
+  :global(.lightbox img) {
+    max-width: min(92vw, 1200px);
+    max-height: 88dvh;
+    width: auto;
+    height: auto;
+    border-radius: var(--rd-card);
+    box-shadow: var(--sh-card-hover);
+    cursor: auto;
+  }
+</style>

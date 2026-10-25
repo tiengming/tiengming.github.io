@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/build-post.mjs",
     "preview": "astro preview",
     "test": "node --test scripts/",
     "sync": "node scripts/sync-issues.mjs"
@@ -17,7 +17,6 @@
     "@tailwindcss/vite": "^4.3.3",
     "astro": "7.4.1",
     "lxgw-wenkai-webfont": "^1.7.0",
-    "remark-gfm": "^4.0.1",
     "tailwindcss": "^4.3.3"
   },
   "devDependencies": {

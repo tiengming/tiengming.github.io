@@ -8,6 +8,15 @@ export default defineConfig({
   site: "https://code.buxiantang.top",
   compressHTML: true,
   integrations: [sitemap()],
+  markdown: {
+    // 默认 Sätteri 处理器：GFM 与智能标点默认开启
+    shikiConfig: {
+      // 双主题：明暗由 prose.css 按 data-theme/系统切换
+      themes: { light: "github-light", dark: "github-dark" },
+      defaultColor: false,
+      wrap: true,
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
   },

@@ -1,0 +1,153 @@
+/* ============================================================
+   文章正文排版 —— 事实源: DESIGN.md §2/§5
+   ============================================================ */
+
+.prose {
+  max-width: 100%;
+  font-size: var(--fs-base);
+  line-height: 1.85;
+  /* 中西文混排间距（支持的浏览器渐进增强） */
+  text-autospace: normal;
+}
+
+.prose > * + * {
+  margin-top: 1em;
+}
+
+/* 标题：正文内层级（base.css 全局已定，这里只微调文章语境） */
+.prose h2 {
+  margin-top: 2.4em;
+}
+.prose h3 {
+  margin-top: 2em;
+}
+
+.prose p {
+  margin: 0;
+}
+
+/* 引用：表面色块 + 细左线（非卡片侧签） */
+.prose blockquote {
+  margin: 1.6em 0;
+  padding: 12px 20px;
+  border-left: 2px solid var(--c-accent);
+  border-radius: 0 var(--rd-card) var(--rd-card) 0;
+  background: color-mix(in oklch, var(--c-surface-2) 65%, transparent);
+  color: var(--c-fg-muted);
+}
+.prose blockquote > * + * {
+  margin-top: 0.6em;
+}
+
+/* 列表 */
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+}
+.prose li + li {
+  margin-top: 0.4em;
+}
+.prose li::marker {
+  color: var(--c-accent);
+}
+
+/* 链接 */
+.prose a {
+  color: var(--c-accent-strong);
+}
+
+/* 行内代码 */
+.prose :not(pre) > code {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--c-accent-soft);
+  color: var(--c-accent-strong);
+  font-size: 0.86em;
+  overflow-wrap: anywhere;
+}
+
+/* 代码块（shiki 双主题由变量切换） */
+.prose pre {
+  margin: 1.6em 0;
+  padding: 18px 20px;
+  border-radius: var(--rd-card);
+  overflow-x: auto;
+  background: color-mix(in oklch, var(--c-surface-2) 88%, transparent) !important;
+  box-shadow: var(--sh-contact);
+  line-height: 1.7;
+  font-size: 0.86rem;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* shiki 双主题：跟随 data-theme 或系统 */
+.prose .astro-code,
+.prose .astro-code span {
+  color: var(--shiki-light);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .prose .astro-code,
+  :root:not([data-theme="light"]) .prose .astro-code span {
+    color: var(--shiki-dark);
+  }
+}
+:root[data-theme="dark"] .prose .astro-code,
+:root[data-theme="dark"] .prose .astro-code span {
+  color: var(--shiki-dark);
+}
+
+/* 表格：轻分隔线、文本左对齐、数字右对齐由内容类处理 */
+.prose table {
+  width: 100%;
+  margin: 1.6em 0;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  display: block;
+  overflow-x: auto;
+}
+.prose th,
+.prose td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--c-border);
+  text-align: left;
+  vertical-align: top;
+}
+.prose th {
+  color: var(--c-fg-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.prose tr:last-child td {
+  border-bottom: none;
+}
+
+/* 图片：圆角 + 阴影 + 灯箱可点 */
+.prose img {
+  margin: 1.8em auto;
+  border-radius: var(--rd-card);
+  box-shadow: var(--sh-card);
+  cursor: zoom-in;
+}
+
+.prose kbd {
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--c-border);
+  border-bottom-width: 2px;
+  background: var(--c-surface);
+  font-size: 0.82em;
+}
+
+.prose hr {
+  margin: 2.6em auto;
+  width: 42%;
+}
+
+/* 任务列表勾选框 */
+.prose input[type="checkbox"] {
+  accent-color: var(--c-accent);
+  margin-right: 4px;
+}

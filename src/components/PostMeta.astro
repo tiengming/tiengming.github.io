@@ -1,0 +1,67 @@
+---
+import { fmtDate } from "../utils/posts";
+
+interface Props {
+  pubDate: Date;
+  updatedDate?: Date;
+  labels: string[];
+  comments: number;
+  source: string;
+}
+const { pubDate, updatedDate, labels, comments, source } = Astro.props;
+---
+
+<div class="post-meta">
+  <time class="nums" datetime={pubDate.toISOString()}>{fmtDate(pubDate)}</time>
+  {updatedDate && updatedDate.valueOf() - pubDate.valueOf() > 86400000 && (
+    <span class="nums">改于 {fmtDate(updatedDate)}</span>
+  )}
+  <span class="nums">{comments} 评论</span>
+  <span class="meta-labels">
+    {labels.map((l) => <a class="chip" href={`/tags/${encodeURIComponent(l)}/`}>{l}</a>)}
+  </span>
+  <a class="meta-source nums" href={source} rel="noopener" target="_blank">在 GitHub 查看</a>
+</div>
+
+<style>
+  .post-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-top: 14px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+    font-family: var(--ft-mono);
+  }
+  .meta-labels {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 1px 10px;
+    border-radius: var(--rd-pill);
+    background: var(--c-accent-soft);
+    color: var(--c-accent-strong);
+    text-decoration: none;
+    font-family: var(--ft-body);
+    transition: background-color var(--mo-fast) var(--mo-ease);
+  }
+  .chip:hover {
+    background: color-mix(in oklch, var(--c-accent-soft) 60%, var(--c-surface-2));
+  }
+  .meta-source {
+    margin-left: auto;
+    color: var(--c-accent-strong);
+    text-decoration: none;
+  }
+  .meta-source:hover {
+    text-decoration: underline;
+  }
+  @media (max-width: 640px) {
+    .meta-source {
+      margin-left: 0;
+    }
+  }
+</style>

@@ -8,7 +8,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
 <header class="site-header" id="site-header">
   <div class="header-inner">
     <a class="site-brand" href="/">
-      <img class="site-avatar" src={site.author.avatar} alt="" width="28" height="28" />
+      <img class="site-avatar" src={site.author.avatar} alt="" width="28" height="28" loading="eager" decoding="sync" />
       <span class="site-title">{site.site.title}</span>
     </a>
 

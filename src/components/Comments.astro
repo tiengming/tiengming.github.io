@@ -1,0 +1,114 @@
+---
+/** utterances 评论区：复用文章 issue 的评论线程；进入视口附近才注入（懒加载） */
+import site from "../config/site";
+
+interface Props {
+  issueNumber: number;
+}
+const { issueNumber } = Astro.props;
+const enabled = site.features.comments.provider === "utterances" && !!site.features.comments.repo;
+const repo = site.features.comments.repo ?? "";
+---
+
+{
+  enabled && (
+    <section class="comments" aria-label="评论">
+      <h2 class="comments-title">评论</h2>
+      <p class="comments-hint">
+        评论区即<a href={`https://github.com/${repo}/issues/${issueNumber}`} rel="noopener" target="_blank"> 对应 issue</a>
+        的讨论串，登录 GitHub 即可留言。
+      </p>
+      <div
+        class="comments-mount"
+        data-repo={repo}
+        data-issue-number={issueNumber}
+        data-count={site.features.counter === "vercount" ? "1" : "0"}
+      >
+        <div class="comments-skeleton" aria-hidden="true">
+          <span /><span className="w60" /><span className="w80" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .comments {
+    margin-top: 72px;
+    padding-top: 32px;
+    border-top: 1px solid var(--c-border);
+  }
+  .comments-title {
+    font-size: var(--fs-xl);
+    margin-bottom: 4px;
+  }
+  .comments-hint {
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+    margin-bottom: 18px;
+  }
+  .comments-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 0;
+  }
+  .comments-skeleton span {
+    height: 14px;
+    border-radius: 6px;
+    background: var(--c-surface-2);
+    width: 30%;
+  }
+  .comments-skeleton .w60 { width: 60%; }
+  .comments-skeleton .w80 { width: 80%; }
+</style>
+
+<script>
+  const mounts = document.querySelectorAll<HTMLElement>(".comments-mount");
+  if (mounts.length > 0) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const en of entries) {
+          if (!en.isIntersecting) continue;
+          io.unobserve(en.target);
+          mountUtterances(en.target as HTMLElement);
+        }
+      },
+      { rootMargin: "400px 0px" },
+    );
+    mounts.forEach((m) => io.observe(m));
+  }
+
+  function currentTheme(): string {
+    const mode = document.documentElement.dataset.mode || "auto";
+    if (mode === "auto") {
+      return matchMedia("(prefers-color-scheme: dark)").matches ? "github-dark" : "github-light";
+    }
+    return mode === "dark" ? "github-dark" : "github-light";
+  }
+
+  function mountUtterances(mount: HTMLElement) {
+    const repo = mount.dataset.repo!;
+    const issueNumber = mount.dataset.issueNumber!;
+    mount.textContent = "";
+
+    const s = document.createElement("script");
+    s.src = "https://utteranc.es/client.js";
+    s.async = true;
+    s.crossOrigin = "anonymous";
+    s.setAttribute("repo", repo);
+    s.setAttribute("issue-number", issueNumber);
+    s.setAttribute("theme", currentTheme());
+    s.setAttribute("label", "💬comment");
+    mount.appendChild(s);
+
+    // 手动切主题后同步评论区主题
+    let last = currentTheme();
+    setInterval(() => {
+      const now = currentTheme();
+      if (now === last) return;
+      last = now;
+      mount.querySelector("iframe")?.contentWindow?.postMessage({ type: "set-theme", theme: now }, "https://utteranc.es");
+    }, 800);
+  }
+</script>
