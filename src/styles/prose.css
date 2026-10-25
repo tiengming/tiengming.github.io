@@ -26,7 +26,7 @@
   margin: 0;
 }
 
-/* 引用：表面色块 + 细左线（非卡片侧签） */
+/* 引用：表面色块 + 细左线（非卡片侧签）；data-callout 为 issue 正文里的 Obsidian 标记 */
 .prose blockquote {
   margin: 1.6em 0;
   padding: 12px 20px;
@@ -34,6 +34,12 @@
   border-radius: 0 var(--rd-card) var(--rd-card) 0;
   background: color-mix(in oklch, var(--c-surface-2) 65%, transparent);
   color: var(--c-fg-muted);
+}
+.prose blockquote[data-callout] {
+  border-left-color: var(--c-warning);
+}
+.prose blockquote[data-callout="tip"] {
+  border-left-color: var(--c-success);
 }
 .prose blockquote > * + * {
   margin-top: 0.6em;

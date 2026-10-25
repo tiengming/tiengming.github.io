@@ -47,9 +47,16 @@ const latest = (await allPosts()).slice(0, 3);
     font-family: var(--ft-mono);
     font-size: clamp(var(--fs-3xl), 10vw, 4.5rem);
     line-height: 1;
-    color: transparent;
+    color: var(--c-accent);
+    opacity: 0.9;
     -webkit-text-stroke: 1px var(--c-accent);
-    letter-spacing: 0.08em;
+    /* 支持 stroke 的浏览器只描边不填充 */
+  }
+  @supports (-webkit-text-stroke: 1px black) {
+    .lost-code {
+      color: transparent;
+      opacity: 1;
+    }
   }
   .lost-title {
     margin-top: 18px;

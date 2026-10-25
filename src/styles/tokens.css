@@ -44,7 +44,7 @@
   --c-surface-2: oklch(0.955 0.006 160);
   --c-fg: oklch(0.235 0.018 255);
   --c-fg-muted: oklch(0.47 0.02 250);
-  --c-fg-subtle: oklch(0.6 0.015 250);
+  --c-fg-subtle: oklch(0.64 0.015 250);
   --c-border: oklch(0.895 0.008 160);
   --c-accent: oklch(0.52 0.105 172);
   --c-accent-strong: oklch(0.44 0.1 172);
@@ -77,7 +77,7 @@
     --c-surface-2: oklch(0.245 0.016 258);
     --c-fg: oklch(0.925 0.008 250);
     --c-fg-muted: oklch(0.7 0.012 250);
-    --c-fg-subtle: oklch(0.56 0.012 250);
+    --c-fg-subtle: oklch(0.6 0.012 250);
     --c-border: oklch(0.3 0.014 255);
     --c-accent: oklch(0.8 0.125 172);
     --c-accent-strong: oklch(0.86 0.11 168);
@@ -109,7 +109,7 @@
   --c-surface-2: oklch(0.245 0.016 258);
   --c-fg: oklch(0.925 0.008 250);
   --c-fg-muted: oklch(0.7 0.012 250);
-  --c-fg-subtle: oklch(0.56 0.012 250);
+  --c-fg-subtle: oklch(0.6 0.012 250);
   --c-border: oklch(0.3 0.014 255);
   --c-accent: oklch(0.8 0.125 172);
   --c-accent-strong: oklch(0.86 0.11 168);
@@ -139,7 +139,7 @@
   --c-surface-2: oklch(0.955 0.006 160);
   --c-fg: oklch(0.235 0.018 255);
   --c-fg-muted: oklch(0.47 0.02 250);
-  --c-fg-subtle: oklch(0.6 0.015 250);
+  --c-fg-subtle: oklch(0.64 0.015 250);
   --c-border: oklch(0.895 0.008 160);
   --c-accent: oklch(0.52 0.105 172);
   --c-accent-strong: oklch(0.44 0.1 172);

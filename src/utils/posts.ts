@@ -22,10 +22,13 @@ export function excerpt(body: string | undefined, n = 92): string {
   if (!body) return "";
   const text = body
     .replace(/```[\s\S]*?```/g, " ") // 代码块
+    .replace(/^\s*>?\s*\[!\w+\][^\n]*$/gm, " ") // Obsidian callout 行（> [!NOTE] …）
     .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1") // 链接留文字
     .replace(/[#>*_~`|-]/g, " ")
     .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/\s*[（(]https?:\/\/\S+[）)]/g, " ") // 括号裹纯链接的整段删
+    .replace(/\s{2,}/g, " ")
+    .replace(/\s*([，。、；：？！,.])/g, "$1")
     .trim();
   return text.length > n ? `${text.slice(0, n)}……` : text;
 }

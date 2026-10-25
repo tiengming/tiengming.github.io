@@ -12,6 +12,7 @@ export default defineConfig({
   prefetch: { prefetchAll: true, defaultStrategy: "hover" },
   markdown: {
     // 默认 Sätteri 处理器：GFM 与智能标点默认开启
+    // （Obsidian callout 的 [!NOTE] 字面清理走 scripts/build-post.mjs 构建后变换）
     shikiConfig: {
       // 双主题：明暗由 prose.css 按 data-theme/系统切换
       themes: { light: "github-light", dark: "github-dark" },
