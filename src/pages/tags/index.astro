@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { allPosts, tagCounts } from "../../utils/posts";
+
+const posts = await allPosts();
+const tags = tagCounts(posts);
+const max = Math.max(...tags.map(([, n]) => n), 1);
+// 计数 → 字号/玉色明度（DESIGN.md §5：字号按计数、色阶按玉色明度阶）
+const scale = (n: number) => 0.84 + (n / max) * 0.5;
+const weight = (n: number) => (n / max > 0.55 ? 700 : 400);
+---
+
+<BaseLayout title="标签">
+  <div class="container">
+    <header class="tag-head">
+      <h1 class="tag-title" data-reveal style="--i:0">标签</h1>
+      <p class="tag-sub nums" data-reveal style="--i:1">{tags.length} 个标签，{posts.length} 篇文章</p>
+    </header>
+
+    <ul class="tag-cloud" role="list" data-reveal style="--i:2">
+      {
+        tags.map(([tag, n]) => (
+          <li>
+            <a href={`/tags/${encodeURIComponent(tag)}/`} style={`font-size:${scale(n).toFixed(2)}rem;font-weight:${weight(n)}`}>
+              {tag}
+              <span class="tag-count nums">{n}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: var(--w-prose);
+    margin: 0 auto;
+    padding: 56px 20px 0;
+  }
+  .tag-head {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .tag-title {
+    font-size: var(--fs-2xl);
+  }
+  .tag-sub {
+    margin-top: 6px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+  }
+  .tag-cloud {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 14px 22px;
+  }
+  .tag-cloud a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    color: var(--c-fg-muted);
+    text-decoration: none;
+    line-height: 1.5;
+    transition: color var(--mo-fast) var(--mo-ease);
+  }
+  .tag-cloud a:hover {
+    color: var(--c-accent-strong);
+  }
+  .tag-count {
+    font-size: 0.72em;
+    color: var(--c-fg-subtle);
+    font-family: var(--ft-mono);
+  }
+</style>

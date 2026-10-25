@@ -1,0 +1,122 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import site from "../config/site";
+import { allPosts } from "../utils/posts";
+
+const latest = (await allPosts()).slice(0, 3);
+---
+
+<BaseLayout title="页面不存在">
+  <div class="lost container">
+    <p class="lost-code nums" aria-hidden="true">404</p>
+    <h1 class="lost-title">此处无书</h1>
+    <p class="lost-sub">你要找的页面不在架上，可能已被撤下，或从未写就。</p>
+    <div class="lost-actions">
+      <a class="lost-btn" href="/">回首页</a>
+      <a class="lost-btn ghost" href="/tags/">逛标签</a>
+    </div>
+
+    {
+      latest.length > 0 && (
+        <section class="lost-latest" aria-label="最近文章">
+          <p class="lost-latest-title">或者，读一篇最近的：</p>
+          <ul>
+            {latest.map((p) => (
+              <li>
+                <a href={`/p/${p.data.issueNumber}/`}>{p.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+    <p class="lost-site">{site.site.title}</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: var(--w-prose);
+    margin: 0 auto;
+    padding: 72px 20px 0;
+  }
+  .lost {
+    text-align: center;
+  }
+  .lost-code {
+    font-family: var(--ft-mono);
+    font-size: clamp(var(--fs-3xl), 10vw, 4.5rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--c-accent);
+    letter-spacing: 0.08em;
+  }
+  .lost-title {
+    margin-top: 18px;
+    font-size: var(--fs-xl);
+  }
+  .lost-sub {
+    margin-top: 10px;
+    color: var(--c-fg-muted);
+    font-size: var(--fs-sm);
+  }
+  .lost-actions {
+    margin-top: 28px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  .lost-btn {
+    padding: 8px 22px;
+    border-radius: var(--rd-pill);
+    background: var(--c-accent);
+    color: var(--c-on-accent);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+    box-shadow: var(--sh-card);
+    transition: transform var(--mo-fast) var(--mo-ease), box-shadow var(--mo-fast) var(--mo-ease);
+  }
+  .lost-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sh-card-hover);
+  }
+  .lost-btn.ghost {
+    background: var(--c-surface);
+    color: var(--c-fg);
+    box-shadow: var(--sh-contact);
+  }
+  .lost-latest {
+    margin: 56px auto 0;
+    padding: 22px 26px;
+    border-radius: var(--rd-card);
+    background: color-mix(in oklch, var(--c-surface) 75%, transparent);
+    box-shadow: var(--sh-card);
+    text-align: left;
+    max-width: 26em;
+  }
+  .lost-latest-title {
+    font-size: var(--fs-sm);
+    color: var(--c-fg-muted);
+    margin-bottom: 10px;
+  }
+  .lost-latest ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .lost-latest a {
+    text-decoration: none;
+  }
+  .lost-latest a:hover {
+    text-decoration: underline;
+  }
+  .lost-site {
+    margin-top: 56px;
+    font-family: var(--ft-display);
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-lg);
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+import { getCollection, render } from "astro:content";
+import PostLayout from "../layouts/PostLayout.astro";
+
+const about = (await getCollection("pages")).find((p) => p.id === "about");
+if (!about) {
+  // 关于 issue 尚未创建时不构建该路由（404 兜底）
+  Astro.response.status = 404;
+}
+const { Content, headings } = about ? await render(about) : { Content: () => null as never, headings: [] as never };
+const d = about?.data;
+---
+
+{
+  about && d && (
+    <PostLayout
+      title={d.title}
+      pubDate={d.pubDate}
+      updatedDate={d.updatedDate}
+      labels={d.labels}
+      issueNumber={d.issueNumber}
+      comments={d.comments}
+      source={d.source}
+      headings={headings.filter((h) => h.depth === 2 || h.depth === 3)}
+    >
+      <Content />
+    </PostLayout>
+  )
+}

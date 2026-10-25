@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import { allPosts } from "../../utils/posts";
+
+export async function getStaticPaths() {
+  const posts = await allPosts();
+  const tags = new Map<string, number>();
+  for (const p of posts) for (const l of p.data.labels) tags.set(l, (tags.get(l) ?? 0) + 1);
+  return [...tags.keys()].map((tag) => ({ params: { tag }, props: { tag } }));
+}
+
+const { tag } = Astro.props;
+const posts = (await allPosts()).filter((p) => p.data.labels.includes(tag));
+---
+
+<BaseLayout title={`标签：${tag}`}>
+  <div class="container">
+    <header class="tag-head" aria-label="标签文章列表">
+      <h1 class="tag-title" data-reveal style="--i:0">{tag}</h1>
+      <p class="tag-sub nums" data-reveal style="--i:1">{posts.length} 篇文章 · <a href="/tags/">全部标签</a></p>
+    </header>
+
+    <section class="post-list" aria-label="文章列表">
+      {posts.map((p, i) => <PostCard post={p} index={i + 2} />)}
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .container {
+    max-width: var(--w-prose);
+    margin: 0 auto;
+    padding: 56px 20px 0;
+  }
+  .tag-head {
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--c-border);
+    margin-bottom: 32px;
+  }
+  .tag-title {
+    font-size: var(--fs-2xl);
+  }
+  .tag-sub {
+    margin-top: 6px;
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+  }
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+</style>
