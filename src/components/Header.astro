@@ -1,0 +1,129 @@
+---
+import site from "../config/site";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+---
+
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a class="site-brand" href="/">
+      <img class="site-avatar" src={site.author.avatar} alt="" width="28" height="28" />
+      <span class="site-title">{site.site.title}</span>
+    </a>
+
+    <nav class="site-nav" aria-label="主导航">
+      {
+        site.nav.map((item) =>
+          isExternal(item.href) ? (
+            <a href={item.href} rel="noopener" target="_blank">
+              {item.label}
+            </a>
+          ) : (
+            <a href={item.href} aria-current={Astro.url.pathname === item.href ? "page" : undefined}>
+              {item.label}
+            </a>
+          ),
+        )
+      }
+    </nav>
+
+    <div class="header-actions">
+      <slot name="actions" />
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    transition: background-color var(--mo-slow) var(--mo-ease), box-shadow var(--mo-slow) var(--mo-ease),
+      backdrop-filter var(--mo-slow) var(--mo-ease);
+  }
+  /* 滚动后进入玻璃态：毛玻璃仅限顶栏/浮层（DESIGN.md §1 限域） */
+  .site-header.scrolled {
+    background: color-mix(in oklch, var(--c-bg) 72%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.35);
+    backdrop-filter: blur(14px) saturate(1.35);
+    box-shadow: var(--sh-contact);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: var(--w-wide);
+    margin: 0 auto;
+    padding: 12px 20px;
+  }
+  .site-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--c-fg);
+  }
+  .site-avatar {
+    border-radius: 8px;
+    box-shadow: var(--sh-contact);
+  }
+  .site-title {
+    font-family: var(--ft-display);
+    font-weight: 700;
+    font-size: var(--fs-lg);
+    letter-spacing: 0.02em;
+  }
+  .site-nav {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .site-nav a {
+    padding: 6px 12px;
+    border-radius: var(--rd-pill);
+    color: var(--c-fg-muted);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+    transition: color var(--mo-fast) var(--mo-ease), background-color var(--mo-fast) var(--mo-ease);
+  }
+  .site-nav a:hover {
+    color: var(--c-fg);
+    background: var(--c-surface-2);
+  }
+  .site-nav a[aria-current="page"] {
+    color: var(--c-accent-strong);
+    background: var(--c-accent-soft);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  @media (max-width: 640px) {
+    .site-nav {
+      display: none;
+    }
+    .header-inner {
+      padding: 10px 16px;
+    }
+  }
+</style>
+
+<script>
+  // 滚动后玻璃态（rAF 节流）
+  const header = document.getElementById("site-header");
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      header?.classList.toggle("scrolled", window.scrollY > 8);
+      ticking = false;
+    });
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>

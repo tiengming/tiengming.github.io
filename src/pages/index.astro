@@ -1,15 +1,19 @@
 ---
-import "../styles/global.css";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import site from "../config/site";
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>不言堂</title>
-  </head>
-  <body>
-    <main><h1>不言堂</h1><p>脚手架占位页</p></main>
-  </body>
-</html>
+<BaseLayout>
+  <section class="hero landing">
+    <h1>{site.site.title}</h1>
+    <p>{site.site.subtitle}</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .landing {
+    max-width: var(--w-prose);
+    margin: 0 auto;
+    padding: 96px 20px;
+  }
+</style>

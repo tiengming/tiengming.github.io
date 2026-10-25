@@ -1,0 +1,59 @@
+---
+import site from "../config/site";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import AuroraField from "../components/AuroraField.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogType?: "website" | "article" | "profile";
+}
+
+const { title, description = site.site.description, ogType = "website" } = Astro.props;
+const pageTitle = title ? `${title} · ${site.site.title}` : `${site.site.title} —— ${site.site.subtitle}`;
+const canonical = new URL(Astro.url.pathname, site.site.url).href;
+
+// 默认主题非 auto 时，无持久化值也要立即应用
+const fallbackMode = site.theme.defaultMode === "auto" ? "" : site.theme.defaultMode;
+---
+
+<!doctype html>
+<html lang={site.site.lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:site_name" content={site.site.title} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary" />
+    <script is:inline>
+      // 主题防闪：首帧样式应用前落 data-theme / data-mode（auto 不设 theme，走系统媒体查询）
+      (function () {
+        try {
+          var m = localStorage.getItem("tm-theme") || "@fallbackMode";
+          document.documentElement.dataset.mode = m;
+          if (m === "dark" || m === "light") document.documentElement.dataset.theme = m;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <AuroraField />
+    <a class="skip-link" href="#main">跳到正文</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,63 @@
+---
+import site from "../config/site";
+const year = new Date().getFullYear();
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-text">{site.footer.text}</p>
+    <nav class="footer-links" aria-label="页脚链接">
+      {
+        site.footer.links.map((l) =>
+          isExternal(l.href) ? (
+            <a href={l.href} rel="noopener" target="_blank">
+              {l.label}
+            </a>
+          ) : (
+            <a href={l.href}>{l.label}</a>
+          ),
+        )
+      }
+    </nav>
+    <p class="footer-copy nums">© {year} {site.author.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 96px;
+    border-top: 1px solid var(--c-border);
+    background: color-mix(in oklch, var(--c-surface) 55%, transparent);
+  }
+  .footer-inner {
+    max-width: var(--w-prose);
+    margin: 0 auto;
+    padding: 32px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-text {
+    color: var(--c-fg-muted);
+    font-size: var(--fs-sm);
+  }
+  .footer-links {
+    display: flex;
+    gap: 16px;
+  }
+  .footer-links a {
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-sm);
+    text-decoration: none;
+  }
+  .footer-links a:hover {
+    color: var(--c-accent-strong);
+  }
+  .footer-copy {
+    color: var(--c-fg-subtle);
+    font-size: var(--fs-xs);
+  }
+</style>
