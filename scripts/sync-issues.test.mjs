@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { renderPost, renderPage, fetchIssues, syncAll, parseArgs } from "./sync-issues.mjs";
+import { renderPost, renderPage, fetchIssues, syncAll, parseArgs, restoreLegacyHtml } from "./sync-issues.mjs";
 
 /** 构造最小 GitHub issue 形状 */
 function mkIssue(n, over = {}) {
@@ -107,6 +107,21 @@ test("renderPage：关于页渲染为 pages/{name}.md", () => {
   const { path, content } = renderPage(mkIssue(30, { title: "关于我" }), "about");
   assert.equal(path, "pages/about.md");
   assert.match(content, /title: "关于我"/);
+});
+
+test("renderPost：Gmeek 旧约定 `Gmeek-html<X>` 还原为裸 HTML（iframe 等嵌入可渲染）", () => {
+  const { content } = renderPost(
+    mkIssue(27, {
+      body: "前置说明\n\n`Gmeek-html<iframe src=\"//player.bilibili.com/x\" width=\"100%\" height=\"460px\"></iframe>`\n\n后置",
+    }),
+  );
+  assert.match(content, /<iframe src="\/\/player\.bilibili\.com\/x" width="100%" height="460px"><\/iframe>/);
+  assert.doesNotMatch(content, /Gmeek-html/);
+});
+
+test("renderPost：普通代码 span（无 Gmeek-html 前缀）不受影响", () => {
+  const { content } = renderPost(mkIssue(28, { body: "`code span` 保留" }));
+  assert.match(content, /`code span` 保留/);
 });
 
 test("parseArgs：--repo/--token/--out/--about-label 与默认值", () => {

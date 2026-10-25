@@ -33,17 +33,25 @@ function frontmatter(issue) {
   ].join("\n");
 }
 
+/**
+ * Gmeek 旧约定还原：正文里 `` `Gmeek-html<X>` `` 的 code-span 在 Gmeek 构建期
+ * 会被还原成裸 HTML；本项目的约定 = 直接在 issue 正文写原生 HTML（Markdown 透传）。
+ */
+export function restoreLegacyHtml(body) {
+  return body.replace(/`Gmeek-html([\s\S]*?)`/g, "$1");
+}
+
 /** issue → posts/{number}.md；空正文只产出 frontmatter */
 export function renderPost(issue) {
   const fm = frontmatter(issue);
-  const body = issue.body ? `\n\n${issue.body}` : "\n";
+  const body = issue.body ? `\n\n${restoreLegacyHtml(issue.body)}` : "\n";
   return { path: `posts/${issue.number}.md`, content: fm + body };
 }
 
 /** issue → pages/{name}.md（关于页等特殊页面） */
 export function renderPage(issue, name) {
   const fm = frontmatter(issue);
-  const body = issue.body ? `\n\n${issue.body}` : "\n";
+  const body = issue.body ? `\n\n${restoreLegacyHtml(issue.body)}` : "\n";
   return { path: `pages/${name}.md`, content: fm + body };
 }
 

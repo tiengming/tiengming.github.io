@@ -8,6 +8,6 @@ labels: ["about"]
 source: https://github.com/tiengming/tiengming.github.io/issues/11
 ---
 
-`Gmeek-html<iframe id="contentFrame" src="https://code.buxiantang.top/file/about.html" frameborder="0" style="border: none;" width='100%'  height='900px' ></iframe>`
+<iframe id="contentFrame" src="https://code.buxiantang.top/file/about.html" frameborder="0" style="border: none;" width='100%'  height='900px' ></iframe>
 
 

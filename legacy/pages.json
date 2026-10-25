@@ -1,6 +1,5 @@
 {
   "tag": "tag.html",
-  "about": "file/about.html",
   "rss": "rss.xml",
   "postList": "postList.json",
   "pages": [
