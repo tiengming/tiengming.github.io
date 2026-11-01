@@ -87,14 +87,14 @@ npm test           # 同步/重定向/懒加载脚本的单元测试
 
 ## 从 Gmeek 迁移而来？
 
-本仓库自身就是从 Gmeek 迁移的：`legacy/` 目录保存旧 URL 映射，构建时自动在旧路径生成重定向桩（`post/拼音.html → /p/{issue}/` 等 49 条）。新模板用户可整目录删除 `legacy/`，并在 `scripts/build-post.mjs` 里去掉 `legacyRedirects` 一行。
+本仓库自身就是从 Gmeek 迁移的：`legacy/` 目录保存旧 URL 映射，构建时自动在旧路径生成重定向桩（`post/拼音.html → /p/{issue}/` 等 48 条）。新模板用户可整目录删除 `legacy/`，并在 `scripts/build-post.mjs` 里去掉 `legacyRedirects` 一行。
 
 ## 结构
 
 ```
 src/
 ├── config/site.ts      ★ 唯一需要改的配置
-├── content/            issue 镜像（CI 自动提交，勿手改）
+content/                issue 镜像（CI 自动提交，勿手改）
 ├── layouts/            页面骨架 / 文章布局
 ├── components/         头部、卡片、目录、评论、命令面板……
 ├── pages/              路由：/ 、/p/{n}、/tags、/about、/page/{n}
