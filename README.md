@@ -1,8 +1,34 @@
+<p align="center">
+  <img src="./.github/assets/banner.png" alt="不言堂 · Astro issue 博客模板" />
+</p>
+
 # 不言堂 · Astro issue 博客模板
 
-用 GitHub Issues 写博文、Action 自动构建部署的个人博客。基于 Astro 7 静态生成：零前端运行时框架、系统 CJK 字体 + 按需分包的楷体展示字、「墨·玉·光」三层景深设计（详见 [DESIGN.md](DESIGN.md)）。
+用 GitHub Issues 写文章，Astro 7 静态构建，零前端运行时框架。
 
-特性：极光背景光场 · 玻璃卡片 3D 倾斜 · 滚动渐显 · 跨页视图过渡 · ⌘K 全文搜索（Pagefind 中文分词）· 标签页 · 目录/灯箱 · utterances 评论（复用 issue 评论串）· RSS 全文输出 · 明暗/跟随系统三态主题 · 旧 Gmeek 链接自动重定向。
+[![Build](https://img.shields.io/github/actions/workflow/status/tiengming/tiengming.github.io/blog.yml?branch=main&label=build)](https://github.com/tiengming/tiengming.github.io/actions/workflows/blog.yml)
+[![Astro 7](https://img.shields.io/badge/Astro-7-ff5d01)](https://astro.build)
+[![Node 22](https://img.shields.io/badge/Node-22-5fa04e)](https://nodejs.org)
+[![License MIT](https://img.shields.io/badge/license-MIT-3da639)](./LICENSE)
+
+**[🌐 在线演示](https://code.buxiantang.top)** · **[🚀 Use this template](https://github.com/tiengming/tiengming.github.io/generate)** · **[🎨 设计说明](DESIGN.md)**
+
+<p align="center">
+  <img src="./.github/assets/screenshot-light.png" width="49%" alt="亮色首页" />
+  <img src="./.github/assets/screenshot-dark.png" width="49%" alt="暗色首页" />
+</p>
+<p align="center">
+  <img src="./.github/assets/screenshot-mobile.png" width="240" alt="移动端首页" />
+</p>
+
+## 特性
+
+- **Issue 即文章**：新建 issue 就是发文，标题即标题，标签即分类，关掉即下架。
+- **零前端框架**：Astro 7 静态输出，页面不加载任何 UI 框架，交互靠几百行原生 TS。
+- **中文搜索**：Pagefind 建索引，⌘K 全文搜索支持中文分词，零后端。
+- **评论复用**：utterances 直接复用文章 issue 的评论串，不需要额外数据库。
+- **完整输出**：RSS 全文、站点地图、结构化数据、明暗/跟随系统三态主题。
+- **旧站兼容**：`legacy/` 自动为旧 Gmeek 链接生成重定向桩，迁移不掉链。
 
 ---
 
@@ -57,6 +83,8 @@ npm run build      # 构建 + 图片懒加载注入 + 旧链接重定向 + 搜�
 npm test           # 同步/重定向/懒加载脚本的单元测试
 ```
 
+> 需要 Node **>= 22.22**（Astro 7 的要求）。
+
 ## 从 Gmeek 迁移而来？
 
 本仓库自身就是从 Gmeek 迁移的：`legacy/` 目录保存旧 URL 映射，构建时自动在旧路径生成重定向桩（`post/拼音.html → /p/{issue}/` 等 49 条）。新模板用户可整目录删除 `legacy/`，并在 `scripts/build-post.mjs` 里去掉 `legacyRedirects` 一行。
@@ -77,4 +105,4 @@ scripts/                构建脚本：issue 同步、懒加载、重定向（�
 
 ## 许可
 
-主题代码随仓库使用；[DESIGN.md](DESIGN.md) 记录了完整设计系统。字体：[霞鹜文楷](https://github.com/lxgw/LxgwWenKai)（OFL）。
+[MIT](./LICENSE)。字体：[霞鹜文楷](https://github.com/lxgw/LxgwWenKai)（OFL）。设计系统与决策记录见 [DESIGN.md](DESIGN.md)。
