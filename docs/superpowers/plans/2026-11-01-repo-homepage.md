@@ -95,7 +95,7 @@ git commit -m "docs(assets): 添加 README 站点截图（亮/暗/移动）"
 
 **Files:**
 - Create: `.github/assets/banner.png`（1280×320）
-- Create: `.github/assets/social-preview.png`（1280×640）
+- Create: `.github/assets/social-preview.jpg`（1280×640，JPEG 保渐变）
 
 **Interfaces:**
 - Consumes: Task 1 的 `screenshot-light.png`（社交预览图左侧取景）。
@@ -117,13 +117,13 @@ Expected: `1280 x 320`。
 
 - [ ] **Step 3: 合成社交预览图**
 
-在 `/tmp/xime-banner/social.html` 中：1280×640，左侧 620px 放 `screenshot-light.png`（等比缩放到高度 640 后裁切），右侧放站名 + 一句话 + `code.buxiantang.top`，背景与 banner 同色。截图保存为 `.github/assets/social-preview.png`。
+在 `/tmp/xime-banner/social.html` 中：1280×640，左侧 620px 放 `screenshot-light.png`（等比缩放到高度 640 后裁切），右侧放站名 + 一句话 + `code.buxiantang.top`，背景与 banner 同色。截图保存为 `.github/assets/social-preview.jpg`（JPEG quality 90，避免 PNG8 量化造成的渐变断层）。
 
 - [ ] **Step 4: 校验体积**
 
 ```bash
-du -h .github/assets/banner.png .github/assets/social-preview.png
-file .github/assets/social-preview.png
+du -h .github/assets/banner.png .github/assets/social-preview.jpg
+file .github/assets/social-preview.jpg
 ```
 
 Expected: `1280 x 640`；两张均 < 400KB。
@@ -131,7 +131,7 @@ Expected: `1280 x 640`；两张均 < 400KB。
 - [ ] **Step 5: 提交**
 
 ```bash
-git add .github/assets/banner.png .github/assets/social-preview.png
+git add .github/assets/banner.png .github/assets/social-preview.jpg
 git commit -m "docs(assets): 添加仓库 banner 与社交预览图"
 ```
 
@@ -143,7 +143,7 @@ git commit -m "docs(assets): 添加仓库 banner 与社交预览图"
 - Modify: `README.md`（第 1-40 行左右的首屏；后半部分保留）
 
 **Interfaces:**
-- Consumes: `.github/assets/banner.png`、三张截图、`social-preview.png` 的路径。
+- Consumes: `.github/assets/banner.png`、三张截图、`social-preview.jpg` 的路径。
 - Produces: README 首屏结构，后续任务引用其中的「许可」章节。
 
 - [ ] **Step 1: 写首屏**
@@ -343,7 +343,7 @@ git push origin <branch>
 
 - [ ] **Step 5: 交接社交预览图**
 
-告诉所有者：Settings → Social preview → Upload an image，上传 `.github/assets/social-preview.png`（GitHub 无 API）。
+告诉所有者：Settings → Social preview → Upload an image，上传 `.github/assets/social-preview.jpg`（GitHub 无 API）。
 
 ---
 
