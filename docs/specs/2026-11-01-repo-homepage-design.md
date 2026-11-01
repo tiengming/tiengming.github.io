@@ -1,7 +1,7 @@
 # 仓库主页装修设计（模板向）
 
 日期：2026-11-01
-状态：待批准
+状态：已实施（2026-11-01）
 范围：`tiengming/tiengming.github.io` 的 GitHub 仓库主页（README + 仓库元信息 + 视觉资产），不改站点本身的视觉与功能。
 
 ## 1. 意图
@@ -56,9 +56,9 @@
 |---|---|---|
 | `banner.png` | 1280×320，墨底 + 玉青点缀，站名 + 一句定位 | 用 HTML 排版后浏览器截图，字体沿用 LXGW WenKai |
 | `screenshot-light.png` | 1280×800，首页亮色 | `npm run build` 后本地起服务截图 |
-| `screenshot-dark.png` | 1280×800，文章页暗色 | 同上 |
-| `screenshot-mobile.png` | 390×844，文章页 | 同上，移动视口 |
-| `social-preview.png` | 1280×640 | 由 banner + 截图拼合，供手动上传 |
+| `screenshot-dark.png` | 1280×800，首页暗色 | 同上，主题切换后截取 |
+| `screenshot-mobile.png` | 390×844，首页移动视口 | 同上 |
+| `social-preview.jpg` | 1280×640 | 由 banner + 截图拼合，供手动上传（JPEG 保渐变） |
 
 ### 7.2 README 首屏（前约 40 行）
 
@@ -69,7 +69,7 @@ banner
 徽章：Deploy / Astro 7 / Node 22 / License
 [在线演示] [Use this template] [设计说明]
 三张截图（亮 / 暗 / 移动）
-六条特性（issue 即发文、标签即分类、Pagefind 中文搜索、RSS、utterances 评论、旧链接重定向）
+六条特性（issue 即文章、零前端框架、Pagefind 中文搜索、utterances 评论、RSS/站点地图、旧链接重定向）
 三步部署（模板 → 改 site.ts → 开 Pages）
 ---
 原有详细内容保留：用 issue 写文章、配置速查、自定义外观、本地开发、结构、许可
@@ -79,7 +79,7 @@ banner
 
 - `topics`：`astro` `blog-template` `github-issues` `static-site` `pagefind` `tailwindcss` `rss` `chinese`
 - `description`：在现有描述基础上压缩到一句，突出「模板」定位。
-- 社交预览图：由所有者手动上传 `social-preview.png`（GitHub 无 API）。
+- 社交预览图：由所有者手动上传 `social-preview.jpg`（GitHub 无 API）。
 
 ### 7.4 LICENSE
 
